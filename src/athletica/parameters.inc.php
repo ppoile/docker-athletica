@@ -8,7 +8,7 @@ setlocale(LC_ALL, 'de_DE');
 /**
  * MySQL-Database
  */
-$cfgDBhost = '127.0.0.1'; // MySQL hostname
+$cfgDBhost = 'db'; // MySQL hostname
 $cfgDBport = '';          // MySQL port - leave blank for default port
 $cfgDBname = 'athletica';   // database
 $cfgDBuser = 'athletica';   // user
