@@ -1,5 +1,5 @@
 body,a,table,td { font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-style:bold ; font-weight:bold; }
+	font-style:normal ; font-weight:bold; }
 
 body { background-color:#000000; color:#FFFFFF; margin:0px; }
 body.status { margin-top:3px; margin-left:10px; font-size:11px; }
