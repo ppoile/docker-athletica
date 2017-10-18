@@ -4,4 +4,4 @@ RUN docker-php-ext-install mysql
 
 COPY config/php.ini /usr/local/etc/php/conf.d/
 
-#COPY src/ /var/www/html/
+#COPY src/ /var/www/html/  # for development the php sources are bind mounted
