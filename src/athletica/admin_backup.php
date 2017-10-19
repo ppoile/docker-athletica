@@ -337,7 +337,7 @@ else if ($_POST['arg'] == 'restore')
          
 		// since version 1.9 the backup contains a termination line
 		if($shortVersion >= 1.9){
-			$term = substr($content, -9);
+			$term = substr(rtrim($content), -9);
 			if($term != "#*ENDLINE"){
 				$validBackup = false;
 			}else{
