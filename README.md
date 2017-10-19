@@ -3,12 +3,26 @@
 
 Clone project:
 
-`git clone https://github.com/ppoile/docker-athletica`
+```bash
+git clone https://github.com/ppoile/docker-athletica`
+```
 
 Run service:
 
-`docker-compose up`
+```bash
+docker-compose up
+```
 
 Stop service:
 
-`docker-compose down`
+```bash
+docker-compose down
+```
+
+Restart with fresh containers:
+
+```bash
+docker-compose down
+docker volume rm dockerathletica_db_data
+docker-compose up
+```
