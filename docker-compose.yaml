@@ -1,7 +1,7 @@
 version: "2"
 services:
     db:
-        image: mysql
+        image: mysql:5.6
         container_name: athletica-mysql
         volumes:
             - "./src/athletica/sql/athletica.sql:/docker-entrypoint-initdb.d/athletica.sql"
