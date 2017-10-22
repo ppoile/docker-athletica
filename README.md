@@ -4,7 +4,7 @@
 Clone project:
 
 ```bash
-git clone https://github.com/ppoile/docker-athletica`
+git clone https://github.com/ppoile/docker-athletica
 ```
 
 Run service:
