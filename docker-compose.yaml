@@ -15,7 +15,7 @@ services:
             - MYSQL_PASSWORD=athletica
     php:
         build: .
-        image: athletica-php
+        image: ppoile/athletica-php
         container_name: athletica-php
         volumes:
             - "./src:/var/www/html"
