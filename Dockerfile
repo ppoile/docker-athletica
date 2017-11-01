@@ -1,6 +1,10 @@
 FROM php:5-apache
 
-RUN docker-php-ext-install mysql
+RUN apt-get update \
+  && apt-get install -y libsmbclient-dev \
+  && pecl install smbclient \
+  && docker-php-ext-install mysql \
+  && docker-php-ext-enable smbclient
 
 COPY config/php.ini /usr/local/etc/php/conf.d/
 
