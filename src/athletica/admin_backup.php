@@ -181,8 +181,11 @@ if($_GET['arg'] == 'backup')
 					$cma = "";
 					
 					foreach($fieldArray as $f){
-						if(substr($f['Type'],0,3) == 'int') {	
-							$values = $values . $cma . $tabrow[$f['Field']];
+						if(substr($f['Type'],0,3) == 'int') {
+							if($tabrow[$f['Field']] == '')
+								$values = $values . $cma . "NULL";
+							else
+								$values = $values . $cma . $tabrow[$f['Field']];
 						} else {
 							$values = $values . $cma . "'" . addslashes($tabrow[$f['Field']]) . "'";
 						}
