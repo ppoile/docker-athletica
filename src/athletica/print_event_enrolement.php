@@ -130,7 +130,7 @@ $doc = new PRINT_EnrolementPage_pdf($_COOKIE['meeting'],False,False, true, true)
                 LEFT JOIN start AS s ON(s.xWettkampf=w.xWettkampf)  
                 LEFT JOIN anmeldung as a ON (s.xAnmeldung = a.xAnmeldung)   
           WHERE " . $argument ."   
-            ORDER BY w.xKategorie, w.Mehrkampfcode, d.Anzeige, w.Info, r.xWettkampf, r.Datum, r.Startzeit";     
+            ORDER BY w.xKategorie, w.Mehrkampfcode, r.Datum, r.Startzeit";
  
 $result = mysql_query($sql);
 
