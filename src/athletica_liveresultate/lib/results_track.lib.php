@@ -686,7 +686,7 @@ if (!defined('AA_RESULTS_TRACK_LIB_INCLUDED'))
             $content_list .= "</div>\r\n";
             
             $content_list .= "<?php\r\n ";
-            $content_list .= "include('include/fotter.php');\r\n ";
+            $content_list .= "include('include/footer.php');\r\n ";
             $content_list .= "?>\r\n "; 
             
             $content_list .= "<script type='text/javascript'>\r\n"; 

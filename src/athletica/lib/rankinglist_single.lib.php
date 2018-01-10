@@ -1083,7 +1083,7 @@ else {
                                     $rank='';
                               } 
                               elseif ($r == $row_res[1] && $heat_keep == $row_res[5]) { // same rank as previous
-                                        $rank= $count_rank--;
+                                        $rank= "";
                               }  
                               else {
                                     if ($ukc){
@@ -2387,7 +2387,7 @@ else {
                                 $best_previous = '';    
                                 $previous_date = '';                            
                                 if($row_perf!==false){
-                                    $best_previous = AA_getBestPrevious($row[12], $row_perf['xAnmeldung'], $order, $row_res['Datum'], $row_res['Startzeit'], &$previous_date);
+                                     $best_previous = AA_getBestPrevious($row[12], $row_perf['xAnmeldung'], $order, $row_res['Datum'], $row_res['Startzeit'], &$previous_date);
                                 }
                                 
                                 if($is_jump) {

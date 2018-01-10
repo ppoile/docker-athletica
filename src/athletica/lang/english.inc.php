@@ -124,6 +124,7 @@ $strErrInvalidTeam = "Athlete not in same team!";
 $strErrNoPrinter = "Printer not available";
 $strErrNoResults= "No results entered";
 $strErrNotValid = " not valid!";
+$strErrNoCompetition = "There is no competition assigned to this login.";							  
 $strErrInvalidDate = "Date not valid";
 $strErrInvalidResult = "Result invalid: ";
 $strErrInvalidTime = "Invalid time!";
@@ -357,4 +358,11 @@ $strDay = 'Day';
 $strAll = 'all';
 
 $strWarningMultipleMeetings = "WARNING: Athletica may cause strange problems if more than one meeting exists!";
+$strImportCsv = "Import Anmeldungen Nachwuchsprojekte";
+$strImportCsvInfo = "Wählen Sie das entsprechende Nachwuchsprojekt und eine csv-Datei aus, um die Anmeldungen in Athletica zu importieren.";
+$strCsvFile = "csv Datei";
+$strCsvRestore = "csv einspielen";
+$strImportCsvDetail2 = "weitere Infos";
+$strImportCsvDetail = "Die entsprechenden Disziplinen dürfen pro Kategorie nur ein Mal vorkommen. Nicht existierende Disziplinen werden automatisch erstellt. Athleten mit Lizenznummer werden mit der Lizenz verknüpft, sofern diese in den Stammdaten ist und sowohl Name, Vorname und Lizenz mit den Stammdaten übereinstimmen. Mehrmaliges importieren derselben Daten führt nicht (!) zu doppelten Einträgen!";																																																																																																				
+$strImportCsvExample ="Beispieldatei";
 ?>

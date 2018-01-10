@@ -93,6 +93,7 @@ $sql = "SELECT
                 , k.Code
                 , k.Kurzname
                 , rt.Wertung
+                , d.xDisziplin
 
          FROM 
                 runde AS r
@@ -121,10 +122,10 @@ else
         $infoMerged = "";     
         while ($row = mysql_fetch_row($result)) {
             $catMerged .= $row[5]. " / ";
-            if($row[9] <> "") $infoMerged .= $row[9]. " / ";
+            //if($row[9] <> "") $infoMerged .= $row[9]. " / ";
         }   
         $titel = substr($catMerged,0,-2); 
-        $infoMerged = substr($infoMerged,0,-2); 
+        //$infoMerged = substr($infoMerged,0,-2); 
     }
     
     $result = mysql_query($sql);  
@@ -138,6 +139,7 @@ else
     // remember staffell?ufer
     $maxRunners = $row[11];
     $discipline_id = $row[18];
+    $discipline_xDisziplin = $row[24];
     
     $xWettkampf = $row[4];
     
@@ -167,75 +169,75 @@ else
 
         switch($layout) {
             case($cfgDisciplineType[$strDiscTypeNone]):
-                $doc = new PRINT_Contest_speaker_pdf($_COOKIE['meeting']);
+                $doc = new PRINT_Contest_speaker_pdf($row[5]."_".$row[6]);
             case($cfgDisciplineType[$strDiscTypeTrack]):
                 if($row[8] == 1) {
-                    $doc = new PRINT_ContestTrack_speaker_pdf($_COOKIE['meeting'],false, false, false, false);
+                    $doc = new PRINT_ContestTrack_speaker_pdf($row[5]."_".$row[6],false, false, false, false);
                 }
                 else {
-                    $doc = new PRINT_ContestTrack_speaker_pdf($_COOKIE['meeting'],false, false, false, false);
+                    $doc = new PRINT_ContestTrack_speaker_pdf($row[5]."_".$row[6],false, false, false, false);
                 }
                 break;
             case($cfgDisciplineType[$strDiscTypeTrackNoWind]):
             case($cfgDisciplineType[$strDiscTypeDistance]):
-                $doc = new PRINT_ContestTrack_speaker_pdf($_COOKIE['meeting'],false, false, false, false);
+                $doc = new PRINT_ContestTrack_speaker_pdf($row[5]."_".$row[6],false, false, false, false);
                 break;
             case($cfgDisciplineType[$strDiscTypeRelay]):
-                $doc = new PRINT_ContestRelay_pdf($_COOKIE['meeting']);
+                $doc = new PRINT_ContestRelay_pdf($row[5]."_".$row[6]);
                 break;
             case($cfgDisciplineType[$strDiscTypeJump]):
                 if($row[8] == 1) {
-                    $doc = new PRINT_ContestTech_speaker_pdf($_COOKIE['meeting'], false, false, false, false );
+                    $doc = new PRINT_ContestTech_speaker_pdf($row[5]."_".$row[6], false, false, false, false );
                 }
                 else {
-                    $doc = new PRINT_ContestTech_speaker_pdf($_COOKIE['meeting'], false, false, false, false );
+                    $doc = new PRINT_ContestTech_speaker_pdf($row[5]."_".$row[6], false, false, false, false );
                 }
                 break;
             case($cfgDisciplineType[$strDiscTypeJumpNoWind]):
-                $doc = new PRINT_ContestTech_speaker_pdf($_COOKIE['meeting'], false, false, false, false );
+                $doc = new PRINT_ContestTech_speaker_pdf($row[5]."_".$row[6], false, false, false, false );
                 break;
             case($cfgDisciplineType[$strDiscTypeThrow]):
-                $doc = new PRINT_ContestTech_speaker_pdf($_COOKIE['meeting'],false ,false, false, false);
+                $doc = new PRINT_ContestTech_speaker_pdf($row[5]."_".$row[6],false ,false, false, false);
                 break;
             case($cfgDisciplineType[$strDiscTypeHigh]):
-                $doc = new PRINT_ContestTech_speaker_pdf($_COOKIE['meeting'], false, false, false, false );
+                $doc = new PRINT_ContestTech_speaker_pdf($row[5]."_".$row[6], false, false, false, false );
                 break;
         } 
     } else {
         switch($layout) {
             case($cfgDisciplineType[$strDiscTypeNone]):
-                $doc = new PRINT_Contest_pdf($_COOKIE['meeting']);
+                $doc = new PRINT_Contest_pdf($row[5]."_".$row[6]);
             case($cfgDisciplineType[$strDiscTypeTrack]):
                 if($row[8] == 1) {
-                    $doc = new PRINT_ContestTrackCombined_speaker_pdf($_COOKIE['meeting'],false, false, false, false);
+                    $doc = new PRINT_ContestTrackCombined_speaker_pdf($row[5]."_".$row[6],false, false, false, false);
                 }
                 else {
-                    $doc = new PRINT_ContestTrackCombined_speaker_pdf($_COOKIE['meeting'],false, false, false, false);
+                    $doc = new PRINT_ContestTrackCombined_speaker_pdf($row[5]."_".$row[6],false, false, false, false);
                 }
                 break;
             case($cfgDisciplineType[$strDiscTypeTrackNoWind]):
             case($cfgDisciplineType[$strDiscTypeDistance]):
-                $doc = new PRINT_ContestTrackCombined_speaker_pdf($_COOKIE['meeting'],false, false, false, false);
+                $doc = new PRINT_ContestTrackCombined_speaker_pdf($row[5]."_".$row[6],false, false, false, false);
                 break;
             case($cfgDisciplineType[$strDiscTypeRelay]):
-                $doc = new PRINT_ContestRelay_pdf($_COOKIE['meeting']);
+                $doc = new PRINT_ContestRelay_pdf($row[5]."_".$row[6]);
                 break;
             case($cfgDisciplineType[$strDiscTypeJump]):
                 if($row[8] == 1) {
-                    $doc = new PRINT_ContestTechCombined_speaker_pdf($_COOKIE['meeting'], false, false, false, false );
+                    $doc = new PRINT_ContestTechCombined_speaker_pdf($row[5]."_".$row[6], false, false, false, false );
                 }
                 else {
-                    $doc = new PRINT_ContestTechCombined_speaker_pdf($_COOKIE['meeting'], false, false, false, false );
+                    $doc = new PRINT_ContestTechCombined_speaker_pdf($row[5]."_".$row[6], false, false, false, false );
                 }
                 break;
             case($cfgDisciplineType[$strDiscTypeJumpNoWind]):
-                $doc = new PRINT_ContestTechCombined_speaker_pdf($_COOKIE['meeting'], false, false, false, false );
+                $doc = new PRINT_ContestTechCombined_speaker_pdf($row[5]."_".$row[6], false, false, false, false );
                 break;
             case($cfgDisciplineType[$strDiscTypeThrow]):
-                $doc = new PRINT_ContestTechCombined_speaker_pdf($_COOKIE['meeting'],false ,false, false, false);
+                $doc = new PRINT_ContestTechCombined_speaker_pdf($row[5]."_".$row[6],false ,false, false, false);
                 break;
             case($cfgDisciplineType[$strDiscTypeHigh]):
-                $doc = new PRINT_ContestTechCombined_speaker_pdf($_COOKIE['meeting'], false, false, false, false );
+                $doc = new PRINT_ContestTechCombined_speaker_pdf($row[5]."_".$row[6], false, false, false, false );
                 break;
         }
         
@@ -524,6 +526,9 @@ else
                             , d.Typ
                             , s.Wind
                             , ss.Qualifikation
+                            , a.xAnmeldung
+                            , r.Datum
+                            , r.Startzeit
                      FROM 
                             runde AS r
                             LEFT JOIN serie AS s ON (s.xRunde = r.xRunde)
@@ -897,6 +902,18 @@ else
                                          }
                                  }
                              
+                            }
+                            $best_previous = '';    
+                            $previous_date = '';  
+                            $best_previous = AA_getBestPrevious($discipline_xDisziplin, $row[21], "ASC", $row[22], $row[23]);
+                            $previous_effort = AA_formatResultTime($best_previous, true);
+                                    
+                            if($previous_effort>0 && $previous_effort<$season_effort_res){
+                                $season_effort_res = $previous_effort;
+                            }
+                            
+                            if($previous_effort>0 && $previous_effort<$best_effort_res){
+                                $best_effort_res = $previous_effort;
                             }
                         }
                         $row[12] = $row[16];           // show rank

@@ -926,7 +926,7 @@ document.getElementById("progress").width="<?php echo $width ?>";
                             
                             // get athletes for effort details
                             $cRelayAt = 4;
-                            if($row[9] > 0){ // staffelläufer count of discipline
+                            if($row[9] > 0){ // staffelläµ¦er count of discipline
                                 $cRelayAt = $row[9];
                             }    
                             
@@ -3681,7 +3681,15 @@ function XML_reg_start($parser, $name, $attr){
              $catcode = 'U12M';
         } 
         else {
-            $catcode = $attr['CATCODE'];   
+            $catcode = $attr['CATCODE'];
+            
+            // since the 2018 relese of the online-services, the masters categories are transmitted 'correctly', however, athletica does not know these categories (M35_, M40_, W35_, ...), but only mASW and MASM --> replace those with that small regular expression
+            // i (pattern modifier): case insensitive; \d: decimal digit; {2,3}: what comes before match between 2 and 3 times (only one value means exactly as many times)
+            $searchM = '#M[\d]{2}_#i'; 
+            $searchW = '#W[\d]{2}_#i';
+			
+            $catcode = preg_replace($searchM, 'MASM', $catcode);
+            $catcode = preg_replace($searchW, 'MASW', $catcode);
         }
         
         $disname = trim($attr['DISNAME']); // special name of discipline, ordinary disname + info (cold be user defined)
@@ -3725,23 +3733,22 @@ function XML_reg_start($parser, $name, $attr){
             
             // if this is a self specified discipline, check onlineid to differentiate
             $SQLdisSpecial = "";
-            if($disspecial == "y"){
+            //if($disspecial == "y"){
                 $SQLdisSpecial = " AND w.OnlineId = '$disid' ";
-            }else{
-                $disname = ""; // do not fill the info-field with disname if there is no need
-            }
+            //}else{
+                $disname = $disinfo; // do not fill the info-field with disname if there is no need
+            //}
             
 
             // if this is a discipline with info, check additonal the info to differentiate
             $SQLdisInfo = "";
-            if(strlen($disinfo) != 0){
+            /*if(strlen($disinfo) != 0){
                 //$SQLdisInfo = " AND w.OnlineId = '$disid' ";
                 $SQLdisInfo = " AND w.Info = '$disinfo' "; 
                 $disname = $disinfo;
             }else{
                 $disname = ""; // do not fill the info-field with disname if there is no need
-            }
-
+            }*/
             
             // combined event
             if(isset($cfgCombinedDef[$discode])){
@@ -3884,8 +3891,22 @@ function XML_reg_start($parser, $name, $attr){
                                 $xDis[] = mysql_insert_id();
                             }  
                         }else{
+                        	// wettkampf already exists
                             $row_dis = mysql_fetch_assoc($res);
-                            $xDis[] = $row_dis['xWettkampf'];
+                            $xDis[] = $row_dis['xWettkampf']; // dont know what this is for...
+                            $xWettk = $row_dis['xWettkampf'];
+                            
+                            // 03.10.2017: Update INFO field
+                            $sql = "UPDATE 
+                            			wettkampf
+                            		SET
+                            			Info='$disname'
+                            		WHERE
+                            			xWettkampf = '$xWettk'";
+                            mysql_query($sql);
+                            if(mysql_errno() > 0){                                 
+                        		XML_db_error("4-".mysql_errno().": ".mysql_error());       
+                     		}
                         }
                     }
                    
@@ -4380,7 +4401,19 @@ function XML_reg_start($parser, $name, $attr){
                                             }
                                             
                                         }  
-                                    }
+                                    } else{
+                                    	// update the paid status of the existing entry; nothing else is updated
+										$res_arr = mysql_fetch_row($result);
+										$xStart = $res_arr[0];
+										$sql = "UPDATE start SET
+												Bezahlt = '$paid'
+											WHERE
+												xStart = $xStart";
+										mysql_query($sql);
+										if(mysql_errno() > 0){
+                                     	    XML_db_error("16-".mysql_errno().": ".mysql_error());
+                                        }
+									}
                                 }
                             } // enf foreach
                         } // end xReg > 0  

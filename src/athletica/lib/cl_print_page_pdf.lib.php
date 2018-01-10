@@ -68,7 +68,7 @@ class PRINT_Page_pdf
         $this->landscape = $landscape;
         $this->printHeader_bool = $printHeader_bool;
         $this->printFooter_bool = $printFooter_bool; 
-		$this->title = $title;
+		$this->title = $title.".pdf";
 		$this->stylesheet = "printing.css";
         if ($this->landscape) {
             $this->pagewidth = 842;
@@ -191,7 +191,12 @@ class PRINT_Page_pdf
 	function endPage()
 	{ 
         $this->printPageFooter();
-		$this->pdf->Output($this->title,"I");
+        // title must have .pdf ending. Add it if not
+        if (strpos($this->title, '.pdf')===false){
+			$this->pdf->Output($this->title.'.pdf',"I");
+		}else{
+			$this->pdf->Output($this->title,"I");
+		}
 	}
 	
   
@@ -1159,10 +1164,14 @@ class PRINT_TeamRankingList_pdf extends PRINT_RankingList_pdf    //TODO
 			$lnqnty=$this->printTextFlowSimp($club,$this->font,"",10,$this->posx+2,$this->lp,$this->width[2],'left',0,0,$lnqnty);
 			$this->printTextLineBox($points,$this->font,"",10,$this->posx+2,$this->lp,$this->width[3],30,'right bottom',10,-10);
 		}
-		else {
-			$lnqnty=$this->printTextFlowSimp($name.", ".$year.", ".$country,$this->font,"",10,42+$this->width[0],$this->lp,$this->width[1],'left',0,0,1);
-			$this->printTextLineBox($points,$this->font,"",10,$this->posx+4+$this->width[2],$this->lp,$this->width[3],30,'right bottom',10,-10);
+		elseif ($type='lmm') {
+			$lnqnty=$this->printTextFlowSimp($name.", ".$year.", ".$country,$this->font,"",9,22+$this->width[0],$this->lp,$this->width[1],'left',0,0,1);
+			$this->printTextLineBox($points,$this->font,"",9,$this->posx+4+$this->width[2],$this->lp,$this->width[3],30,'right bottom',10,-10);
 		}
+        else {
+            $lnqnty=$this->printTextFlowSimp($name.", ".$year.", ".$country,$this->font,"",10,22+$this->width[0],$this->lp,$this->width[1],'left',0,0,1);
+            $this->printTextLineBox($points,$this->font,"",10,$this->posx+4+$this->width[2],$this->lp,$this->width[3],30,'right bottom',10,-10);
+        }
 		$this->lp-=$lnqnty*12;
 
 	}

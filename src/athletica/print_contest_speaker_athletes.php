@@ -13,12 +13,12 @@ require('./lib/cl_print_contest.lib.php');
 require('./lib/cl_print_contest_pdf.lib.php');
 require('./lib/cl_print_contest_speaker_pdf.lib.php');
 require('./lib/timing.lib.php');
-
+    
 if(AA_connectToDB() == FALSE)    // invalid DB connection
 {
     return;
 }
-
+         
 if(AA_checkMeetingID() == FALSE) {        // no meeting selected
     return;        // abort
 }
@@ -107,11 +107,11 @@ else
         $infoMerged = "";     
         while ($row = mysql_fetch_row($result)) {
             $catMerged .= $row[5]. " / ";
-            if($row[9] <> "") $infoMerged .= $row[9]. " / ";
+            // if($row[9] <> "") $infoMerged .= $row[9]. " / ";
         }   
         $titel = substr($catMerged,0,-2); 
-        $infoMerged = substr($infoMerged,0,-2); 
-    }
+        //$infoMerged = substr($infoMerged,0,-2); 
+    }  
     
     $result = mysql_query($sql);  
     $row = mysql_fetch_row($result);
@@ -150,38 +150,38 @@ else
 
     switch($layout) {
         case($cfgDisciplineType[$strDiscTypeNone]):
-            $doc = new PRINT_Contest_pdf($_COOKIE['meeting']);
+            $doc = new PRINT_Contest_pdf($row[5]."_".$row[6]);
         case($cfgDisciplineType[$strDiscTypeTrack]):
             if($row[8] == 1) {
-                $doc = new PRINT_ContestTrack_athletes_speaker_pdf($_COOKIE['meeting'],false, false, false, false);
+                $doc = new PRINT_ContestTrack_athletes_speaker_pdf($row[5]."_".$row[6],false, false, false, false);
             }
             else {
-                $doc = new PRINT_ContestTrack_athletes_speaker_pdf($_COOKIE['meeting'],false, false, false, false);
+                $doc = new PRINT_ContestTrack_athletes_speaker_pdf($row[5]."_".$row[6],false, false, false, false);
             }
             break;
         case($cfgDisciplineType[$strDiscTypeTrackNoWind]):
         case($cfgDisciplineType[$strDiscTypeDistance]):
-            $doc = new PRINT_ContestTrack_athletes_speaker_pdf($_COOKIE['meeting'],false, false, false, false);
+            $doc = new PRINT_ContestTrack_athletes_speaker_pdf($row[5]."_".$row[6],false, false, false, false);
             break;
         case($cfgDisciplineType[$strDiscTypeRelay]):
-            $doc = new PRINT_ContestRelay_pdf($_COOKIE['meeting']);
+            $doc = new PRINT_ContestRelay_pdf($row[5]."_".$row[6]);
             break;
         case($cfgDisciplineType[$strDiscTypeJump]):
             if($row[8] == 1) {
-                $doc = new PRINT_ContestTech_athletes_speaker_pdf($_COOKIE['meeting'], false, false, false, false );
+                $doc = new PRINT_ContestTech_athletes_speaker_pdf($row[5]."_".$row[6], false, false, false, false );
             }
             else {
-                $doc = new PRINT_ContestTech_athletes_speaker_pdf($_COOKIE['meeting'], false, false, false, false );
+                $doc = new PRINT_ContestTech_athletes_speaker_pdf($row[5]."_".$row[6], false, false, false, false );
             }
             break;
         case($cfgDisciplineType[$strDiscTypeJumpNoWind]):
-            $doc = new PRINT_ContestTech_athletes_speaker_pdf($_COOKIE['meeting'], false, false, false, false );
+            $doc = new PRINT_ContestTech_athletes_speaker_pdf($row[5]."_".$row[6], false, false, false, false );
             break;
         case($cfgDisciplineType[$strDiscTypeThrow]):
-            $doc = new PRINT_ContestTech_athletes_speaker_pdf($_COOKIE['meeting'],false ,false, false, false);
+            $doc = new PRINT_ContestTech_athletes_speaker_pdf($row[5]."_".$row[6],false ,false, false, false);
             break;
         case($cfgDisciplineType[$strDiscTypeHigh]):
-            $doc = new PRINT_ContestTech_athletes_speaker_pdf($_COOKIE['meeting'], false, false, false, false );
+            $doc = new PRINT_ContestTech_athletes_speaker_pdf($row[5]."_".$row[6], false, false, false, false );
             break;
     }   
    
@@ -732,7 +732,7 @@ else
                             } else{
                                 $palmares = $palmares_national;
                             }
-                        }
+                        }              
                                            
                         $sql_res_prv = "SELECT
                                             re.Leistung

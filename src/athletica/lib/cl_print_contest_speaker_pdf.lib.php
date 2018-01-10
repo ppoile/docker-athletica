@@ -39,9 +39,9 @@ class PRINT_Contest_speaker_pdf extends PRINT_Page_pdf
             //$this->printTextLineBox($this->timeinfo,$this->font,"",10,40,$this->lp,762,30,'right bottom',10,5);
             
         }   else {
-            $this->printTextLineBox($this->event,$this->font,"B",13,20,$this->lp,250,30,'left bottom',21,0);
-            $this->printTextLineBox($this->cat,$this->font,"B",13,$this->posx+2,$this->lp,100,30,'left bottom',0,0);
-            $this->printTextLineBox($this->time,$this->font,"B",13,$this->posx+2,$this->lp,201,30,'right bottom',0,15);
+            $this->printTextLineBox($this->event,$this->font,"B",13,20,$this->lp,242,30,'left bottom',21,0);
+            $this->printTextLineBox($this->cat,$this->font,"B",13,$this->posx+10,$this->lp,190,30,'left bottom',0,0);
+            $this->printTextLineBox($this->time,$this->font,"B",13,$this->posx+2,$this->lp,113,30,'right bottom',0,15);
             
             
             

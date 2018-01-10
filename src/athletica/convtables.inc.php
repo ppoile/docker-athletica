@@ -22,6 +22,7 @@ $cvtTable = array("-"=>0
 					//, $strConvtableSVMWomenNL=>6              // old formula
 					, $strConvtableRankingPoints=>7      
                     , $strConvtableRankingPointsU20=>8 
+                    , $strConvtableSLV2010Mixed=>9      // z.B. LMM Mixed 
 );
 
 /**
@@ -38,7 +39,7 @@ $cvtTable = array("-"=>0
 $cvtFormulas = array(
 0=>array ("-"=>"0")
 
-// SLV 94 Men
+// SLV 2010 Men
 , 1=>array ("50"=>"1 8.05569 1300 2.5"
 			, "60"=>"1 6.30895 1460 2.5"
 			, "80"=>"1 3.80423 1820 2.5"
@@ -78,7 +79,7 @@ $cvtFormulas = array(
 			, $strConvformulaBall=>"2 19.191528 600 0.9"
 			)
 
-// SLV 94 Women
+// SLV 2010 Women
 , 2=>array ("50"=>"1 9.42366 1300 2.5"
 			, "60"=>"1 7.48676 1460 2.5"
 			, "80"=>"1 4.22443 1850 2.5"
@@ -218,6 +219,45 @@ $cvtFormulas = array(
 , 8=>array    (  "8 -1"=>"8 1"
             , "8 -1"=>"8 1"
         )
+// SLV 2010 Mixed (z.B. LMM)
+, 9=>array ("50"=>""
+            , "60"=>""
+            , "80"=>""
+            , "100"=>""
+            , "200"=>""
+            , "300"=>""
+            , "400"=>""
+            , "600"=>""
+            , "800"=>""
+            , "1000"=>""
+            , "1500"=>""
+            , "2000"=>""
+            , "3000"=>""
+            , "5000"=>""
+            , "10000"=>""
+            , "1500ST"=>""
+            , "2000ST"=>""
+            , "3000ST"=>""
+            , "50H"=>""
+            , "60H"=>""
+            , "80H"=>""
+            , "100H"=>""
+            , "110H"=>""
+            , "200H"=>""
+            , "300H"=>""
+            , "400H"=>""
+            , "4X100"=>""
+            , "4X400"=>""
+            , $strConvformulaHigh=>""
+            , $strConvformulaLong=>""
+            , $strConvformulaPole=>""
+            , $strConvformulaTrip=>""
+            , $strConvformulaShot=>""
+            , $strConvformulaDisc=>""
+            , $strConvformulaHamm=>""
+            , $strConvformulaJave=>""
+            , $strConvformulaBall=>""
+            )
 );
 
 ?>

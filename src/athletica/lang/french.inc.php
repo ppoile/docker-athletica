@@ -129,6 +129,7 @@ $strErrInvalidOrder = "L'ordre doit être entre 1 et 99!";
 $strErrInvalidTeam = "L'athlète ne fait pas partie de la même équipe!"; 
 $strErrNoPrinter = "Imprimante non disponible"; 
 $strErrNoResults= "Aucun résultat enregistré"; 
+$strErrNoCompetition = "Aucune compétition n'est associée à ce login.";							  
 $strErrInvalidBackupFile = "Fichier de sauvegarde non valable!"; 
 $strErrInvalidDate = "Date non valable"; 
 $strErrInvalidResult = "Résultat non valable: "; 
@@ -367,7 +368,7 @@ $strBaseRemark ="Cette fonction vous permet d\\\'actualiser les données de base 
 $strBaseFromBase = "A partir de données de base";
 $strBestlistUpdate = "Introduire les résultats dans liste des meilleurs";
 $strBestlistRemark = "<b>Important:</b> Tous les tours enregistrés sont transmis. Ils ne peuvent pas être transmis une seconde fois";
-$strClubNr = "Numéro de société";
+$strSANr = "Numéro de Swiss Athletics";
 $strCombinedDiscipline = "Discipline de concours multiple";
 $strCopy = "Copier";
 $strCopyMade = "Copie effectuée";
@@ -903,8 +904,16 @@ $strEmptyEntriesReference = "Il y a encore des séries enregistrées. Les inscript
 $strPointsShort = 'Pts.';
 
 $strHeaderBig = 'En haut grand';
+$strHeaderBigInfo = 'Image largeur page (la hauteur sera adapté) --> remplace les infos en haut';
 $strFooterBig = 'En bas grand';
+$strFooterBigInfo = 'Image largeur page (la hauteur sera adapté) --> remplace les infos en bas';
 
 $strWarningMultipleMeetings = "ATTENTION: La gestion de plusieurs meetings peut provoquer des problèmes étranges.";
-
+$strImportCsv = "Import inscriptions projets de jeunesse";
+$strImportCsvInfo = "Choisir le projet de jeunesse correspondant ainsi que le fichier csv y relatif afin d'importer les inscriptions dans Athletica";
+$strCsvFile = "fichier csv";
+$strCsvRestore = "importer le fichier csv";
+$strImportCsvDetail2 = "Informations complémentaires";
+$strImportCsvDetail = "Die entsprechenden Disziplinen dürfen pro Kategorie nur ein Mal vorkommen. Nicht existierende Disziplinen werden automatisch erstellt. Athleten mit Lizenznummer werden mit der Lizenz verknüpft, sofern diese in den Stammdaten ist und sowohl Name, Vorname und Lizenz mit den Stammdaten übereinstimmen. Mehrmaliges importieren derselben Daten führt nicht (!) zu doppelten Einträgen!";
+$strImportCsvExample ="fichier d'exemple";
 ?>

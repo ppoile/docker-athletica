@@ -181,11 +181,8 @@ if($_GET['arg'] == 'backup')
 					$cma = "";
 					
 					foreach($fieldArray as $f){
-						if(substr($f['Type'],0,3) == 'int') {
-							if($tabrow[$f['Field']] == '')
-								$values = $values . $cma . "NULL";
-							else
-								$values = $values . $cma . $tabrow[$f['Field']];
+						if(substr($f['Type'],0,3) == 'int') {	
+							$values = $values . $cma . $tabrow[$f['Field']];
 						} else {
 							$values = $values . $cma . "'" . addslashes($tabrow[$f['Field']]) . "'";
 						}
@@ -340,7 +337,7 @@ else if ($_POST['arg'] == 'restore')
          
 		// since version 1.9 the backup contains a termination line
 		if($shortVersion >= 1.9){
-			$term = substr(rtrim($content), -9);
+			$term = substr($content, -9);
 			if($term != "#*ENDLINE"){
 				$validBackup = false;
 			}else{

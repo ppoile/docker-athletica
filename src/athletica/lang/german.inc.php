@@ -67,7 +67,7 @@ $strClub = "Verein";
 $strClubEvent = "SVM";
 $strClubEventType = "SVM Wertung";
 $strClubInfo = "Vereinsinfo";
-$strClubNr = "Vereinsnummer";
+$strSANr = "Mitgliedernummer";
 $strClubRanking = "SVM Rangliste";
 $strClubs = "Vereine";
 $strClubSheets = "SVM Notenblätter";
@@ -98,6 +98,7 @@ $strConvtableIAAF85Men = "IAAF 85, Männer";
 $strConvtableIAAF85Women = "IAAF 85, Frauen";
 $strConvtableSLV2010Men = "SLV 2010, Männer";
 $strConvtableSLV2010Women = "SLV 2010, Frauen";
+$strConvtableSLV2010Mixed = "SLV 2010, Mixed";
 $strConvtableSVMMenNL = "SVM NLA-C, Männer";
 $strConvtableSVMWomenNL = "SVM NLA-B, Frauen";
 $strConvtableRankingPoints = "Rangpunkte";     
@@ -109,6 +110,7 @@ $strCountFiles = "Anzahl Dateien";
 $strCountAttempts = "Anzahl Versuche";
 $strCountry = "Land";
 $strCreateCombined = "Mehrkampf erstellen";
+$strCreateLMM = "LMM erstellen";
 $strCreatedBy = "Erstellt Mit";
 
 $strDatabase = "Datenbank";
@@ -175,6 +177,8 @@ $strErrBackupDamaged = "Ihre Sicherungsdatei ist beschädigt! Die Sicherung wird 
 $strErrClubChange = "Vereinsänderung nicht möglich! Athlet ist noch für ein"
 						. " Meeting gemeldet.";
 $strErrCreateCombined = "Sie müssen eine Kategorie auswählen in welcher der Mehrkampf erstellt werden soll!";
+$strErrCreateLMM = "Sie müssen eine Kategorie auswählen in welcher der LMM erstellt werden soll!";
+$strErrDiscNotDefLMM  = "Disziplin zu dieser LMM Kategorie sind nicht definiert.";
 $strErrDownload = "Die Datei konnte nicht herunter geladen werden!";
 $strErrNoSuchDisCode = "Diese Disziplin ist in Athletica nicht vorhanden!";
 $strErrDuplicateRelay = "Staffelname existiert bereits!";
@@ -198,6 +202,7 @@ $strErrLogin = "Anmelden am Swiss Athletics Server fehlgeschlagen!";
 $strErrMergedRound = "Diese Runde wurde zusammengefasst. Der Wettkampf kann nur in der Hauptrunde durchgeführt werden!";
 $strErrNoPrinter = "Printer nicht verfügbar";
 $strErrNoResults= "Noch keine Resultate erfasst";
+$strErrNoCompetition = "Mit diesem Login ist kein Wettkampf verknüpft.";																		 
 $strErrNoControl = "<b>Achtung:</b> Sie haben Ihr Meeting noch nicht mit der Meetingbewilligung<br/>
 			abgeglichen (Administration -> Abgleich mit der Online-Meetingbewilligung). Dies ist Voraussetzung für<br/>
 			das Erstellen von Staffeln, Mannschaften und für den Upload in die Bestenliste!<br/>
@@ -314,7 +319,9 @@ $strLicenseTypeNoLicense = "Keine Lizenz";
 $strLicenseType = "Lizenztyp";
 $strLicenseNrChange = "Wollen Sie wirklich die Lizenznummer ändern?";
 $strLimitSelection = "Auswahl einschränken";
-$strLinks = "Links";
+$strLinks = "Links";     
+$strLMMCategory = "LMM Kategorie";
+$strLMMRanking ="LMM Rangliste";
 $strLogEvent = "Ereignis";
 $strLogin = "Anmelden";
 $strLoginTrue = "Erfolgreich angemeldet";
@@ -787,6 +794,13 @@ $strXmlRestore = "XML File einspielen";
 $strXmlNoCat = "<br/>&nbsp;&nbsp;Für die Kategorie %NAME% sind keine Wettkämpfe erfasst.";
 $strXmlNoLic = "<br/>&nbsp;&nbsp;Diese Lizenznummer %NAME% ist nicht in den Stammdaten."; 
 $strXmlNoClub = "<br/>&nbsp;&nbsp;Der Verein %NAME% ist in athletica nicht vorhanden.";
+$strImportCsv = "Import Anmeldungen Nachwuchsprojekte";
+$strImportCsvInfo = "Wählen Sie das entsprechende Nachwuchsprojekt und eine csv-Datei aus, um die Anmeldungen in Athletica zu importieren.";
+$strCsvFile = "csv Datei";
+$strCsvRestore = "csv einspielen";
+$strImportCsvDetail2 = "weitere Infos";
+$strImportCsvDetail = "Die entsprechenden Disziplinen dürfen pro Kategorie nur ein Mal vorkommen. Nicht existierende Disziplinen werden automatisch erstellt. Athleten mit Lizenznummer werden mit der Lizenz verknüpft, sofern diese in den Stammdaten ist und sowohl Name, Vorname und Lizenz mit den Stammdaten übereinstimmen. Mehrmaliges importieren derselben Daten führt nicht (!) zu doppelten Einträgen!";																																																																																							
+$strImportCsvExample ="Beispieldatei";
 
 $strOnlyOver1000m = "nur für über 1000m Meereshöhe";
 

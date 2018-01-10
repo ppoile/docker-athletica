@@ -1074,7 +1074,7 @@ function AA_meeting_resetResults($event, $formula, $conv = '')
 				// recalculate result points
 				while ($row = mysql_fetch_row($result))
 				{
-					$points = AA_utils_calcPoints($event, $row[1], 0, $row[3]);
+					$points = AA_utils_calcPoints($event, $row[1], 0, $row[3],0, $row[3]);
                     
 					mysql_query("
 						UPDATE resultat SET

@@ -405,6 +405,15 @@ if (isset($eventTypeCat['club'])){?>
 
 <?php
 }
+if (isset($eventTypeCat['lmm'])){?>
+<tr>
+    <th class='dialog'>
+        <input type='radio' name='type' value='lmm'>
+            <?php echo $strLMMRanking; ?></input>
+    </td>
+</tr>
+<?php
+}
 //}
 if(empty($round) && isset($eventTypeCat['teamsm'])){	// team sm ranking minimum is discipline and at least one eventtype must be team-sm?>
 <tr>

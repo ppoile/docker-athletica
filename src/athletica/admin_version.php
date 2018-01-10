@@ -60,9 +60,9 @@ $menu->printMenu();
 			$newer = false;
 			
 			$http = new HTTP_data();
-			$webserverDomain = $cfgSLVhost; // domain of swiss-athletics webserver
+			$webserverDomain = $cfgSLVhostSA; // domain of swiss-athletics webserver
 			
-			$result = $http->send_post($webserverDomain, '/meetings/athletica/version.php', '', 'ini');
+			$result = $http->send_post($webserverDomain, '/athletica/version.php', '', 'ini');
 			$version = $result['version'];
 			$datum = $result['datum'];
 			

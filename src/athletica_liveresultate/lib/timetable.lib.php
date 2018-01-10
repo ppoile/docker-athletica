@@ -111,7 +111,7 @@ if (!defined('AA_TIMETABLE_LIB_INCLUDED'))
             }
             $content .= "</div>\r\n";
             $content .= "<div data-role='header' data-theme='b' data-id='header' data-position='block' data-tap-toggle='false'>\r\n ";
-            $content .= "<a href='../index.php' data-icon='home' data-transition='slide' data-direction='reverse'>Home</a>\r\n";
+            $content .= "<a href='../' data-icon='home' data-transition='slide' data-direction='reverse'>Home</a>\r\n";
             $content .= "<a class='ui-btn-right' data-icon='refresh' onclick='refreshPage();'>".$GLOBALS['strRefresh']."</a>\r\n";
             $content .= "<h1>&copy; Swiss Athletics 2017</h1>\r\n";
             $content .= "</div>\r\n";

@@ -13,6 +13,7 @@ require('./lib/rankinglist_single.lib.php');
 require('./lib/rankinglist_combined.lib.php');
 require('./lib/rankinglist_team.lib.php');
 require('./lib/rankinglist_teamsm.lib.php');
+require('./lib/rankinglist_lmm.lib.php');
 
 if(AA_connectToDB() == FALSE)	{ // invalid DB connection
 	return;		// abort
@@ -178,6 +179,12 @@ else if($type == 'sheets')
 else if($type == 'teamsm')
 {  
 	AA_rankinglist_TeamSM($category, $event, $formaction, $break, $cover, $cover_timing, $date);
-}                                         
+}    
+
+// Ranking list LMM events
+else if($type == 'lmm')
+{  
+    @AA_rankinglist_LMM($category, $formaction, $break, $cover, $parser=false, $event, $heatSeparate,$type, $catFrom, $catTo);
+}                                     
 
 ?>

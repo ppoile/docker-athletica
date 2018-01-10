@@ -16,7 +16,7 @@
  * Application Info
  */
 $cfgApplicationName = 'Athletica';
-$cfgApplicationVersion = '7.2';
+$cfgApplicationVersion = '8.0';
 $cfgInstallDir = 'C:\Program Files (x86)\athletica';
 
 /**
@@ -90,7 +90,8 @@ $cfgBackupCompatibles = array(
     '7.0',
     '7.1',                                                                                          
     '7.2',
-    '7.2.1',
+	'7.2.1',
+	'8.0'
 );
 
 
@@ -164,6 +165,9 @@ $cfgEventType = array(		$strEventTypeSingle=>0
 							, $strEventTypeClubCombined=>10
 							, $strEventTypeClubMixedTeam=>11);
 
+                            
+$cfgLMM = array(901,902,903,904,905,906,907,908,909,910,911,912); // all LMM Events
+$cfgLMMMixed = array(905,910);  // mixed LMM events --> for teams results
 
 /**
  *	Combined Codes referenced with WO-combined contests
@@ -197,6 +201,18 @@ $cfgCombinedDef = array(	410 => 'MAN'		// Stadion
                 , 417 => '5WOMU20'  // F?nfkampf U20 W
                 , 418 => '5WOMU18'  // F?nfkampf U18 W  
                 , 799 => '..Ka'     // ...kampf
+                , 901 => 'LMMU16W'  // LMM U16W
+                , 902 => 'LMMU16M'  // LMM U16M
+                , 903 => 'LMMU18W'  // LMM U18W
+                , 904 => 'LMMU18M'  // LMM U18M
+                , 905 => 'LMMU18X'  // LMM U18 Mixed
+                , 906 => 'LMMU20W'  // LMM U20W
+                , 907 => 'LMMU20M'  // LMM U20M
+                , 908 => 'LMMWOM'  // LMM W
+                , 909 => 'LMMMAN'  // LMM M
+                , 910 => 'LMMMIX'  // LMM Mixed
+                , 911 => 'LMMMASW'  // LMM W30+
+                , 912 => 'LMMMASM'  // LMM M30+
 				);        
               
 
@@ -269,8 +285,55 @@ $cfgCombinedWO = array(	'MAN' => array(40,330,351,310,70,271,361,320,391,110)
             
             , '8MANU18' => array(40,330,347,70,268,310,389,100)             
             , '8MANU18_F' => 3
-           
-           
+            
+            
+            , 'LMMU16W' => array(35,330,310,352,90)   
+            , 'LMMU16W_F' => 2
+            , 'LMMU16W_ET' => 20 
+            
+            , 'LMMU16M' => array(35,330,349,310,100)   
+            , 'LMMU16M_F' => 1
+            , 'LMMU16M_ET' => 20    
+            
+            , 'LMMU18W' => array(40,330,310,352,90)   
+            , 'LMMU18W_F' => 2
+            , 'LMMU18W_ET' => 20       
+            
+            , 'LMMU18M' => array(40,330,310,347,100)   
+            , 'LMMU18M_F' => 1
+            , 'LMMU18M_ET' => 20  
+            
+            , 'LMMU18X' => array(40,330,347,352,310,100)   
+            , 'LMMU18X_F' => 9
+            , 'LMMU18X_ET' => 21   
+            
+            , 'LMMU20W' => array(40,330,310,349,90)   
+            , 'LMMU20W_F' => 2
+            , 'LMMU20W_ET' => 20      
+            
+            , 'LMMU20M' => array(40,330,310,347,100)   
+            , 'LMMU20M_F' => 1
+            , 'LMMU20M_ET' => 20   
+                 
+            , 'LMMWOM' => array(40,330,310,349,90)   
+            , 'LMMWOM_F' => 2
+            , 'LMMWOM_ET' => 20    
+            
+            , 'LMMMAN' => array(40,330,310,347,100)   
+            , 'LMMMAN_F' => 1
+            , 'LMMMAN_ET' => 20    
+            
+            , 'LMMMIX' => array(40,330,347,349,310,100)   
+            , 'LMMMIX_F' => 9
+            , 'LMMMIX_ET' => 21  
+            
+            , 'LMMMASW' => array(40,330,349,310,100)   
+            , 'LMMMASW_F' => 2
+            , 'LMMMASW_ET' => 20    
+            
+            , 'LMMMASM' => array(40,330,347,310,100)   
+            , 'LMMMASM_F' => 1
+            , 'LMMMASM_ET' => 20
 			);
 
             /**    
@@ -282,7 +345,7 @@ $cfgCombinedWO = array(	'MAN' => array(40,330,351,310,70,271,361,320,391,110)
  *        MAN_NT => nulltime 
  * *      MAN_C => category corresponding to svm category
  */
-$cfgSVM = array(    '29_01' => array(40,50,70,90,140,271,301,560,310,320,330,340,351,361,381,391) 
+$cfgSVM = array('29_01' => array(40,50,70,90,140,271,301,560,310,320,330,340,351,361,381,391) 
             , '29_01_F' => 7
             , '29_01_ET' => 12  
             , '29_01_T' => array(1515,1635,1410,1200,1320,1230,1610,1140,1430,1100,1200,1500,1230,1340,1100,1140) 
@@ -477,72 +540,18 @@ $cfgSVM = array(    '29_01' => array(40,50,70,90,140,271,301,560,310,320,330,340
             , '36_09_C' => 'U12M'   
             , '36_09_D' => 'MIX'  
             
-            , '99_01' => array(35,330,352,90)   
-            , '99_01_F' => 1
-            , '99_01_ET' => 11 
             , '99_01_C' => 'U16W'   
-            , '99_01_D' => 'LMM' 
-            
-            , '99_02' => array(40,330,347,349,310,100)   
-            , '99_02_F' => 1
-            , '99_02_ET' => 11 
-            , '99_02_C' => 'MIX'   
-            , '99_02_D' => 'LMM'  
-            
-            , '99_03' => array(40,330,347,352,310,100)   
-            , '99_03_F' => 1
-            , '99_03_ET' => 11 
-            , '99_03_C' => 'U18X'   
-            , '99_03_D' => 'LMM'    
-            
-            , '99_04' => array(35,330,349,310,100)   
-            , '99_04_F' => 1
-            , '99_04_ET' => 11 
-            , '99_04_C' => 'U16M'   
-            , '99_04_D' => 'LMM'  
-            
-            , '99_05' => array(40,330,347,310,100)   
-            , '99_05_F' => 1
-            , '99_05_ET' => 11 
-            , '99_05_C' => 'MASM'   
-            , '99_05_D' => 'LMM'  
-            
-            , '99_06' => array(40,330,352,90)   
-            , '99_06_F' => 1
-            , '99_06_ET' => 11 
-            , '99_06_C' => 'U18W'   
-            , '99_06_D' => 'LMM' 
-            
-            , '99_07' => array(40,330,310,349,90)   
-            , '99_07_F' => 1
-            , '99_07_ET' => 11 
-            , '99_07_C' => 'U20W'   
-            , '99_07_D' => 'LMM'   
-            
-            , '99_08' => array(40,330,349,90)   
-            , '99_08_F' => 1
-            , '99_08_ET' => 11 
+            , '99_02_C' => 'U16M'   
+            , '99_03_C' => 'U18W'   
+            , '99_04_C' => 'U18M'   
+            , '99_05_C' => 'U18X'   
+            , '99_06_C' => 'U20W'   
+            , '99_07_C' => 'U20M'   
             , '99_08_C' => 'WOM_'   
-            , '99_08_D' => 'LMM' 
-            
-            , '99_09' => array(40,330,310,347,100)   
-            , '99_09_F' => 1
-            , '99_09_ET' => 11 
-            , '99_09_C' => 'U20M'   
-            , '99_09_D' => 'LMM' 
-            
-            , '99_10' => array(40,330,310,347,100)   
-            , '99_10_F' => 1
-            , '99_10_ET' => 11 
-            , '99_10_C' => 'U18M'   
-            , '99_10_D' => 'LMM' 
-            
-            , '99_11' => array(40,330,310,347,100)   
-            , '99_11_F' => 1
-            , '99_11_ET' => 11 
-            , '99_11_C' => 'MAN_'   
-            , '99_11_D' => 'LMM'
-           
+            , '99_09_C' => 'MAN_'   
+            , '99_10_C' => 'MIX'   
+            , '99_11_C' => 'MASW'   
+            , '99_12_C' => 'MASM'   
             );
             
 /**
@@ -831,11 +840,25 @@ $cfgCharWidth = array(
  *
  *
  */
-$cfgSLVhost = "www.swiss-athletics.ch";
+//$cfgSLVhost = "apps.swiss-athletics.ch";
+$cfgSLVhost = "https://alabus.swiss-athletics.ch";
 $cfgSLVhostUKC = "ubs-kidscup.ch"; 
+$cfgSLVhostSA = "apps.swiss-athletics.ch"; 
 $cfgSLVuser = "athletica";
 $cfgSLVpass = "impBOSS";
 $cfgSrvHashU = "f3e99337796d868e3ae43ff87196fa92";
 $cfgSrvHashP = "93d4ef379a7d3360db0e612e8021e642";
+
+/**
+* 
+* New connection information:
+* 
+*/
+//$cfgSLVuriMeetingList = "/meetings/athletica/export_meeting_list.php";
+$cfgSLVuriMeetingList = "/rest/Event/Athletica/ExportMeetingList";
+//$cfgSLVuriMeetingData = "/meetings/athletica/export_meeting.php";
+$cfgSLVuriMeetingData = "/rest/Event/Athletica/MeetingData";
+$cfgSLVuriStammData = "/rest/License/Athletica/ExportStammDataFull";
+$cfgSLVuriResults = "/rest/Event/Athletica/ImportResultData"; // POST mit enctype="multipart/form-data" und file als Parameter (das GZ File mit den Daten)
 
 ?>

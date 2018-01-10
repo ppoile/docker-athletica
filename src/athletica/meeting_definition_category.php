@@ -39,7 +39,7 @@ else if(!empty($_GET['cat'])) {
  $svmcat= 0;
  if(!empty($_POST['svmcat'])){
     $svmcat = $_POST['svmcat'];   
- }  
+ } 
  
  $ukc_meeting = AA_checkMeeting_UKC() ; 
  
@@ -315,7 +315,7 @@ elseif($_POST['arg']=="change_starttime"){
      }                
      elseif (!empty($_POST['svmcategory'])){
             $svm = $_POST['svmcategory']; 
-     }  
+     }
                         
      if (!empty($svm)){  
         // get short name  
@@ -332,8 +332,7 @@ elseif($_POST['arg']=="change_starttime"){
             $GLOBALS['AA_ERROR'] = $GLOBALS['strErrDiscNotDefSVM'];  
         }    
      }
-    
-   
+     
     $st=trim($st);
     if (strlen($st) < 4 && $st == 0){
        $st=sprintf("%04d", $st); 
@@ -501,7 +500,7 @@ if($_GET['arg'] == "create_svm" || $_POST['svm'] == "create_svm"){
     $cNewSVM = true;
     $cCategory = $category;
 }
-    
+
 // Check if any error returned from DB
 if(mysql_errno() > 0) {
 	AA_printErrorMsg(mysql_errno() . ": " . mysql_error());
@@ -574,7 +573,7 @@ $sql = "SELECT
 			, w.Mehrkampfende
 			, w.Mehrkampfreihenfolge
 			, d.Code
-			, k.Geschlecht             
+            , k.Geschlecht                         
 		FROM
 			wettkampf AS w
 		LEFT JOIN
@@ -639,7 +638,7 @@ else			// no DB error
                 }else{  
                     $GLOBALS['AA_ERROR'] = $GLOBALS['strErrDiscNotDefSVM'];  
                 }            
-            }
+            } 
         } 
         
         foreach ($cfgSVM_arr as $key => $val){   
@@ -648,7 +647,6 @@ else			// no DB error
                 break;
             }
         }     
-        
 		$punktetabelle = $row[3];
 		
 		// check on combined event order and set if unset
@@ -1791,7 +1789,7 @@ else			// no DB error
             }
 mysql_free_result($result);      
     
-    }   
+    } 
     
 	if($cType > $cfgEventType[$strEventTypeSingleCombined]
 		&& $cType != $cfgEventType[$strEventTypeTeamSM]) 		// not single event
@@ -1812,7 +1810,7 @@ mysql_free_result($result);
           $cType == $cfgEventType[$strEventTypeClubAdvanced] ||   
           $cType == $cfgEventType[$strEventTypeClubTeam] ||   
           $cType == $cfgEventType[$strEventTypeClubCombined] ||  
-          $cType == $cfgEventType[$strEventTypeClubMixedTeam]) {        
+          $cType == $cfgEventType[$strEventTypeClubMixedTeam]){        
      
                 ?>
                 </table>

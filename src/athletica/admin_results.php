@@ -12,6 +12,7 @@ require('./lib/cl_gui_menulist.lib.php');
 require('./lib/cl_gui_page.lib.php');
 require('./lib/cl_xml_pageconstruct.lib.php');
 require('./lib/rankinglist_team.lib.php');
+require('./lib/rankinglist_lmm.lib.php');
 
 require('./lib/common.lib.php');
 
@@ -40,36 +41,11 @@ $menu->addButton($cfgURLDocumentation . 'help/administration/results.html', $str
 $menu->printMenu();
 
 
-$login = false;
+//$login = false;
 
 if($_POST['arg'] == "login"){
 	
 	$http = new HTTP_data();
-	$post = "clubnr=".urlencode($_POST['clubnr'])."&pass=".urlencode($_POST['pass']);
-	$result = $http->send_post($cfgSLVhost, '/meetings/athletica/login.php', $post, 'ini');
-	if(!$result){
-		AA_printErrorMsg($strErrLogin);
-	}else{
-		switch($result['login']){
-			case "error":
-			AA_printErrorMsg($result['error']);
-			break;
-			
-			case "ok":
-			$login = true;
-			echo "<p>$strLoginTrue</p>";
-			
-			break;
-			
-			case "denied":
-			$login = false;
-			echo "<p>$strLoginFalse</p>";
-			break;
-		}
-	}
-}
-
-if($login){
 	
 	set_time_limit(300);
 	
@@ -89,9 +65,29 @@ if($login){
 	
 	// upload result file
 	if($nbr_effort>0){ //upload only if file contains at least one results
-		$ftp->open_connection($cfgSLVhost, $cfgSLVuser, $cfgSLVpass);
-		$success = $ftp->put_file($local, $remote);
-		$ftp->close_connection();
+		$handle = fopen($local,'r');
+		$data = fread($handle, 200000000); // max 200 MB
+		fclose($handle);
+		
+		// must be 'multipart' data: has always a beginning and an end, which must be defined in the header and is defined here as 'AthleticA'
+		$post = "--AthleticA\r\n";
+		$post .= "content-disposition: form-data; name=\"file\"; filename=\"$remote\" \r\n"; // Probably not existing in http 1.1 !!! (RFC 7231, RFC 6266, RFC 2183, RFC 1806)
+		$post .= "content-type: application/x-gzip \r\n\r\n";
+		$post .= "$data\r\n"; 
+		$post .= "--AthleticA--";
+		
+		$result = $http->send_post_TLS($cfgSLVhost, $cfgSLVuriResults, $post, $_POST['clubnr'], $_POST['pass'], 'autojson', "", true);
+		if ($result=='unauthorized'){
+			echo($strLoginFalse);
+			$success = false;
+		} elseif (preg_match('#.*import complete.*#i',$result)){
+			echo($result);
+			$success = true;
+		} else {
+			echo($result);
+			$success = false;
+		}
+		
 	} else {
 		$success=true;
 	} 
@@ -166,7 +162,7 @@ if($login){
 		<input type="hidden" name="arg" value="login">
 		<tr>
 			<td>
-				<?php echo $strClubNr ?>
+				<?php echo $strSANr ?>
 			</td>
 			<td>
 				<input type="text" name="clubnr" value="">

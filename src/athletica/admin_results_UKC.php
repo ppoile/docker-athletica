@@ -210,7 +210,7 @@ if($login){
          <input type="hidden" name="meeting_nr" value="<?php echo $meeting_nr; ?>">  
 		<tr>
 			<td>
-				<?php echo $strClubNr ?>
+				<?php echo $strSANr ?>
 			</td>
 			<td>
 				<input type="text" name="clubnr" value="">

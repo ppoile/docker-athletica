@@ -93,6 +93,8 @@ $ukc_meeting = AA_checkMeeting_UKC() ;
 			marginheight="0" scrolling="auto" frameborder="0" noresize>
 	<frame name="status" src="status.php" marginwidth="0"
 			marginheight="0" scrolling="no" frameborder="0" noresize>
+	<frame name="controller" src="UntitledFrame-2" marginwidth="0"
+			marginheight="0" scrolling="no" frameborder="0" noresize>
 </frameset>
 
 <noframes>

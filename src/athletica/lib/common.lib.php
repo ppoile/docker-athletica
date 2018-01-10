@@ -1655,8 +1655,9 @@ function AA_getReduction() {
 
 
 function AA_getEventTypesCat(){
-// get event-types categories (single, combined, club (svm))
-    $res = mysql_query('SELECT Typ FROM wettkampf WHERE xMeeting = ' .$_COOKIE['meeting_id']  . ' GROUP BY Typ ORDER BY Typ');
+// get event-types categories (single, combined, club (svm), lmm)
+    global $cfgLMM;
+    $res = mysql_query('SELECT Typ, Mehrkampfcode FROM wettkampf WHERE xMeeting = ' .$_COOKIE['meeting_id']  . ' GROUP BY Typ ORDER BY Typ');
     if(mysql_errno() > 0) {        // DB error
         AA_printErrorMsg(mysql_errno() . ": " . mysql_error());
     } else {
@@ -1667,6 +1668,9 @@ function AA_getEventTypesCat(){
             }else if ($row['Typ'] == $cfgEventType[$GLOBALS['strEventTypeSingleCombined']]){
                 $eventTypeCat['combined']=true;
                 $show_combined = true;
+                if (in_array($row['Mehrkampfcode'], $cfgLMM)) {
+                    $eventTypeCat['lmm'] = true;     
+                }
             } else if ($row['Typ'] == $cfgEventType[$GLOBALS['strEventTypeSVMNL']]
                         // || $row['Typ'] == $cfgEventType[$GLOBALS['strEventTypeClubMA']]
                         // || $row['Typ'] == $cfgEventType[$GLOBALS['strEventTypeClubMB']]
@@ -1681,7 +1685,7 @@ function AA_getEventTypesCat(){
                 $eventTypeCat['club'] = true;
             } else if ($row['Typ'] == $cfgEventType[$GLOBALS['strEventTypeTeamSM']]){
                 $eventTypeCat['teamsm'] = true;            
-            }
+            } 
                 
         }
         return $eventTypeCat;
@@ -1690,8 +1694,10 @@ function AA_getEventTypesCat(){
 
 function AA_getEventTypes($round){
 // get event-type (single, combined, club (svm))
+    global $cfgLMM;
     $res = mysql_query('SELECT 
-                            w.Typ 
+                            w.Typ,
+                            w.Mehrkampfcode
                         FROM 
                             runde AS r 
                             LEFT JOIN wettkampf AS w USING (xWettkampf)  
@@ -1707,6 +1713,9 @@ function AA_getEventTypes($round){
             }else if ($row['Typ'] == $cfgEventType[$GLOBALS['strEventTypeSingleCombined']]){
                 $eventTypeCat['combined']=true;
                 $show_combined = true;
+                if (in_array($row['Mehrkampfcode'], $cfgLMM)) {
+                    $eventTypeCat['lmm'] = true;     
+                }
             } else if ($row['Typ'] == $cfgEventType[$GLOBALS['strEventTypeSVMNL']]
                         // || $row['Typ'] == $cfgEventType[$GLOBALS['strEventTypeClubMA']]
                         // || $row['Typ'] == $cfgEventType[$GLOBALS['strEventTypeClubMB']]
@@ -1721,7 +1730,7 @@ function AA_getEventTypes($round){
                 $eventTypeCat['club'] = true;
             } else if ($row['Typ'] == $cfgEventType[$GLOBALS['strEventTypeTeamSM']]){
                 $eventTypeCat['teamsm'] = true;            
-            }
+            } 
         }   
         return $eventTypeCat;
     }

@@ -605,7 +605,8 @@ function AA_heats_seedEntries($event)
                                                                
 								while ($row = mysql_fetch_row($result))
 								{      
-                                        $series_big = $entries%($size-1); //Anzahl Serien mit mehr Athleten als in den anderen (damit es keine Mini-Serien gibt)
+                                        //$series_big = $entries%($size-1); //Anzahl Serien mit mehr Athleten als in den anderen (damit es keine Mini-Serien gibt)
+                                        $series_big = $h+$entries-$h*$size; //Anzahl Serien mit mehr Athleten als in den anderen (damit es keine Mini-Serien gibt)
                                         if ($p > $size || ($series_big > 0 && $i+1 > $series_big && $p > $size-1)) {	// heat full -> start new heat
                                             if ($_POST['mode'] == 3 ) {
                                                 if ($combined && empty($cGroup)){ 
