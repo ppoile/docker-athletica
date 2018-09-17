@@ -281,7 +281,8 @@ else {
 		// Main menu 'ADMIN'
 		//
 		case 'admin':
-		case 'admin_base':
+        case 'admin_base':
+		case 'admin_backup_automatic':
 		case 'admin_results':
 		case 'admin_categories':
 		case 'admin_disciplines':
@@ -297,27 +298,29 @@ else {
             
              if ($ukc_meeting == 'n'){
 			// submenus
-			$subitems= array(0 => 'admin_categories'
-								, 1 => 'admin_disciplines'
-								, 2 => 'admin_scoretables'
-								, 3 => 'admin_clubs'
-								, 4 => 'admin_region'
-								, 5 => 'admin_athletes'
-								, 6 => 'admin_stadiums'
-								, 7 => 'admin_roundtypes'
-								, 8 => 'admin_faq'
-								, 9 => 'admin_service');
+			$subitems= array(0 => 'admin_backup_automatic'
+                                , 1 => 'admin_categories'
+								, 2 => 'admin_disciplines'
+								, 3 => 'admin_scoretables'
+								, 4 => 'admin_clubs'
+								, 5 => 'admin_region'
+								, 6 => 'admin_athletes'
+								, 7 => 'admin_stadiums'
+								, 8 => 'admin_roundtypes'
+								, 9 => 'admin_faq'
+								, 10 => 'admin_service');
 			// submenu titles
-			$subtitles= array(0 => $strCategories
-								, 1 => $strDisciplines
-								, 2 => $strScoreTables
-								, 3 => $strClubs
-								, 4 => $strRegion
-								, 5 => $strAthletes
-								, 6 => $strStadiums
-								, 7 => $strRoundtypes
-								, 8 => $strFaq
-								, 9 => $strService);
+			$subtitles= array(  0 => $strBackupAutomaticMenu
+                                , 1 => $strCategories
+								, 2 => $strDisciplines
+								, 3 => $strScoreTables
+								, 4 => $strClubs
+								, 5 => $strRegion
+								, 6 => $strAthletes
+								, 7 => $strStadiums
+								, 8 => $strRoundtypes
+								, 9 => $strFaq
+								, 10 => $strService);
 			// submenu style
 			$subitem_class= array(0 => 'subitem_inactive'
 								, 1 => 'subitem_inactive'
@@ -328,29 +331,32 @@ else {
 								, 6 => 'subitem_inactive'
 								, 7 => 'subitem_inactive'
 								, 8 => 'subitem_inactive'
-								, 9 => 'subitem_inactive');
+                                , 9 => 'subitem_inactive'
+								, 10 => 'subitem_inactive');
              }
              else {
                  // submenus
-            $subitems= array(0 => 'admin_categories'
-                                , 1 => 'admin_disciplines'                               
-                                , 2 => 'admin_clubs'
-                                , 3 => 'admin_region'
-                                , 4 => 'admin_athletes'
-                                , 5 => 'admin_stadiums'
-                                , 6 => 'admin_roundtypes'
-                                , 7 => 'admin_faq'
-                                , 8 => 'admin_service');
+            $subitems= array(   0 => 'admin_backup_automatic'
+                                , 1 => 'admin_categories'
+                                , 2 => 'admin_disciplines'                               
+                                , 3 => 'admin_clubs'
+                                , 4 => 'admin_region'
+                                , 5 => 'admin_athletes'
+                                , 6 => 'admin_stadiums'
+                                , 7 => 'admin_roundtypes'
+                                , 8 => 'admin_faq'
+                                , 9 => 'admin_service');
             // submenu titles
-            $subtitles= array(0 => $strCategories
-                                , 1 => $strDisciplines                                
-                                , 2 => $strClubs
-                                , 3 => $strRegion
-                                , 4 => $strAthletes
-                                , 5 => $strStadiums
-                                , 6 => $strRoundtypes
-                                , 7 => $strFaq
-                                , 8 => $strService);
+            $subtitles= array(  0 => $strBackupAutomaticMenu
+                                , 1 => $strCategories
+                                , 2 => $strDisciplines                                
+                                , 3 => $strClubs
+                                , 4 => $strRegion
+                                , 5 => $strAthletes
+                                , 6 => $strStadiums
+                                , 7 => $strRoundtypes
+                                , 8 => $strFaq
+                                , 9 => $strService);
             // submenu style
             $subitem_class= array(0 => 'subitem_inactive'
                                 , 1 => 'subitem_inactive'                               
@@ -360,39 +366,43 @@ else {
                                 , 5 => 'subitem_inactive'
                                 , 6 => 'subitem_inactive'
                                 , 7 => 'subitem_inactive'
-                                , 8 => 'subitem_inactive');
+                                , 8 => 'subitem_inactive'
+                                , 9 => 'subitem_inactive');
              }
 			// highlight current submenu
 			switch($arg) {
+                case 'admin_backup_automatic':
+                    $subitem_class[0]='subitem';
+                    break;
 				case 'admin_categories':
-					$subitem_class[0]='subitem';
-					break;
-				case 'admin_disciplines':
 					$subitem_class[1]='subitem';
 					break;
-				case 'admin_scoretables':
+				case 'admin_disciplines':
 					$subitem_class[2]='subitem';
 					break;
-				case 'admin_clubs':
+				case 'admin_scoretables':
 					$subitem_class[3]='subitem';
 					break;
-				case 'admin_region':
+				case 'admin_clubs':
 					$subitem_class[4]='subitem';
 					break;
-				case 'admin_athletes':
+				case 'admin_region':
 					$subitem_class[5]='subitem';
 					break;
-				case 'admin_stadiums':
+				case 'admin_athletes':
 					$subitem_class[6]='subitem';
 					break;
-				case 'admin_roundtypes':
+				case 'admin_stadiums':
 					$subitem_class[7]='subitem';
 					break;
-				case 'admin_faq':
+				case 'admin_roundtypes':
 					$subitem_class[8]='subitem';
 					break;
-				case 'admin_service':
+				case 'admin_faq':
 					$subitem_class[9]='subitem';
+					break;
+				case 'admin_service':
+					$subitem_class[10]='subitem';
 					break;
 			}
 			break;

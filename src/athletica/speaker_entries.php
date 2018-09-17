@@ -104,7 +104,7 @@ if($round > 0)
 		$argument="a.Startnummer";
 		$img_nbr="img/sort_act.gif";
 	} else if ($arg=="name") {
-		$argument="ss.Position";
+		$argument="at.Name";
 		$img_name="img/sort_act.gif";
 	} else if ($arg=="club") {
 		$argument="v.Sortierwert, a.Startnummer";

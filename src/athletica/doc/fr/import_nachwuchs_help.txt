@@ -1,0 +1,37 @@
+Import projets de jeunesse
+
+- préparer le fichier
+   - ouvrir le fichier Excel et supprimer toutes les lignes ne comprenant pas d'athlètes
+  - contrôler la suite des colonnes (voir informations complémentaires)
+  - si nécessaire modifier l'ordre des colonnes et/ou insérer des colonnes vides afin de faire correspondre la suite des colonnes
+  - enregistrer le fichier .csv (type de fichier: CSV (séparateur point-virgule) *.CSV
+
+- préparer Athletica
+  - Dans Athletica il ne faut pas faire de préparatifs. Mais les disciplines de l'organisation des manifestations de Swiss-Athletics doivent être défini correctement: dans le champ d'information c'est l'abréviation avec le sexe (M ou W) et l'age (toujours 2 chiffres 07 jusqu'à 15) qui doivent y figurer, par exemple M08
+  - ensuite il faut procéder à l'ajustement avec l'autorisation Online du meeting dans Athletica. Cela permettra de télécharger correctement les disciplines. Si les informations dans le champ information sont incorrectes, Athletica va créer de nouvelles disciplines
+  - sélectionner le projet sous "Import inscriptions projets de jeunesse" et indiquer le bon fichier csv
+  - démarrer l'import avec le bouton "importer le fichier csv"
+  - Athletica affiche d'éventuelles erreurs et une statistique dès que l'import est terminé
+  - s'il y a des erreurs dans le fichier, il faut impérativement les corriger manuellement et reimporter le fichier entier, cela ne créera pas de doublons
+  - import terminé
+
+
+**************
+Informations complémentaires
+**************
+
+- toutes les colonnes doivent exister, les colonnes entre paranthèses peuvent être vides
+"- Ordre des colonnes Mille Gruyère:
+(Licence), Nom, Prénom, (Rue), (CNP), (Lieu), Date de naissance [jj.mm.aaaa], sexe (Monsieur ou Madame), (Tél. P), (Club), (Catégorie), (Finale BE), (Temps de qualification)"
+"- Ordre des colonnes Swiss Athletics Sprint:
+(Licence), Nom, Prénom, (Rue), (CNP), (Lieu), Date de naissance [jj.mm.aaaa], sexe (Monsieur ou Madame), (Tél. P), (Club), (Catégorie), (Temps de qualification), (Région), (Dossard)"
+- il faut impérativement séparer les colonnes par un point-virgule ;
+- les disciplines qui ne sont pas encore définies seront générées automatiquement
+- la discipline correpondante ne doit être saisie qu'une seule fois, sinon l'import échoue et s'arrête
+- les champs Nom, Prénom. Date de naissance et sexe doivent toujours exister et contenir une donnée valable
+- si l'athlète possède une licence, qui figure dans les données de base avec le même nom, un lien entre l'inscription et la licence est généré. La date de naissance et le club de l'import sont ignorés et remplacé par les indications dans les données de base
+- les clubs ne figurant pas dans les données de base sont saisis automatiquement
+- la colonne avec la catégorie est ignorée. La catégorie est déterminée sur la base de l'age. Les athletes ayant moins de 7 ans sont introduits correctement avec W07/M07
+- malgré de multiples imports Athletica ne générè pas de doublon; il est donc possible d'importer une liste d'inscription complétée ultérieurement
+- il s'agit d'un bug de Athletica que la discipline des athlètes de l'année la plus jeune (dans la catégorie officielle (U12), non pas la catégorie de compétition (U12 W10)) soit affichée dans la liste des inscriptions  en rouge
+- les temps de qualification sont importés. Pour les athlètes licenciés Athletica utilise la meileure performance au lieu du temps de qualification si celle-ci existe

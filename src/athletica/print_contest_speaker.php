@@ -91,7 +91,7 @@ $sql = "SELECT
                 , k.Alterslimite
                 , k.Geschlecht
                 , k.Code
-                , k.Kurzname
+                , k.Kurzname     
 
          FROM 
                 runde AS r
@@ -120,10 +120,10 @@ else
         $infoMerged = "";     
         while ($row = mysql_fetch_row($result)) {
             $catMerged .= $row[5]. " / ";
-            if($row[9] <> "") $infoMerged .= $row[9]. " / ";
+            //if($row[9] <> "") $infoMerged .= $row[9]. " / ";
         }   
         $titel = substr($catMerged,0,-2); 
-        $infoMerged = substr($infoMerged,0,-2); 
+        //$infoMerged = substr($infoMerged,0,-2); 
     }
     
     $result = mysql_query($sql);  
@@ -160,38 +160,38 @@ else
 
     switch($layout) {
         case($cfgDisciplineType[$strDiscTypeNone]):
-            $doc = new PRINT_Contest_speaker_pdf($_COOKIE['meeting']);
+            $doc = new PRINT_Contest_speaker_pdf($row[5]."_".$row[6]);
         case($cfgDisciplineType[$strDiscTypeTrack]):
             if($row[8] == 1) {
-                $doc = new PRINT_ContestTrack_speaker_pdf($_COOKIE['meeting'],false, false, false, false);
+                $doc = new PRINT_ContestTrack_speaker_pdf($row[5]."_".$row[6],false, false, false, false);
             }
             else {
-                $doc = new PRINT_ContestTrack_speaker_pdf($_COOKIE['meeting'],false, false, false, false);
+                $doc = new PRINT_ContestTrack_speaker_pdf($row[5]."_".$row[6],false, false, false, false);
             }
             break;
         case($cfgDisciplineType[$strDiscTypeTrackNoWind]):
         case($cfgDisciplineType[$strDiscTypeDistance]):
-            $doc = new PRINT_ContestTrack_speaker_pdf($_COOKIE['meeting'],false, false, false, false);
+            $doc = new PRINT_ContestTrack_speaker_pdf($row[5]."_".$row[6],false, false, false, false);
             break;
         case($cfgDisciplineType[$strDiscTypeRelay]):
-            $doc = new PRINT_ContestRelay_pdf($_COOKIE['meeting']);
+            $doc = new PRINT_ContestRelay_pdf($row[5]."_".$row[6]);
             break;
         case($cfgDisciplineType[$strDiscTypeJump]):
             if($row[8] == 1) {
-                $doc = new PRINT_ContestTech_speaker_pdf($_COOKIE['meeting'], false, false, false, false );
+                $doc = new PRINT_ContestTech_speaker_pdf($row[5]."_".$row[6], false, false, false, false );
             }
             else {
-                $doc = new PRINT_ContestTech_speaker_pdf($_COOKIE['meeting'], false, false, false, false );
+                $doc = new PRINT_ContestTech_speaker_pdf($row[5]."_".$row[6], false, false, false, false );
             }
             break;
         case($cfgDisciplineType[$strDiscTypeJumpNoWind]):
-            $doc = new PRINT_ContestTech_speaker_pdf($_COOKIE['meeting'], false, false, false, false );
+            $doc = new PRINT_ContestTech_speaker_pdf($row[5]."_".$row[6], false, false, false, false );
             break;
         case($cfgDisciplineType[$strDiscTypeThrow]):
-            $doc = new PRINT_ContestTech_speaker_pdf($_COOKIE['meeting'],false ,false, false, false);
+            $doc = new PRINT_ContestTech_speaker_pdf($row[5]."_".$row[6],false ,false, false, false);
             break;
         case($cfgDisciplineType[$strDiscTypeHigh]):
-            $doc = new PRINT_ContestTech_speaker_pdf($_COOKIE['meeting'], false, false, false, false );
+            $doc = new PRINT_ContestTech_speaker_pdf($row[5]."_".$row[6], false, false, false, false );
             break;
     }   
    
@@ -477,7 +477,7 @@ else
                             , IF(ss.Rang > 0, ss.Rang, 99999) As Rang_sort
                             , d.Typ
                             , s.Wind
-                            , d.Strecke
+                            , d.Strecke             
                      FROM 
                             runde AS r
                             LEFT JOIN serie AS s ON (s.xRunde = r.xRunde)
@@ -694,7 +694,7 @@ else
                 
 
                     while($row = mysql_fetch_row($result))
-                    {
+                    {                   
                         
                         
                         $sql_base = "SELECT
@@ -782,7 +782,7 @@ else
                                 $best_effort = "";
                                 $best_effort_res = 0;
                                 $sb_rank_act = "";
-                            }
+                            }   
                         }
                                                
                         $sql_palmares = "SELECT

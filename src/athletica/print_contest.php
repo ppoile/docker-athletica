@@ -198,7 +198,7 @@ $sql = "SELECT
                 LEFT JOIN rundentyp_" . $_COOKIE['language'] . " AS rt ON rt.xRundentyp = r.xRundentyp
                 
          WHERE 
-                r.xRunde " . $sqlRound;    
+                r.xRunde " . $sqlRound;      
  
 $result = mysql_query($sql);       
 
@@ -258,16 +258,16 @@ else
    
 	switch($layout) {
 		case($cfgDisciplineType[$strDiscTypeNone]):
-			$doc = new PRINT_Contest_pdf($_COOKIE['meeting']);
+			$doc = new PRINT_Contest_pdf($row[5]."_".$row[6]);
 		case($cfgDisciplineType[$strDiscTypeTrack]):
             if ($print == 'no') {
 			    AA_timing_setStartInfo($round, $silent); // set timing if new heats, not if print startlist only
             }
 			if($row[8] == 1) {
-				$doc = new PRINT_ContestTrack_pdf($_COOKIE['meeting']);
+				$doc = new PRINT_ContestTrack_pdf($row[5]."_".$row[6]);
 			}
 			else {
-				$doc = new PRINT_ContestTrackNoWind_pdf($_COOKIE['meeting']);
+				$doc = new PRINT_ContestTrackNoWind_pdf($row[5]."_".$row[6]);
 			}
 			break;
 		case($cfgDisciplineType[$strDiscTypeTrackNoWind]):
@@ -275,30 +275,30 @@ else
             if ($print == 'no') {
 			    AA_timing_setStartInfo($round, $silent); // set timing if new heats, not if print startlist only
             }
-			$doc = new PRINT_ContestTrackNoWind_pdf($_COOKIE['meeting']);
+			$doc = new PRINT_ContestTrackNoWind_pdf($row[5]."_".$row[6]);
 			break;
 		case($cfgDisciplineType[$strDiscTypeRelay]):
             if ($print == 'no') {
 			    AA_timing_setStartInfo($round, $silent); // set timing if new heats, not if print startlist only
             }
-			$doc = new PRINT_ContestRelay_pdf($_COOKIE['meeting']);
+			$doc = new PRINT_ContestRelay_pdf($row[5]."_".$row[6]);
 			break;
 		case($cfgDisciplineType[$strDiscTypeJump]):
 			if($row[8] == 1) {
-				$doc = new PRINT_ContestTech_pdf($_COOKIE['meeting']);
+				$doc = new PRINT_ContestTech_pdf($row[5]."_".$row[6]);
 			}
 			else {
-				$doc = new PRINT_ContestTechNoWind_pdf($_COOKIE['meeting']);
+				$doc = new PRINT_ContestTechNoWind_pdf($row[5]."_".$row[6]);
 			}
 			break;
 		case($cfgDisciplineType[$strDiscTypeJumpNoWind]):
-			$doc = new PRINT_ContestTechNoWind_pdf($_COOKIE['meeting']);
+			$doc = new PRINT_ContestTechNoWind_pdf($row[5]."_".$row[6]);
 			break;
 		case($cfgDisciplineType[$strDiscTypeThrow]):
-			$doc = new PRINT_ContestTechNoWind_pdf($_COOKIE['meeting']);
+			$doc = new PRINT_ContestTechNoWind_pdf($row[5]."_".$row[6]);
 			break;
 		case($cfgDisciplineType[$strDiscTypeHigh]):
-			$doc = new PRINT_ContestHigh_pdf($_COOKIE['meeting']);
+			$doc = new PRINT_ContestHigh_pdf($row[5]."_".$row[6]);
 			$doc->resultinfo = "X = $strHighInvalid, O = $strHighValid";
 			break;
 	}
@@ -446,7 +446,8 @@ else
                             LEFT JOIN teamsm as t ON (tat.xTeamsm = t.xTeamsm)
                             LEFT JOIN region AS re ON at.xRegion = re.xRegion  
                     WHERE 
-                            r.xRunde = " . $round ."                      
+                            r.xRunde = " . $round ."   
+                            AND st.xWettkampf = t.xWettkampf                   
                      ORDER BY heatid ". $order." , ss.Position";                           
                    
             }

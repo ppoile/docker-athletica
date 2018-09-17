@@ -21,6 +21,12 @@
     padding-right: 15px;
     padding-top: 3px;
 }
+.table-results .bib {
+    width: 60px !important;
+    text-align: left;
+    padding-right: 15px;
+    padding-top: 3px;
+}
 .table-results .name {
     width: 400px;
 	line-height: 150%;
@@ -87,6 +93,9 @@
 @media screen and (max-width: 500px) {
     .table-results .rank {
         width: 35px !important;
+    }
+    .table-results .bib {
+        display: none;
     }
     .table-results .yob {
         display: none;

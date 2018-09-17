@@ -1,4 +1,4 @@
-<?php
+    <?php
 
 /**********
  *
@@ -538,7 +538,7 @@ else if(mysql_num_rows($result) > 0)  // data found
             // show all disziplines (also if performance is 0) by UBS Kids Cup and ...kampf              
 			if( ($perf == 0 && $row[23] != 408 && $row[23] != 799) || ( $row[23] > 0 && $row[23] != 408 && $row[23] != 799 && isset($cfgCombinedDef[$row[23]]) && $perf > 0 )) {            
 				//$Info = ($row[17]!="") ? ' ('.$row[17].')' : '';  								
-	 		   	$Info = ($row[18]!="") ? ' ('.$row[18].')' : ''; 
+	 		   	$Info = ($row[17]!="") ? ' ('.$row[17].')' : ''; 
 				
 				$noFee=false;  
 				if  ($row[18]!="" && $m != $row[19]) { 
@@ -608,7 +608,7 @@ else if(mysql_num_rows($result) > 0)  // data found
                     }	
                     else {			    
 					    $disc = $disc . $sep . $row[9] . " (".$Info . $perf.")";	// add discipline
-                    }
+                    }           
 			 
 		  	}
 			$sep = ", ";

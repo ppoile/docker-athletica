@@ -37,8 +37,8 @@ if($ath_res_db == 'error') {
         $query_sex->execute();
         $sex = $query_sex->fetch(PDO::FETCH_ASSOC);
         $sex = $sex['Geschlecht'];
-        
-        $points = calcPoints($event, $ath_res_db, $fraction = 0, $sex, $ath_id);
+              
+        $points = calcPoints($event, $ath_res_db, $fraction = 0, $sex, $ath_id);   
         $res_id_sql = (!is_null($res_id)) ? "xResultat = :res_id, " : "";
         
         $sql = "INSERT INTO resultat
@@ -113,7 +113,7 @@ if($ath_res_db == 'error') {
         }
                
         rankAthletes(CFG_CURRENT_EVENT);
-        calcRankingPoints($round);
+        //calcRankingPoints($round);
         resetQualification($round);
         StatusChanged($round);
         

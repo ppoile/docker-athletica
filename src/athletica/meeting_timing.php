@@ -152,8 +152,8 @@ if($system == "omega"){
 			</tr>
 			<tr class='odd'>
 				<td colspan="2">
-					- file:///&ltpath&gt<br/>
-					- smb://&ltuser&gt:&ltpass&gt@&lthost&gt/&ltpath&gt
+					- C:\Programme\athletica\www\tmp<br/>
+					- \\server\athletica\www\tmp
 				</td>
 			</tr>
 			<tr>
@@ -224,8 +224,8 @@ if($system == "omega"){
 			</tr>
 			<tr class='odd'>
 				<td colspan="2">
-					- file:///&ltpath&gt<br/>
-					- smb://&ltuser&gt:&ltpass&gt@&lthost&gt/&ltpath&gt
+					- C:\Programme\athletica\www\tmp<br/>
+					- \\server\athletica\www\tmp
 				</td>
 				<!--<td><?php echo $strOmegaUser ?></td>
 				<td>

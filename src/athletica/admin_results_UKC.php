@@ -55,119 +55,9 @@ $menu->addButton($cfgURLDocumentation . 'help/administration/results.html', $str
 $menu->printMenu();
 
 
-$login = false;
+//$login = false;
 
-if($_POST['arg'] == "login"){
-	
-	$http = new HTTP_data();
-	$post = "clubnr=".urlencode($_POST['clubnr'])."&pass=".urlencode($_POST['pass']);
-	$result = $http->send_post($cfgSLVhost, '/meetings/athletica/login.php', $post, 'ini');
-	if(!$result){
-		AA_printErrorMsg($strErrLogin);
-	}else{
-		switch($result['login']){
-			case "error":
-			AA_printErrorMsg($result['error']);
-			break;
-			
-			case "ok":
-			$login = true;
-			echo "<p>$strLoginTrue</p>";
-			
-			break;
-			
-			case "denied":
-			$login = false;
-			echo "<p>$strLoginFalse</p>";
-			break;
-		}
-	}
-}
 
-if($login){
-	            
-	set_time_limit(300);
-	
-	$xml = new XML_data();
-	$ftp = new FTP_data();
-	
-	//
-	// set file names and generade result xml
-	//
-    if (empty($meeting_nr)){    
-	    $res = mysql_query("select Nummer from meeting where xMeeting = ".$_COOKIE['meeting_id']);
-	    $row = mysql_fetch_Array($res);             
-	    $eventnr = $row[0];
-    } 
-    else {
-        $eventnr = $meeting_nr;   
-    } 
-    
-	$local = dirname($_SERVER['SCRIPT_FILENAME'])."/tmp/results_ukc.xml.gz";
-	$remote = date("Ymd")."_".$eventnr.".gz";      	
-	
-    if ($ukc_meeting == 'n'){
-         $nbr_effort_ukc = $xml->gen_result_xml_UKC_CM($local, $meeting_nr);
-    }
-    else {
-          $nbr_effort = $xml->gen_result_xml_UKC($local);             
-    }
-   
-
-	// upload result file
-	if($nbr_effort>0 || $nbr_effort_ukc>0){ //upload only if file contains at least one results
-		$ftp->open_connection($cfgSLVhostUKC, $cfgSLVuser, $cfgSLVpass);
-		$success = $ftp->put_file($local, $remote);
-		$ftp->close_connection();
-	} else {
-		$success=true;
-	}     
-      
-	if($success){
-		// output message and set round status to results_sent
-		if ($nbr_effort>0){
-		    foreach($GLOBALS['rounds'] as $xRunde){
-			    mysql_query("UPDATE runde SET StatusUpload = 1 WHERE xRunde = $xRunde");
-			    if(mysql_errno() > 0 ){
-				    AA_printErrorMsg(mysql_errno().": ".mysql_error());
-			    }
-		    }
-        }
-        else {
-             foreach($GLOBALS['rounds'] as $xRunde){
-                mysql_query("UPDATE runde SET StatusUploadUKC = 1 WHERE xRunde = $xRunde");
-                if(mysql_errno() > 0 ){
-                    AA_printErrorMsg(mysql_errno().": ".mysql_error());
-                }
-            }
-        }  
-        if ($ukc_meeting == 'y'){  
-		    if($nbr_effort>0){
-			    echo "<p><b>$strResultsUploaded</b></p>";
-			    echo $strNumberEfforts .": " .$nbr_effort;
-		    } 
-            else {
-			    echo "<p><b>$strResultsUploadedNoResults</b></p>";
-		    }
-        }
-        else {
-               if($nbr_effort_ukc>0){
-                echo "<p><b>$strResultsUploaded</b></p>";
-                echo $strNumberEfforts .": " .$nbr_effort_ukc;
-            } 
-            else {
-                echo "<p><b>$strResultsUploadedNoResults</b></p>";
-            }
-        }
-		
-		
-		
-	}else{
-		
-		echo "<p>$strErrResultUpload</p>";
-		
-	}
-}else{
 	$cControl = AA_checkControl_UKC($meeting_nr);      
 	if($cControl == 0){
 		echo "<p>$strErrNoControl4</p>";
@@ -193,49 +83,91 @@ if($login){
                        <?php  
                     return; 
                     } 
-              }  
-	
-?>
-<br/>
-<table class='dialog'>
-<tr>
-	<th><?php echo $strLoginSlv; ?></th>
-</tr>
-<tr>
-	<td>
-		<table class='admin'>
-		<form action='admin_results_UKC.php' name='base' method='post' target='_self' >
-		<input type="hidden" name="arg" value="login">
-        <input type="hidden" name="ukc_meeting" value="<?php echo $ukc_meeting; ?>"> 
-         <input type="hidden" name="meeting_nr" value="<?php echo $meeting_nr; ?>">  
-		<tr>
-			<td>
-				<?php echo $strClubNr ?>
-			</td>
-			<td>
-				<input type="text" name="clubnr" value="">
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<?php echo $strPassword ?>
-			</td>
-			<td>
-				<input type="password" name="pass" value="">
-			</td>
-		</tr>
-		<tr>
-			<td colspan="2">
-				<input type="submit" name="submit" value="<?php echo $strLogin ?>">
-			</td>
-		</tr>
-		</form>	
-		</table>
-	</td>
-</tr>
-</table>
-<?php
+              } 
+    set_time_limit(300);
+    
+    $xml = new XML_data();
+    $ftp = new FTP_data();
+    
+    //
+    // set file names and generade result xml
+    //
+    if (empty($meeting_nr)){    
+        $res = mysql_query("select Nummer from meeting where xMeeting = ".$_COOKIE['meeting_id']);
+        $row = mysql_fetch_Array($res);             
+        $eventnr = $row[0];
+    } 
+    else {
+        $eventnr = $meeting_nr;   
+    } 
+    
+    $local = dirname($_SERVER['SCRIPT_FILENAME'])."/tmp/results_ukc.xml.gz";
+    $remote = date("Ymd")."_".$eventnr.".gz";          
+    
+    if ($ukc_meeting == 'n'){
+         $nbr_effort_ukc = $xml->gen_result_xml_UKC_CM($local, $meeting_nr);
+    }
+    else {
+          $nbr_effort = $xml->gen_result_xml_UKC($local);             
+    }
+   
 
-}
+    // upload result file
+    if($nbr_effort>0 || $nbr_effort_ukc>0){ //upload only if file contains at least one results
+        $ftp->open_connection($cfgSLVhostUKC, $cfgSLVuser, $cfgSLVpass);
+        $success = $ftp->put_file($local, $remote);
+        $ftp->close_connection();
+    } else {
+        $success=true;
+    }     
+      
+    if($success){
+        // output message and set round status to results_sent
+        if ($nbr_effort>0){
+            foreach($GLOBALS['rounds'] as $xRunde){
+                mysql_query("UPDATE runde SET StatusUpload = 1 WHERE xRunde = $xRunde");
+                if(mysql_errno() > 0 ){
+                    AA_printErrorMsg(mysql_errno().": ".mysql_error());
+                }
+            }
+        }
+        else {
+             foreach($GLOBALS['rounds'] as $xRunde){
+                mysql_query("UPDATE runde SET StatusUploadUKC = 1 WHERE xRunde = $xRunde");
+                if(mysql_errno() > 0 ){
+                    AA_printErrorMsg(mysql_errno().": ".mysql_error());
+                }
+            }
+        }  
+        if ($ukc_meeting == 'y'){  
+            if($nbr_effort>0){
+                echo "<p><b>$strResultsUploaded</b></p>";
+                echo $strNumberEfforts .": " .$nbr_effort;
+            } 
+            else {
+                echo "<p><b>$strResultsUploadedNoResults</b></p>";
+            }
+        }
+        else {
+               if($nbr_effort_ukc>0){
+                echo "<p><b>$strResultsUploaded</b></p>";
+                echo $strNumberEfforts .": " .$nbr_effort_ukc;
+            } 
+            else {
+                echo "<p><b>$strResultsUploadedNoResults</b></p>";
+            }
+        }
+        
+        
+        
+    }else{
+        
+        echo "<p>$strErrResultUpload</p>";
+        
+    } 
+	
+
+
+
 $page->endPage();
 ?>

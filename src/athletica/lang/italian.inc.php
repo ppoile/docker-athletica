@@ -53,7 +53,7 @@ $strChangeResults = "Cambio risultato";
 $strClub = "Società";
 $strClubEvent = "CSI";
 $strClubEventType = "Punteggio CSI";
-$strClubNr = "Numero società";
+$strSANr = "Numero Swiss Athletics";
 $strClubRanking = "CSI Lista risultati";
 $strClubs = "Società";
 $strClubSheets = "CSI Fogli di gara";
@@ -155,6 +155,7 @@ $strErrInvalidTeam = "Atleti non suddivisi nella stessa squadra!";
 $strErrLogin = "Errato annuncio al Server della Swiss Athletics!";
 $strErrNoPrinter = "Stampante non disponibile";
 $strErrNoResults = "Nessun risultato ancora registrato";
+$strErrNoCompetition = "Nessuna competizione collegata a questo login.";							   
 $strErrNotValid = " non valido!";
 $strErrInvalidBackupFile = "Backup non riuscito!";
 $strErrInvalidDate = "Data non valida";
@@ -820,5 +821,19 @@ $strNoAccessAttemptShort = "X";
 
 $strPointsShort = 'Punti';
 
-$strWarningMultipleMeetings = "ACHTUNG: Athletica kann seltsame Probleme verursachen bei mehr als einem vorhandenen Meeting.";
+
+$strErrCreateLMM = "Scegliere una categoria nella quale la Gara multipla deve essere creata."; 
+$strErrDiscNotDefLMM = "Le discipline di questa categoria di Gare multiple non sono definite."; 
+$strBackupNoConf = "Salvataggio: ancora nessuna configurazione disponibile"; 
+$strBackupNoPath = "Il collegamento per il salvataggio non esiste. Le modifiche non sono state salvate."; 
+$strNoBackup = "Nessun salvataggio automatico."; 
+$strBackupAutomatic = "Salvataggio automatico."; 
+$strBackupAutomaticMenu = "Salvataggio autom."; 
+$strBackupTime1 = "Salvare ogni "; 
+$strBackupTime2 = " minuti"; 
+$strBackupLast = "Ultimo salvataggio"; 
+$strBackupText = "Con questa funzione può essere creato in un qualsiasi intervallo un salvataggio automatico (file SQL di tutti i meeting senza dati di base). Le modifiche dell\'intervallo o del percorso devo essere salvate obbligatoriamente con \'Salva\'."; 
+$strBackupText2 = "Questa finestra deve essere sempre aperta per il salvataggio automatico (per esempio in un\'altra scheda)!";
+
+
 ?>

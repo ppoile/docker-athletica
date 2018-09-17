@@ -1,0 +1,34 @@
+Import Nachwuchsprojekte
+
+- Datei vorbereiten:
+	- die Excel Datei öffnen und alle Zeilen, welche keine Athleten enthalten löschen.
+	- Spaltenfolge kontrollieren (siehe Zusatzinfos)
+	- notfalls Spaltenreihenfolge ändern und/oder leere Spalten einfügen, sodass Spaltenfolge stimmt
+	- die Datei als .csv speichern (Dateityp: "CSV (Trennzeichen-getrennt) (*.csv)")
+	
+- Athletica vorbereiten:
+	- Athletica selbst muss nicht vorbereitet werden, jedoch müssen die Disziplinen bei der Event-Verwaltung von Swiss-Athletics korrekt definiert sein: im Infofeld muss das Kürzel mit Geschlecht(M oder W) und Alter (immer Zweistellig: 07 bis 15) stehen, also zB M08
+	- danach den Abgleich mit der Online-Meetingbewilligung in Athletica machen. Damit werden die Disziplinen korrekt heruntergeladen. Mit falschem Infofeld würden neue Disziplinen angelegt beim Import. 
+	- unter "Import Anmeldungen Nachwuchsprojekte" das Projekt auswählen und die csv-Datei angeben.
+	- den Import mit "csv einspielen" starten
+	- allfällige Fehler und eine kleine Statistik erscheinen sobald der Import fertig ist
+	- bei Fehlern in der Datei können diese manuell behoben werden und die ganze Datei nochmals importiert werden, ohne dass doppel-Einträge entstehen.
+	- Import beendet
+	
+**********
+Zusatzinfos
+**********
+- alle angegebenen Spalten müssen vorhanden sein, Spalten in Klammern dürfen auch leer sein
+- Spaltenfolge: (Lizenz), Name, Vorname, (Strasse), (PLZ), (Ort), Geburtsdatum [dd.mm.jjjj], Geschlecht [nur Frau oder Herr erlaubt], (Tel P), (Verein), (Kategorie), (Quali-Zeit), (Region), (Startnummer)
+- Die Trennung der einzelnen Spalten muss per ; (Semikolon) sein
+- Disziplinen welche noch nicht definiert sind, werden automatisch definiert.
+- Die entsprechende Disziplin darf pro Kategorie nur ein mal erfasst sein. Ansonsten bricht der Import ab.
+- Name, Vorname, Geburtsdatum und Geschlecht müssen vorhanden sein und einen gültigen Wert enthalten. 
+- wenn der Athlet eine Lizenz hat, welche auch in den Stammdaten unter demselben Namen vorhanden ist, wird die Anmeldung mit der Lizenz verknüpft. Geburtsdatum und Club aus dem Import werden dann ignoriert und jene aus den Stammdaten genommen.
+- Vereine welche nicht in den Stammdaten vorhanden sind werden automatisch erfasst.
+- Die Spalte mit der Kategorie wird nicht beachtet. Die Kategorie wird anhand des Alters berechnet. Athleten welche jünger als 7 Jahre alt sind werden trotzdem korrekt bei W07/M07 eingetragen.
+- Bei mehrmaligem Importieren sollten keine doppelten Einträge entstehen! Es ist also ohne weiteres möglich, nachträglich eine erweiterte Startliste zu importieren. 
+- Es ist ein Fehler von Athletica, dass die angemeldete Disziplin bei Athleten des jüngeren Jahrgangs (in der offiziellen Kategorie(U12), nicht Wettkampfkategorie (U12 W10)) rot hinterlegt sind in der Anmeldungsübersicht.
+- Die Qualizeiten werden importiert. Bei Athleten mit Lizenz wird, sofern vorhanden, die Bestleistung aus den Stammdaten eingefügt anstelle der Zeit in der Importdatei.
+
+

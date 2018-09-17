@@ -161,7 +161,8 @@ if($_GET['arg'] == 'change_club')
 //       
 //  show payed athletes
 //   
-    $sql = "SELECT 
+// hier sollte runde nicht drin sein meiner Meinung nach.
+    /*$sql = "SELECT 
                 count(*) as anzahl
             FROM
                 anmeldung AS a
@@ -182,7 +183,28 @@ if($_GET['arg'] == 'change_club')
                 $club_clause  
            GROUP BY a.xAnmeldung
            ORDER BY
-           anzahl DESC";      
+           anzahl DESC";  */
+	    $sql = "SELECT 
+                count(*) as anzahl
+            FROM
+                anmeldung AS a
+                LEFT JOIN kategorie AS k ON (a.xKategorie = k.xKategorie) 
+                LEFT JOIN athlet AS at  ON (a.xAthlet = at.xAthlet)
+                LEFT JOIN start AS s ON (s.xAnmeldung = a.xAnmeldung)
+                LEFT JOIN wettkampf AS w ON (w.xWettkampf = s.xWettkampf) 
+                LEFT JOIN disziplin_" . $_COOKIE['language'] . " AS d ON (d.xDisziplin = w.xDisziplin)                 
+                LEFT JOIN kategorie AS ck ON (ck.xKategorie = w.xKategorie)                     
+                LEFT JOIN verein AS v ON (at.xVerein = v.xVerein  )          
+                LEFT JOIN team AS t ON a.xTeam = t.xTeam
+                LEFT JOIN region as re ON at.xRegion = re.xRegion
+                LEFT JOIN disziplin_" . $_COOKIE['language'] ." AS d2 ON (w.Typ = 1 AND w.Mehrkampfcode = d2.Code)
+                LEFT JOIN base_athlete AS ba ON (ba.license = at.Lizenznummer)                             
+            WHERE 
+                a.xMeeting = " . $_COOKIE['meeting_id'] . "                  
+                $club_clause  
+           GROUP BY a.xAnmeldung
+           ORDER BY
+           anzahl DESC";     
     
     $result = mysql_query($sql);    
 
@@ -407,7 +429,7 @@ else {
             continue;
         }
 	   
-       if ($row[3] == NULL){
+       if ($row[3] == NULL){ // is a relay
            if($s != $row[23] && $i > 0){
                 $pl=true;    
            }
@@ -455,10 +477,10 @@ else {
 						} else {
 							$start = false;
 						}
-                              $doc->printSubTitle($subtitle); 
-                              $flag_subtitle = false;
-							if (strpos(get_class($doc),"pdf")==false) { printf("<table class='dialog'>\n");}
-								$doc->printHeaderLine($max_count);
+                    	$doc->printSubTitle($subtitle); 
+                        $flag_subtitle = false;
+						if (strpos(get_class($doc),"pdf")==false) { printf("<table class='dialog'>\n");}
+						$doc->printHeaderLine($max_count);
                       }
                 }
                 
@@ -529,7 +551,7 @@ else {
 			$doc->printHeaderLine($max_count);
 		}
 		
-        if ($row[3] == NULL){
+        if ($row[3] == NULL){ // is a relay
                if($s != $row[23] ){
                  
                 $nbr = $row[1];
@@ -619,34 +641,87 @@ else {
         $i++;
 	}
 	
+	
 	// print last athlete, if any
 	if($i > 0)
 	{                   
         if ($noDisc){
                     $disc = "<td colspan='" .$max_count ."'></td>";
                      $noDisc = false;
-                }
-                
-                if (empty($row[9])){
-                    $noDisc = true;
-                }                
+        }
+        
+        $count_td =split('<td>',$disc);
+        $len = count($count_td);
+        
+        $colmax_count = $max_count * 2 - $len;                   
+	    $last_pos = strrpos($disc, '<td>');
+        $last_pos_next = $last_pos + 4;
+        $disc = substr($disc,0, $last_pos) . '<td colspan="' . $colmax_count . '">' . substr($disc,$last_pos_next);
+        
+        $count_td =split('<td>',$disc_print);
+        $len = count($count_td);
        
-		  if($print == true) { 
-                    $doc->printLine($nbr, $name, $year, $cat, $disc_print, $len);   
-          }
-          else {
-                     $doc->printLine($nbr, $name, $year, $cat, $disc, $len);   
-          }              
+        $colmax_count = $max_count * 2 - $len;                  
+        $last_pos = strrpos($disc_print, '<td>');
+        $last_pos_next = $last_pos + 4;
+        
+        $disc_print = substr($disc_print,0, $last_pos) . '<td colspan="' . $colmax_count . '">' . substr($disc_print,$last_pos_next);
+        
+        if ($noDisc){
+            $disc = "<td colspan='" .$max_count*2 ."'></td>";
+            $disc_print = "<td colspan='" .$max_count*2 ."'></td>";
+            $noDisc = false;
+        }
+        
+        if (empty($row[9])){
+            $noDisc = true;
+        }
+        
+        if($print == true) {
+            if ($flag_subtitle) {
+				if (!$start) {
+					if (strpos(get_class($doc),"pdf")==false) { printf("</table>"); }
+				} else {
+					$start = false;
+				}
+                $doc->printSubTitle($subtitle); 
+                $flag_subtitle = false;
+				if (strpos(get_class($doc),"pdf")==false) { printf("<table class='dialog'>\n");}
+				$doc->printHeaderLine($max_count);
+            }
+        }
+        
+        if($print == true) { 
+		    $doc->printLine($nbr, $name, $year, $cat, $disc_print, $len);                     
+        } else {
+            $doc->printLine($nbr, $name, $year, $cat, $disc, $len);   
+        }              
+ 
+		$nbr = "";
+		$name = "";
+		$year = "";
+		$cat = "";
+		$club = "";
+		$disc = "";
+		$saso = "";
+		$sep = "";
+		$disc_print = "";
+		$paid = "";
+		$m = "";
+        $mkcode = ""; 
         
 	}
 	if (strpos(get_class($doc),"pdf")==false) { printf("</table>");}
 	
 	mysql_free_result($result);
-}else 
-if(mysql_num_rows($result) == 0)  // data found
-{
-	echo $strNoData;
-}						// ET DB error
+} else{
+	if(mysql_num_rows($result) == 0)  // data found
+	{
+		echo $strNoData;
+	}
+}
+
+						// ET DB error
 if (strpos(get_class($doc),"pdf")==false) { echo "</div>";}
 
  mysql_query("DROP TABLE IF EXISTS athletes_tmp");    // temporary table    

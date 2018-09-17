@@ -294,8 +294,10 @@ else {
     $discUkc = "";
     $roundsInfo = array();
     $mergedRounds = '';
+    $catInfo = array();
          
     while($row = mysql_fetch_row($results)){
+        
         
          if (!$teamsm){
             $mergedRounds=AA_getMergedRounds($row[0]);  
@@ -306,12 +308,13 @@ else {
                    if ($heatSeparate) {
                           if (!empty($row[14])){                
                             $roundsInfo[$row[0]] .= $row[14] ." / ";
-                        }
+                        } 
+                        
                    }
                    else {
-                        if (!empty($row[13])){                
+                        if (!empty($row[13]) && $row[13]){                
                             $roundsInfo[$row[0]] .= $row[13] ." / ";       
-                        }
+                        }    
                    }                     
                }
                else {
@@ -319,6 +322,7 @@ else {
                         $roundsInfo[$row[0]] .= $row[13] ." / ";   
                     }               
                }
+               $catInfo[$row[0]] .= $row[1] ." / ";
          } 
           if ($row[2] != $discUkc){
                $roundsUkc[$row[1]][] =  $row[0];
@@ -895,6 +899,7 @@ else {
                 
                 if ($flagSubtitle ){  
                     $r_info = '';
+                    $r_cat = '';
                     $mainRound = '';
                     if (!$teamsm) {
                         $mainRound = AA_getMainRound($row[0]);
@@ -902,35 +907,50 @@ else {
                     if ($mainRound > 0){ 
                         if ($heatSeparate) {                     
                               $r_info = $roundsInfo[$row[0]];                                       
-                              $r_info = substr($r_info,0, -3);   
+                              $r_info = substr($r_info,0, -3);
+                              $r_cat = $catInfo[$row[0]];                                       
+                              $r_cat = substr($r_cat,0, -3);   
                         }
                         else {
                                
                                $mergedRounds=AA_getMergedRounds($row[0]);       
                                $mRounds = split(',',substr($mergedRounds,1,-1));
                                foreach ($mRounds as $key => $val){
-                                    $r_info .= $roundsInfo[$val];    
+                                    //$r_info .= $roundsInfo[$val];         show all Infos
+                                    $r_info = $roundsInfo[$val]; 
+                                    $r_cat .= $catInfo[$val];          // only show 1 info
                                }
                                $r_info = substr($r_info,0, -3);   
+                               $r_cat = substr($r_cat,0, -3);   
                         }
                     }
                     else {
                          $r_info = $row_res[24];     
+                         if($heatSeparate) {
+                            if ($relay) {
+                                $r_cat = $row_res[16];
+                            } else {                            
+                                $r_cat = $row_res[19]; 
+                            }   
+                         } else {
+                            $r_cat = $row[1];    
+                         }
+                              
                     }
                     
                     $nr = 0;    
                     if ($heatSeparate) {
                         if ($relay)
-                            $list->printSubTitle($row_res[16], $row[2], $roundName,$r_info); 
+                            $list->printSubTitle($r_cat, $row[2], $roundName,$r_info); 
                         else {
                              if (!$athleteCat){  
-                                  $list->printSubTitle($row_res[19], $row[2], $roundName, $r_info); 
+                                  $list->printSubTitle($r_cat, $row[2], $roundName, $r_info); 
                              } 
                         }  
                     }
                     else {
                         if (!$athleteCat){  
-                            $list->printSubTitle($row[1], $row[2], $roundName, $r_info, $heatFrom, $heatTo, $row_rt[2]);                         
+                            $list->printSubTitle($r_cat, $row[2], $roundName, $r_info, $heatFrom, $heatTo, $row_rt[2]);                         
                         }   
                     }                       
                     $flagSubtitle=false; 
@@ -1083,7 +1103,7 @@ else {
                                     $rank='';
                               } 
                               elseif ($r == $row_res[1] && $heat_keep == $row_res[5]) { // same rank as previous
-                                        $rank= $count_rank--;
+                                        $rank= "";
                               }  
                               else {
                                     if ($ukc){
@@ -1185,14 +1205,18 @@ else {
                     }    // ET athlete qualified
 
                     // points for performance
-                    $points = '';
-                    if($row[7] != '0') {
-                        $points = $row_res[7];
-                    }
-                    else {
-                        if($row_res[23] != '0') {
+                    if($row[7] != '0' || $row_res[23] != '0') {
+                        $points = '';
+                        if($row[7] != '0') {
                             $points = $row_res[7];
                         }
+                        else {
+                            if($row_res[23] != '0') {
+                                $points = $row_res[7];
+                            }
+                        }
+                    }else {
+                        $points = '';
                     }
                     
                       
@@ -1305,7 +1329,7 @@ else {
                                 $best_previous = '';    
                                 $previous_date = '';                            
                                 if($row_perf!==false){
-                                    $best_previous = AA_getBestPrevious($row[12], $row_perf['xAnmeldung'], $order, $row_res['Datum'], $row_res['Startzeit'], &$previous_date);
+                                    $best_previous = AA_getBestPrevious($row[12], $row_perf['xAnmeldung'], $order, $row_res['Datum'], $row_res['Startzeit'], $previous_date);
                                 }
                                 
                                 if($is_jump) {
@@ -2387,7 +2411,7 @@ else {
                                 $best_previous = '';    
                                 $previous_date = '';                            
                                 if($row_perf!==false){
-                                    $best_previous = AA_getBestPrevious($row[12], $row_perf['xAnmeldung'], $order, $row_res['Datum'], $row_res['Startzeit'], &$previous_date);
+                                     $best_previous = AA_getBestPrevious($row[12], $row_perf['xAnmeldung'], $order, $row_res['Datum'], $row_res['Startzeit'], $previous_date);
                                 }
                                 
                                 if($is_jump) {

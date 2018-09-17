@@ -289,7 +289,7 @@ function AA_results_getTimingAlge($round, $arg=false, $noerror=false){
 								$sql_sex = "SELECT DISTINCT(k.Geschlecht) AS Geschlecht
 											  FROM kategorie as k
 										 LEFT JOIN wettkampf USING(xKategorie) 
-										 LEFT JOIN start AS st USING(xWettkampf)
+										 LEFT JOIN start AS st USING(xWettkampf)  
 										 LEFT JOIN serienstart AS sst  USING(xStart)
 										 LEFT JOIN serie AS s USING(xSerie)
 											 WHERE s.XRunde = ".$round." 
@@ -329,11 +329,12 @@ function AA_results_getTimingAlge($round, $arg=false, $noerror=false){
 							if(mysql_num_rows($res) == 0){   */
 								// insert result
 								$res = mysql_query("
-									SELECT sst.xSerienstart FROM
+									SELECT sst.xSerienstart, at.Geschlecht FROM
 										serie as s
 										LEFT JOIN serienstart as sst USING(xSerie)
 										LEFT JOIN start as st USING(xStart)
 										LEFT JOIN anmeldung as a USING(xAnmeldung)
+                                        LEFT JOIN athlet as at USING(xAthlet)
 									WHERE	a.Startnummer = ".$val[1]."
 									AND	s.Film = $nr
 									AND	s.xRunde = $round"
@@ -345,7 +346,7 @@ function AA_results_getTimingAlge($round, $arg=false, $noerror=false){
 								}else{   
                                     $count_results++;                                     
 									$row = mysql_fetch_array($res);
-                                    $points = AA_utils_calcPoints($event, $perf, 0, $sex, $row[0]);  
+                                    $points = AA_utils_calcPoints($event, $perf, 0, $sex, $row[0],$row[1]);  
 									mysql_query("
 										INSERT INTO resultat
 										SET 	Leistung = '$perf'
@@ -488,7 +489,7 @@ function AA_results_getTimingOmega($round, $arg=false, $noerror=false){
 	}else{
 		$sqladd = "";
 	}
-	
+	 
 	mysql_query("
 		LOCK TABLES 
 			serie as s WRITE
@@ -561,7 +562,6 @@ function AA_results_getTimingOmega($round, $arg=false, $noerror=false){
          }else{
                 $number_results=$row[0]; 
               } 
-        
                         
 		while($row_film = mysql_fetch_array($res_film)){
 			   
@@ -658,12 +658,13 @@ function AA_results_getTimingOmega($round, $arg=false, $noerror=false){
 						    if($relay == false){
 						
 							    $res = mysql_query("
-								    SELECT xResultat, sst.xSerienstart FROM
+								    SELECT xResultat, sst.xSerienstart, at.Geschlecht FROM
 									    resultat as r
 									    LEFT JOIN serienstart as sst USING(xSerienstart)
 									    LEFT JOIN serie as s USING (xSerie)
 									    LEFT JOIN start as st ON sst.xStart = st.xStart
 									    LEFT JOIN anmeldung as a ON st.xAnmeldung = a.xAnmeldung
+                                        LEFT JOIN athlet as at USING (xAthlet)
 								    WHERE s.xRunde = $round
 								    AND s.Film = $nr
 								    AND a.Startnummer = ".$val[4]
@@ -672,11 +673,12 @@ function AA_results_getTimingOmega($round, $arg=false, $noerror=false){
 							    if(mysql_num_rows($res) == 0){ 
 								    // insert result
 								    $res = mysql_query("
-									    SELECT sst.xSerienstart FROM
+									    SELECT sst.xSerienstart, at.Geschlecht FROM
 										    serie as s
 										    LEFT JOIN serienstart as sst USING(xSerie)
 										    LEFT JOIN start as st USING(xStart)
 										    LEFT JOIN anmeldung as a USING(xAnmeldung)
+                                            LEFT JOIN athlet as at USING(xAthlet)
 									    WHERE	a.Startnummer = ".$val[4]."
 									    AND	s.Film = $nr
 									    AND	s.xRunde = $round"
@@ -688,7 +690,7 @@ function AA_results_getTimingOmega($round, $arg=false, $noerror=false){
 								    }else{
 									    $row = mysql_fetch_array($res);
                                         $count_results++; 
-                                        $points = AA_utils_calcPoints($event, $perf, 0, $sex,$row[0]);                                     
+                                        $points = AA_utils_calcPoints($event, $perf, 0, $sex, $row[0], $row[1]);                                     
 									    mysql_query("
 										    INSERT INTO resultat
 										    SET 	Leistung = '$perf'
@@ -703,7 +705,7 @@ function AA_results_getTimingOmega($round, $arg=false, $noerror=false){
 								    // update
                                     $count_results++;  
                                     $row = mysql_fetch_array($res);  
-                                    $points = AA_utils_calcPoints($event, $perf, 0, $sex, $row[1]);                                      
+                                    $points = AA_utils_calcPoints($event, $perf, 0, $sex, $row[1], $row[2]);                                      
 								
 								    mysql_query("UPDATE resultat as r SET Leistung = '$perf'
 										    , Punkte = '$points'

@@ -102,7 +102,7 @@ $search->printSearchfield();
 	window.setTimeout("updatePage()", <?php echo $cfgMonitorReload * 1000; ?>);
 
     <?php
-        for ($h = 0; $h <= $hour; $h++) {
+        for ($h = 0; $h <= $hour-2; $h++) {
             if ($h < 10) {
                 $dateHour = date("Y-m-d") . "0" . $h;     
             } else {

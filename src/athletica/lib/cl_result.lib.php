@@ -130,14 +130,17 @@ class Result
 			}
 
 			// calculate points for this performance
-			$sql_sex = "SELECT Geschlecht 
+			$sql_sex = "SELECT kategorie.Geschlecht As sex_cat
+                            , athlet.Geschlecht As sex_ath
 						  FROM kategorie 
 					 LEFT JOIN wettkampf USING(xKategorie) 
-					 LEFT JOIN start USING(xWettkampf) 
+                     LEFT JOIN start USING(xWettkampf) 
+                     LEFT JOIN anmeldung USING(xAnmeldung) 
+					 LEFT JOIN athlet USING(xAthlet) 
 					 LEFT JOIN serienstart USING(xStart) 
 						 WHERE xSerienstart = ".$this->startID.";";              
 			$query_sex = mysql_query($sql_sex);     
-			$this->calcPoints($event, mysql_result($query_sex, 0, 'Geschlecht'),$this->startID);    
+			$this->calcPoints($event, mysql_result($query_sex, 0, 'sex_cat'),$this->startID, mysql_result($query_sex, 0, 'sex_ath'));    
                   
 			if(!empty($GLOBALS['AA_ERROR'])) {
 				return;
@@ -265,10 +268,10 @@ class Result
 	}
 
 
-	function calcPoints($event, $sex,$startID)  
+	function calcPoints($event, $sex_cat,$startID, $sex_ath)  
 	{
 		require('./lib/utils.lib.php');
-		$this->points = AA_utils_calcPoints($event, $this->performance, 0, $sex, $startID);
+		$this->points = AA_utils_calcPoints($event, $this->performance, 0, $sex_cat, $startID, $sex_ath);
 	}
     
     function update_remark()
@@ -483,7 +486,7 @@ class HighResult	extends Result
 	}
 
 
-	function calcPoints($event, $sex)
+	function calcPoints($event, $sex_cat,$startID, $sex_ath)
 	{
 		require('./lib/utils.lib.php');
 
@@ -491,7 +494,7 @@ class HighResult	extends Result
 			$this->points = 0;
 		}
 		else {
-			$this->points = AA_utils_calcPoints($event, $this->performance, 0, $sex);
+			$this->points = AA_utils_calcPoints($event, $this->performance, 0, $sex_cat, $startID, $sex_ath);
 		}
 	}
 

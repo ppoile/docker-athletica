@@ -29,7 +29,6 @@ function AA_timing_getResultsAuto($round){
 	
 	$timing = AA_timing_getTiming();
 	if($timing == "omega"){
-		
 		AA_results_getTimingOmega($round, true, true);
 		
 	}elseif($timing == "alge"){

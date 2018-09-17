@@ -31,7 +31,7 @@ $page->printPageTitle($strUpdateRecords);
 <?php
            
 $http = new HTTP_data();
-$webserverDomain = $cfgSLVhost; // domain of swiss-athletics webserver
+$webserverDomain = $cfgSLVhostSA; // domain of swiss-athletics webserver
 
 // handle arguments
 $login = false;
@@ -57,7 +57,7 @@ if($_POST['arg'] == "login"){
 	}else{
 		$post = "clubnr=".urlencode($_POST['clubnr'])."&pass=".urlencode($_POST['pass'])
 			."&glc=".urlencode($glc)."&type=".urlencode($type);
-		$result = $http->send_post($webserverDomain, '/meetings/athletica/login.php', $post, 'ini');
+		$result = $http->send_post($webserverDomain, '/athletica/login.php', $post, 'ini');
 		if(!$result){
 			AA_printErrorMsg($strErrLogin);
 		}else{
@@ -95,7 +95,7 @@ if(!empty($_POST['slvsid'])){
 		// get meetinglist
 		
 		$post = "sid=".$_POST['slvsid'];
-		$result = $http->send_post($webserverDomain, '/meetings/athletica/export_records.php', $post, 'ini');
+		$result = $http->send_post($webserverDomain, '/athletica/export_records.php', $post, 'ini');
 		if(!$result){
             AA_printErrorMsg($strErrLogin);
         }else{
@@ -150,7 +150,7 @@ if(!$login){
         <input type="hidden" name="arg" value="login">
         <tr>
             <td>
-                <?php echo $strClubNr ?>
+                <?php echo $strSANr ?>
             </td>
             <td>
                 <input type="text" name="clubnr" value="">

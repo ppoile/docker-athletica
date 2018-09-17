@@ -132,6 +132,12 @@ if($_GET['arg'] == 'assign')
 		  $argument2="at.Name, at.Vorname";
 		}   
         
+        if(!$teams){
+            $discSort = ', discSort';
+        } else {
+            $discSort = '';
+        }
+        
         if ( ($_GET["of_sex1"] != 0)  ||   ($_GET["of_sex2"] != 0) ){  
                 $argument3="at.Geschlecht,";                
                 $groupby = ' GROUP BY a.xAnmeldung ';   
@@ -218,9 +224,10 @@ if($_GET['arg'] == 'assign')
                     a.xMeeting = " . $_COOKIE['meeting_id'] . " 
                     $groupby
                     ORDER BY      
-                         $argument3 $argument1 $argument, discSort, tat.xTeamsm, $argument2";    
+                         $argument3 $argument1 $argument $discSort, tat.xTeamsm, $argument2";    
             
             }
+                      
             $result = mysql_query($sql);  
            
 			if(mysql_errno() > 0)		// DB error
@@ -240,8 +247,8 @@ if($_GET['arg'] == 'assign')
                       ($_GET["of_track1_$row[1]"] != 0) ||
                       ($_GET["of_track2_$row[1]"] != 0)) 
                 { 
-                      $noCat = false;                    
-              } 
+                    $noCat = false;                    
+                } 
               }
               if ( ($_GET["of_sex1"] != 0)  ||   ($_GET["of_sex2"] != 0) ){
                     $noCat = false;
@@ -1242,8 +1249,7 @@ if(mysql_errno() > 0){
                         $max_startnr_tech = 0;
            
                         $sql="SELECT 
-                                    DISTINCT a.xAnmeldung,  
-                                    count(t.xTeam)
+                                    count(DISTINCT a.xAnmeldung)
                               FROM 
                                     anmeldung AS a 
                                     LEFT JOIN start AS s ON s.xAnmeldung = a.xAnmeldung 
@@ -1251,15 +1257,15 @@ if(mysql_errno() > 0){
                                     LEFT JOIN team AS t ON (t.xTeam = a.xTeam)  
                               WHERE 
                                     a.xMeeting = ".$_COOKIE['meeting_id'] ."
-                                    AND t.xTeam = " .$row[0] ."   
-                                    GROUP BY t.xTeam";   
-         
+                                    AND t.xTeam = " .$row[0];   
+                                      
+                        
                         $res_count=mysql_query($sql);
                         if(mysql_errno() > 0){
                             AA_printErrorMsg(mysql_errno().": ".mysql_error());
                         }else{
                             $row_count = mysql_fetch_array($res_count);
-                            $max_startnr=$row_count[1];
+                            $max_startnr=$row_count[0];
                         } 
        
                         if ($i == 0) {

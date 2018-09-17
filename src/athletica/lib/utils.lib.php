@@ -35,7 +35,7 @@ if (!defined('AA_UTILS_LIB_INCLUDED'))
 	 * @return	int			points	
 	 */
 
-	function AA_utils_calcPoints($event, $perf, $fraction = 0, $sex = 'M', $startID)
+	function AA_utils_calcPoints($event, $perf, $fraction = 0, $sex = 'M', $startID, $sex_ath = 'M')
 	{  
                
         // check if this is a merged round   (important for calculate points for merged round with different sex)
@@ -76,6 +76,9 @@ if (!defined('AA_UTILS_LIB_INCLUDED'))
              
 		global $strConvtableRankingPoints;
         global $strConvtableRankingPointsU20; 
+        global $strConvtableSLV2010Men; 
+        global $strConvtableSLV2010Women; 
+        global $strConvtableSLV2010Mixed; 
 		
 		$GLOBALS['AA_ERROR'] = '';
 		
@@ -113,6 +116,20 @@ if (!defined('AA_UTILS_LIB_INCLUDED'))
 				if($row[1] == $GLOBALS['cvtTable'][$strConvtableRankingPoints] || $row[1] == $GLOBALS['cvtTable'][$strConvtableRankingPointsU20]){
 					return 0;
 				}
+                
+                // if mixed table assign the correct table
+                if($row[1] == $GLOBALS['cvtTable'][$strConvtableSLV2010Mixed]) {
+                    switch(strtoupper($sex_ath)) {
+                        case "M":
+                            $row[1] = $GLOBALS['cvtTable'][$strConvtableSLV2010Men];
+                            break;
+                        case "W" :
+                            $row[1] = $GLOBALS['cvtTable'][$strConvtableSLV2010Women];
+                            break;
+                        default:
+                            $GLOBALS['AA_ERROR'] = "System Error: Invalid conversion formula (convtables.inc.php)";
+                    }
+                }
 
 				// track disciplines: performance in 1/100 sec
 				if($row[1]<100 && ($row[0] == $GLOBALS['cfgDisciplineType'][$GLOBALS['strDiscTypeTrack']]

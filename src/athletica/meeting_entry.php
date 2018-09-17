@@ -1267,7 +1267,7 @@ else if ($_POST['arg']=="change_cgroup")
                     a.xAnmeldung=" . $_POST['item'] . "
                     AND a.Gruppe = r.Gruppe  
                     AND a.xMeeting=" .$_COOKIE['meeting_id'];   
-                 
+        
     $res_g=mysql_query($sql_g);
      
     if(mysql_errno() > 0)
@@ -1305,8 +1305,7 @@ else if ($_POST['arg']=="change_cgroup")
                                         a.Gruppe = '" . $_POST['combinedgroup'] ."'
                                         AND a.xKategorie= " . $catGroup ."                                       
                                         AND a.Gruppe = r.Gruppe
-                                        AND a.xMeeting=" .$_COOKIE['meeting_id'];   
-                                       
+                                        AND a.xMeeting=" .$_COOKIE['meeting_id'];                 
                         $res_g=mysql_query($sql_g);
         
                         if(mysql_errno() > 0)
@@ -2281,7 +2280,7 @@ else {
             LEFT JOIN kategorie as k ON (w.xKategorie = k.xKategorie)
         WHERE w.xMeeting = " . $_COOKIE['meeting_id'] . "  
         ORDER BY
-             k.Geschlecht, k.Alterslimite, k.Kurzname, w.Mehrkampfcode, d.Anzeige";    
+             k.Geschlecht, k.Alterslimite, k.Kurzname, w.Mehrkampfcode, d.Anzeige, w.Info";    
      
     $res = mysql_query($sql);
 

@@ -29,23 +29,26 @@ class Protect{
 	}
 	
 	function isRestricted($meeting){
-		
-		$res = mysql_query("SELECT Passwort FROM
-					meeting
-				WHERE
-					xMeeting = $meeting");
-		if(mysql_errno() > 0){
-			return false;
-		}else{
-			
-			$row = mysql_fetch_array($res);
-			if(empty($row[0])){
-				return false;
-			}else{
-				return true;
-			}
-			
-		}
+	    if($meeting>0) {
+		    $res = mysql_query("SELECT Passwort FROM
+					    meeting
+				    WHERE
+					    xMeeting = $meeting");
+		    if(mysql_errno() > 0){
+			    return false;
+		    }else{
+			    
+			    $row = mysql_fetch_array($res);
+			    if(empty($row[0])){
+				    return false;
+			    }else{
+				    return true;
+			    }
+			    
+		    }
+        } else{
+            return false;
+        }
 		
 	}
 	

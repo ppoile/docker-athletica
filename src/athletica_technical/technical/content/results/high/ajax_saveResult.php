@@ -38,7 +38,12 @@ try{
             $sex = $query_sex->fetch(PDO::FETCH_ASSOC);
             $sex = $sex['Geschlecht'];
 
-            $points = calcPoints($event, $ath_res_db, $fraction = 0, $sex, $ath_id);
+            if(strpos($ath_res_db, $glb_high_attempt_passed) !== false) {
+                $points = calcPoints($event, $height, $fraction = 0, $sex, $ath_id);
+            } else {
+                $points = 0;
+            }
+
             $res_id_sql = (!is_null($res_id)) ? "xResultat = :res_id, " : "";
 
             $sql = "INSERT INTO resultat
@@ -87,7 +92,7 @@ try{
         updateResultTable($ath_id, CFG_CURRENT_EVENT, $athlete['ath_start']);
                
         rankAthletes(CFG_CURRENT_EVENT);
-        calcRankingPoints($round);
+        //calcRankingPoints($round);
         resetQualification($round);
         StatusChanged($round);
 

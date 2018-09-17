@@ -124,8 +124,10 @@ function removePassword(){
 										$dropdown->printList();
 										?>
 									</td>
+                                    
 									<td class="forms"><input type="button" value="<?php echo $strVersionCheck;?>" onclick="document.location.href = 'admin_version.php';"/></td>
-								</tr>
+								
+                                </tr>
 							</table>
 						</form>
 					</td>
@@ -283,7 +285,48 @@ function removePassword(){
                     </td>
                 </tr>
             </table><br/>
-            
+			<table class='dialog' width="475">            
+                <tr>
+                    <th class='dialog_zlv'><?php echo $strImportCsv; ?> </th>
+                </tr>
+                <tr>
+                    <td>
+                        <table class='admin'>
+                            <form action='admin_importNachwuchs.php' method='post' name='importNachwuchs' enctype='multipart/form-data'>
+                            <tr class='odd'>
+                                <td width="70" rowspan="5" style="padding-left: 0px; text-align: center;"><img src="img/db_restore.gif" border="0" alt="<?php echo $strRestore; ?>" title="<?php echo $strRestore; ?>"/></td>
+                                <td><?php echo $strImportCsvInfo; ?> <br />
+								<button type="button" onclick="window.open('doc/<?php echo($_COOKIE['language']); ?>/import_nachwuchs_help.txt')"><?php echo($strImportCsvDetail2); ?></button></td>
+                            </tr>
+							<tr class='odd'><td>
+								<input type="radio" name="project" value="Mille Gruyere" checked>Mille Gruyere<br />
+								<input type="radio" name="project" value="SAsprint">swiss-athletics Sprint<br />
+							</td></tr>
+                            <tr class="even">
+                                <td>
+                                    <input type='hidden' name='arg' value='restore'/>
+                                        <?php echo $strCsvFile; ?>:&nbsp;
+                                    </input>
+                                    <input type="hidden" name="MAX_FILE_SIZE" value="619430400" />
+                                    <input name='csvfile' type='file' accept='*.csv' maxlength="619430400">
+                                </td>
+                            </tr>
+                            <tr class="even">
+                                <td>
+                                    <button type="button" onclick="window.open('Import_Nachwuchs_Bsp.csv')"><?php echo($strImportCsvExample); ?></button>
+                                </td>
+                            </tr>
+                            <tr class="even">
+                                <td>
+                                    <button name='backup' type='submit' class="dialog_zlv"><?php echo $strCsvRestore; ?></button>
+                                </td>
+                            </tr>
+                        </form>    
+                        </table>
+                    </td>
+                </tr>
+            </table><br/>
+			
              <table class='dialog' width="475">
                 <tr>
                     <th class='dialog'><?php echo $strLinks; ?></th>
@@ -393,23 +436,7 @@ function removePassword(){
 				</tr>
 			</table>
             <br/>
-            <table class='dialog' width="475">
-                <tr>
-                    <th class='baseupdate'><?php echo $strUpdateRecords; ?></th>
-                </tr>
-                <tr>
-                    <td>
-                        <table class='admin'>
-                            <tr class='odd'>
-                                <td>
-                                    <input type="button" value="<?php echo $strNext; ?>" class="baseupdatebutton" onclick="javascript:document.location.href='admin_records.php'">
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            </table>
-            <br/>
+            
             <!--
             <table class='dialog' width="475">
                 <tr>
@@ -430,7 +457,7 @@ function removePassword(){
                     </td>
                 </tr>
             </table>
-            -->
+            -->  
 			 <?php
              
                        

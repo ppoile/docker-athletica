@@ -90,7 +90,7 @@ if($_GET['arg'] == "export_timing"){
 	}
 	
 }
-
+    
 ?>
 
 <table>
@@ -194,7 +194,7 @@ if(mysql_errno() > 0){
 	while($row = mysql_fetch_array($res)){  
         if ($row[1] == NULL || $row[1] == 1){ 
                 if ($row[1] == 1) {
-                    if ($row[2] == $_COOKIE['meeting_id']) {
+                    if ($row[2] == $_COOKIE['meeting_id']) {   
                         AA_timing_getResultsAuto($row[0]);                          
                     }  
                 }
@@ -204,7 +204,7 @@ if(mysql_errno() > 0){
             }  
 	}
 }
-   
+  
 AA_timetable_display('monitor');  
 
     $hour= date("H");         
@@ -216,7 +216,7 @@ AA_timetable_display('monitor');
 	window.setTimeout("updatePage()", <?php echo $cfgMonitorReload * 1000; ?>);     
    
     <?php
-        for ($h = 0; $h <= $hour; $h++) {
+        for ($h = 0; $h <= $hour-2; $h++) {
             if ($h < 10) {
                 $dateHour = date("Y-m-d") . "0" . $h;     
             } else {

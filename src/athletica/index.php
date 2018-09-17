@@ -23,12 +23,19 @@ if(!empty($_GET['arg2'])) {
     $arg2 = $_GET['arg2'];
 }
 
+$arg_m = ''; 
+if(!empty($_GET['arg3'])) {
+    $arg_m = "?arg3=".$_GET['arg3'];
+}
+
 
 $meetingID = '';
-$arg_m = '';
 if(!empty($_POST['item'])) {
     $meetingID = $_POST['item'];
     $arg_m = "?meetingId=".$meetingID; 
+    if(!empty($_GET['arg3'])) {
+        $arg_m .= "&arg3=".$_GET['arg3'];
+    }
 }
 
 
@@ -92,6 +99,8 @@ $ukc_meeting = AA_checkMeeting_UKC() ;
 	<frame name="main" src="<?php echo $arg; ?>.php<?php echo $arg_m; ?><?php echo $redirect ?>" marginwidth="0"
 			marginheight="0" scrolling="auto" frameborder="0" noresize>
 	<frame name="status" src="status.php" marginwidth="0"
+			marginheight="0" scrolling="no" frameborder="0" noresize>
+	<frame name="controller" src="UntitledFrame-2" marginwidth="0"
 			marginheight="0" scrolling="no" frameborder="0" noresize>
 </frameset>
 

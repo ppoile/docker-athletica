@@ -37,6 +37,33 @@ if (!defined('AA_RESULTS_TECH_LIB_INCLUDED'))
             if ($mergedMain == 1) {           
                 $round = AA_getMainRound($round); 
             }   
+            $cat = "";
+                       
+            $sql_cat = "
+                SELECT 
+                    r.xRunde,
+                    k.Name As rnd_cat 
+                FROM
+                    athletica.runde AS r
+                    LEFT JOIN athletica.wettkampf AS w ON (w.xWettkampf = r.xWettkampf)
+                    LEFT JOIN athletica.kategorie AS k ON (k.xKategorie = w.xKategorie)
+                WHERE r.xRunde " . $sqlRounds . "    
+                ORDER BY
+                    k.Anzeige
+            "; 
+            
+            $res_cat = mysql_query($sql_cat);
+        
+            if(mysql_errno() > 0)    // DB error
+            {
+                AA_printErrorMsg(mysql_errno() . ": " . mysql_error());
+            }
+            else {
+                while($row_cat = mysql_fetch_assoc($res_cat)){
+                    $cat .= $row_cat['rnd_cat'] . " / ";    
+                }
+                $cat = substr($cat,0, -3);  
+            }
         }
         else {
               $sqlRounds = " = " . $round;

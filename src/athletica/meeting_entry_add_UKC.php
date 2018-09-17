@@ -3440,7 +3440,7 @@ if(!empty($club2) && false){ // not yet in use
     if($licenseType == 1){
         $licenseNrDisabled = "";
         if($allow_search_from_base == "true"){
-            $licenseNrDisabled = "disabled";
+            //$licenseNrDisabled = "disabled";
         }
     ?>
     <th class='dialog'><?php echo $strLicenseNr; ?></th>

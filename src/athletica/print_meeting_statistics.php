@@ -228,7 +228,7 @@ $doc->printHeaderLine($strCategory, $strDiscipline, $strEntries, $strStarted);
                             ,r.Datum
                              ";      
            
-            $res_tmp3 = mysql_query($query_tmp3); 
+            $res_tmp3 = mysql_query($query_tmp3);    
              if(mysql_errno() > 0) {        // DB error
                    AA_printErrorMsg(mysql_errno() . ": " . mysql_error());
                 }  
@@ -265,7 +265,7 @@ $doc->printHeaderLine($strCategory, $strDiscipline, $strEntries, $strStarted);
                             , t.wkAnzeige
                              ";      
                
-              $res_tmp2 = mysql_query($query_tmp2); 
+              $res_tmp2 = mysql_query($query_tmp2);   
                                  
               if(mysql_errno() > 0)        // DB error
                 {

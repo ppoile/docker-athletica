@@ -109,13 +109,14 @@ $allAthletes = ($_GET['athleteSearch'] == -1) ? true : false;
                 LEFT JOIN disziplin_" . $_COOKIE['language'] ." AS d2 ON (w.Typ = 1 AND w.Mehrkampfcode = d2.Code)
                 LEFT JOIN meeting AS m ON (a.xMeeting = m.xMeeting)  
                 LEFT JOIN stadion AS sd ON (m.xStadion = sd.xStadion)  
-            WHERE a.xMeeting = " . $_COOKIE['meeting_id'] . "     
+            WHERE a.xMeeting = " . $_COOKIE['meeting_id'] . "   
+                AND d.Typ != ". $cfgDisciplineType[$strDiscTypeRelay] ."  
                 $club_clause  
                 $date_clause
                 $athlete_clause
                 $limitNrSQL
             ORDER BY
-                $argument";      
+                $argument";          
        
         $result = mysql_query($sql);    
  

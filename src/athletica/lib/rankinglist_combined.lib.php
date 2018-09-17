@@ -294,41 +294,46 @@ else
                   $rank=$v;  
                  
                   
-                  if ($rank == $rank_keep){ 
-                 
-                        $c=0;
-                        $keep_c=0;
-                        // first rule
-                        for ($i=1; $i <= sizeof($points_disc); $i++){                                  
-                             if  ($points_arr_more_disc_all[$xKat][$key_keep][$i] > $points_arr_more_disc_all[$xKat][$key][$i]){  
-                                  $keep_c ++;
-                             }
-                             else {   
-                                 $c++;
-                             }
-                        }
-                        $more=ceil(sizeof($points_disc)/2);  
-                        if (sizeof($points_disc) % 2 == 0){              // combined with even number discs
-                             $more++;                                   
-                        }
-                        if     ($keep_c >= $more && $keep_c > $c){
-                                $rank_arr[$key]++;
-                        }
-                        else {
-                             if  ($c >= $more && $c > $keep_c){   
-                                $rank_arr[$key_keep]++;     
-                             }
-                             else {
-                                  // second rule 
-                                  // check the best points of the highest points of discipline
-                                  $k = AA_get_AthletBestPointDisc($points_arr_more_disc_all[$xKat][$key_keep], $points_arr_more_disc_all[$xKat][$key], $key_keep, $key);
-                                  if ($k != 0){
-                                       $rank_arr[$k]++;     
-                                  }
-                                  // if $k is 0, all points of diszipline are the same -->   athletes with same rank                                     
-                             }   
-                        }    
-                }            
+                  // 9.3.18 --> neue Regel IWR 2018: gleiche Punkte = gleicher Rang (ausser UBS Kids Cup)
+                
+                  if($ukc || $dCode == 408) {
+                      if ($rank == $rank_keep){ 
+                     
+                            $c=0;
+                            $keep_c=0;
+                            // first rule
+                            for ($i=1; $i <= sizeof($points_disc); $i++){                                  
+                                 if  ($points_arr_more_disc_all[$xKat][$key_keep][$i] > $points_arr_more_disc_all[$xKat][$key][$i]){  
+                                      $keep_c ++;
+                                 }
+                                 else {   
+                                     $c++;
+                                 }
+                            }
+                            $more=ceil(sizeof($points_disc)/2);  
+                            if (sizeof($points_disc) % 2 == 0){              // combined with even number discs
+                                 $more++;                                   
+                            }
+                            if     ($keep_c >= $more && $keep_c > $c){
+                                    $rank_arr[$key]++;
+                            }
+                            else {
+                                 if  ($c >= $more && $c > $keep_c){   
+                                    $rank_arr[$key_keep]++;     
+                                 }
+                                 else {
+                                      // second rule 
+                                      // check the best points of the highest points of discipline
+                                      $k = AA_get_AthletBestPointDisc($points_arr_more_disc_all[$xKat][$key_keep], $points_arr_more_disc_all[$xKat][$key], $key_keep, $key);
+                                      if ($k != 0){
+                                           $rank_arr[$k]++;     
+                                      }
+                                      // if $k is 0, all points of diszipline are the same -->   athletes with same rank                                     
+                                 }   
+                            }    
+                    }    
+                  }   
+                     
                 $rank_keep = $rank;  
                 $key_keep = $key;   
             
@@ -670,41 +675,46 @@ else
                 $val=$points_arr[$key];  
                 $rank=$v;   
                
-                if ($rank == $rank_keep){                     
-                        $c=0;
-                        $keep_c=0;
-                        // first rule 
-                        for ($i=1; $i <= sizeof($points_arr_more_disc_all[$xKat][$key]); $i++){                                 
-                             if  ($points_arr_more_disc_all[$xKat][$key_keep][$i] > $points_arr_more_disc_all[$xKat][$key][$i]){
-                                  $keep_c ++;
-                             }
-                             else {
-                                 $c++;
-                             }
-                        }
-                        $more=ceil(sizeof($points_arr_more_disc_all[$xKat][$key])/2);  
-                        if (sizeof($points_arr_more_disc_all[$xKat][$key]) % 2 == 0){              // combined with even number discs
-                             $more++;                                   
-                        }
-                        if     ($keep_c >= $more && $keep_c > $c){
-                                $rank_arr[$key]++;
-                        }
-                        else {
-                             if  ($c >= $more && $c > $keep_c){   
-                                $rank_arr[$key_keep]++;     
-                             }
-                             else {
-                                  // second rule 
-                                  // check the best points of the highest points of discipline
-                                  $k = AA_get_AthletBestPointDisc($points_arr_more_disc_all[$xKat][$key_keep], $points_arr_more_disc_all[$xKat][$key], $key_keep, $key);
-                                  if ($k != 0){
-                                       $rank_arr[$k]++;     
-                                  }
-                                  // if $k is 0, all points of diszipline are the same -->   athletes with same rank
-                                 
-                             }   
-                        }                         
-                }            
+                // 9.3.18 --> neue Regel IWR 2018: gleiche Punkte = gleicher Rang (ausser UBS Kids Cup)
+                
+                if($ukc || $dCode == 408) {
+                    if ($rank == $rank_keep){                     
+                            $c=0;
+                            $keep_c=0;
+                            // first rule 
+                            for ($i=1; $i <= sizeof($points_arr_more_disc_all[$xKat][$key]); $i++){                                 
+                                 if  ($points_arr_more_disc_all[$xKat][$key_keep][$i] > $points_arr_more_disc_all[$xKat][$key][$i]){
+                                      $keep_c ++;
+                                 }
+                                 else {
+                                     $c++;
+                                 }
+                            }
+                            $more=ceil(sizeof($points_arr_more_disc_all[$xKat][$key])/2);  
+                            if (sizeof($points_arr_more_disc_all[$xKat][$key]) % 2 == 0){              // combined with even number discs
+                                 $more++;                                   
+                            }
+                            if     ($keep_c >= $more && $keep_c > $c){
+                                    $rank_arr[$key]++;
+                            }
+                            else {
+                                 if  ($c >= $more && $c > $keep_c){   
+                                    $rank_arr[$key_keep]++;     
+                                 }
+                                 else {
+                                      // second rule 
+                                      // check the best points of the highest points of discipline
+                                      $k = AA_get_AthletBestPointDisc($points_arr_more_disc_all[$xKat][$key_keep], $points_arr_more_disc_all[$xKat][$key], $key_keep, $key);
+                                      if ($k != 0){
+                                           $rank_arr[$k]++;     
+                                      }
+                                      // if $k is 0, all points of diszipline are the same -->   athletes with same rank
+                                     
+                                 }   
+                            }                         
+                    }   
+                }        
+                
                 $rank_keep = $rank;  
                 $key_keep = $key; 
                 }

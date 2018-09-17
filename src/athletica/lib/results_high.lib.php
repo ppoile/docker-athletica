@@ -158,10 +158,13 @@ if($_POST['arg'] == 'save_res')
                      LEFT JOIN start USING(xAnmeldung) 
                      LEFT JOIN serienstart USING(xStart) 
                          WHERE xSerienstart = ".$_POST['start'].";";*/
-            $sql_sex = "SELECT Geschlecht 
+            $sql_sex = "SELECT kategorie.Geschlecht As sex_cat
+                            , athlet.Geschlecht As sex_ath 
                           FROM kategorie 
                      LEFT JOIN wettkampf USING(xKategorie) 
                      LEFT JOIN start USING(xWettkampf) 
+                     LEFT JOIN anmeldung USING(xAnmeldung) 
+                     LEFT JOIN athlet USING(xAthlet) 
                      LEFT JOIN serienstart USING(xStart) 
                          WHERE xSerienstart = ".$_POST['start'].";";
             $query_sex = mysql_query($sql_sex);
@@ -172,10 +175,10 @@ if($_POST['arg'] == 'save_res')
             else{
                 if ($single_svm) {
                       $single_presets = AA_results_getPresets($singleRound);    // read GET/POST variables
-                      $points = AA_utils_calcPoints($single_presets['event'], $performance, 0, mysql_result($query_sex, 0, 'Geschlecht'));   
+                      $points = AA_utils_calcPoints($single_presets['event'], $performance, 0, mysql_result($query_sex, 0, 'sex_cat'),0,mysql_result($query_sex, 0, 'sex_ath'));   
                 }
                 else {
-                   $points = AA_utils_calcPoints($presets['event'], $performance, 0, mysql_result($query_sex, 0, 'Geschlecht'));  
+                   $points = AA_utils_calcPoints($presets['event'], $performance, 0, mysql_result($query_sex, 0, 'sex_cat'),0,mysql_result($query_sex, 0, 'sex_ath'));  
                 }
                 
             }

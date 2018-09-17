@@ -8,12 +8,13 @@
  *
  *******************/
 
+
 require('./lib/cl_gui_menulist.lib.php');
 require('./lib/cl_gui_page.lib.php');
-
+ 
 require('./lib/common.lib.php');
-
-require('./lib/cl_xml_data.lib.php');
+                    
+require('./lib/cl_xml_data.lib.php');         
 require('./lib/cl_http_data.lib.php');         
 	   
 if(AA_connectToDB() == FALSE)	{		// invalid DB connection
@@ -27,7 +28,7 @@ if(AA_checkMeetingID() == FALSE){		// no meeting selected
 if (!empty($_POST['mode'])){
 	$mode =  $_POST['mode'];
 }
-
+     
 //
 //	Display enrolement list
 //
@@ -56,101 +57,52 @@ $mdate = "";
 $slvsid = "";
 $list = false;
 $reg = false;
+$noEntry = false;
 
 if($_POST['arg'] == "login"){
 	
-	// sending login information and global last change date of the base_data
-	$result = mysql_query("SELECT global_last_change FROM base_log where type like 'base_%' ORDER BY id_log DESC LIMIT 1");
-	if(mysql_errno > 0){
-		AA_printErrorMsg(mysql_errno().": ".mysql_error());
-	}else{
-		// the following information is used to determinate wich base file we need to download
-		if(mysql_num_rows($result) == 0){
-			$glc = "";
-			$type = "complete"; // for a complete base data download
-		}else{
-			$row = mysql_fetch_array($result);
-			$glc = $row[0];
-			$type = "update"; // if there is already a log entry, a complete download was made once
-		}
-		
-		mysql_free_result($result);
-		
-		//$result = $http->send_get('slv.exigo.ch', '/downloads/verbandstagung_201104.ppt' , 'file', 'test.ppt', true);
-		$post = "clubnr=".urlencode($_POST['clubnr'])."&pass=".urlencode($_POST['pass'])
-			."&glc=".urlencode($glc)."&type=".urlencode($type);
-		$result = $http->send_post($webserverDomain, '/meetings/athletica/login.php', $post, 'ini');
-		if(!$result){
-			AA_printErrorMsg($strErrLogin);
-		}else{
-			switch($result['login']){
-				case "error":
-				AA_printErrorMsg($result['error']);
-				break;
-				
-				case "ok":
-				$login = true;
-				echo "<p>$strLoginTrue</p>";
-				$slvsid = $result['sid']; // remember session id from slv server
-				$basefiles = explode(":",$result['files']); // get files to download
-				$filetype = $result['filetype']; // return complete or update, 
-								//maybe the glc-date is too old, so the login script returned a complete set
-				$newglc = substr($result["newglc"],0,4)."-".substr($result["newglc"],4,2)."-".substr($result["newglc"],6,2);
-				
-				$_POST['arg'] = 'list';
-				$_POST['slvsid'] = $slvsid;
-				
-				break;
-				
-				case "denied":
-				$login = false;
-				echo "<p>$strLoginFalse</p>";
-				break;
-			}
-		}
-	}
-}
-
-if(!empty($_POST['slvsid'])){
+	// reto 31.8.2017: as far as I understand, athletica trys to connect for the StammData download in order to check the password, but then get the meeting-list elsewhere...
+	// --> removed that stupid part
 	
-	if($_POST['arg'] == "list"){
 		// get meetinglist
 		
 		//$result = $http->send_get('slv.exigo.ch', '/downloads/verbandstagung_201104.ppt' , 'file', 'test.ppt', true);
-		$post = "sid=".$_POST['slvsid'];
-		$result = $http->send_post($webserverDomain, '/meetings/athletica/export_meeting_list.php', $post, 'ini');
-		if(!$result){
+		$post = ""; //sid=".$_POST['slvsid'];
+		
+		// was actually POST, but shall now be GET ...?
+		$result = $http->send_get_TLS($webserverDomain, $cfgSLVuriMeetingList, 'ini', $_POST['clubnr'], $_POST['pass']);
+		if($result===false){ // is really of type false
+			echo('no result');
 			AA_printErrorMsg($strErrLogin);
-		}else{
-			switch($result['login']){
-				
-				case "ok":
-				$login = true;
-				
-				$slvsid = $_POST['slvsid']; // remember session id from slv server
-				$mcontrol = explode(":",$result['Control']);
-				$mname = explode(":",$result['Name']);
-				$mdate = explode(":",$result['Startdate']);
-				
-				$list = true;
-				
-				break;
-				
-				case "denied":
-				$login = false;
-				echo "<p>$strLoginFalse</p>";
-				break;
-			}
+			$login = false; // should show login form again
+		}elseif(!$result){ // can be an emtpy string --> no meetings for this login
+			$noEntry = true;
+		}elseif($result == 'unauthorized'){
+			echo "<p>$strLoginFalse</p>";
+		}elseif ($result != 'unauthorized'){
+			
+			$_POST['arg'] = 'list';
+			
+			$login = true;
+			
+			$mcontrol = explode(":",$result['Control']);
+			$mname = explode(":",$result['Name']);
+			$mdate = explode(":",$result['Startdate']);
+			
+			$list = true; // make it show the list instead of the login page
+			
 		}
 		
 	}elseif($_POST['arg'] == "reg"){
 		// get xml for registrations
 		
-		$post = "sid=".$_POST['slvsid']."&meetingid=".$_POST['control'];
-		$result = $http->send_post($webserverDomain, '/meetings/athletica/export_meeting.php', $post, 'file', 'reg.xml');      
-     
+		$post = "&meetingid=".$_POST['control'];
+		$result = $http->send_post_TLS($webserverDomain, $cfgSLVuriMeetingData, $post, $_POST['clubnr'], $_POST['pass'], 'file', 'reg.xml');      
+        //$result = "C:/Program Files (x86)/athletica/www/athletica_hd/tmp/reg_test.xml";
 		if(!$result){
 			AA_printErrorMsg($strErrLogin);
+		}elseif ($result == 'unauthorized'){
+			AA_printErrorMsg($strLoginFalse);
 		}else{
 			$login = true;
 			$reg = true;
@@ -237,7 +189,7 @@ if(!empty($_POST['slvsid'])){
 	}
    
        
-}
+//}
 
 //
 // show meeting list
@@ -249,8 +201,9 @@ if($list){
 <table class='dialog'>
 <form method="post" action="admin_registration.php" target="_self">
 <input type="hidden" value="reg" name="arg">
-<input type="hidden" value="<?php echo $slvsid; ?>" name="slvsid">
-<input type="hidden" value="<?php echo $mode; ?>" name="mode">  
+<input type="hidden" value="<?php echo $mode; ?>" name="mode">
+<input type="hidden" value="<?php echo $_POST['clubnr']; ?>" name="clubnr">
+<input type="hidden" value="<?php echo $_POST['pass']; ?>" name="pass">
 <tr>
 	<th><?php echo $strBaseMeeting; ?></th>
 </tr>
@@ -261,7 +214,7 @@ if($list){
 	<?php
 	$i = 0;
 	foreach($mcontrol as $control){
-		echo "<option value='$control'>".$mname[$i].", ".$mdate[$i]."</option>";
+		echo "<option value='$control'>".utf8_decode($mname[$i]).", ".$mdate[$i]."</option>"; // TODO: this might fail when date is not available (empty array)
 		$i++;
 	}
 	?>
@@ -283,18 +236,13 @@ if($list){
 
 <?php
 	
+} elseif ($noEntry){
+	echo $strErrNoCompetition;
 }
 
 //
 // show succes on reg xml
 //
-/*
-if($reg){
-	
-	echo "<p>$strBaseRegOk</p>";
-	
-}
-*/
   // athlet with duplicate teams --> user has to choose and this is to save 
  if($_POST['arg'] == "save"){ 
         
@@ -355,7 +303,7 @@ elseif(!$login){
 		<input type="hidden" name="arg" value="login">
 		<tr>
 			<td>
-				<?php echo $strClubNr ?>
+				<?php echo $strSANr ?>
 			</td>
 			<td>
 				<input type="text" name="clubnr" value="">

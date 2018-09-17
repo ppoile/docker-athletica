@@ -392,7 +392,7 @@ document.getElementById("progress").width="<?php echo $width ?>";
                 
                 $relay = AA_checkRelay($row[5]);    // check, if this is a relay event    
                 if ($relay != False){
-                     if ($keep_dCode == $row[3] && $keep_kCode = $row[4] && $keep_Event= $row[5] && $keep_wCat = $row[8]){
+                     if ($keep_dCode == $row[3] && $keep_kCode == $row[4] && $keep_Event == $row[5] && $keep_wCat == $row[8]){
                           // skip hier relays with more than one round (to prevent them double)                             
                           continue;   
                      }  
@@ -926,7 +926,7 @@ document.getElementById("progress").width="<?php echo $width ?>";
                             
                             // get athletes for effort details
                             $cRelayAt = 4;
-                            if($row[9] > 0){ // staffelläufer count of discipline
+                            if($row[9] > 0){ // staffelläµ¦er count of discipline
                                 $cRelayAt = $row[9];
                             }    
                             
@@ -3060,7 +3060,8 @@ function XML_base_end($parser, $name){
                             ,'".trim($athlete['ACCOUNTCODE'])."'
                             ,'".trim($athlete['SECONDACCOUNTCODE'])."'
                             ,'".$bdate."'
-                            ,'".trim($athlete['LASTKNOWNACCOUNTINFO'])."')");
+                            ,'')");
+                            //,'".trim($athlete['LASTKNOWNACCOUNTINFO'])."')");        Vereinsinfo auslassen
             if(mysql_errno() > 0){
                 XML_db_error(mysql_errno().": ".mysql_error());
             }else{
@@ -3161,9 +3162,12 @@ function XML_base_end($parser, $name){
                         , account_code = '".trim($athlete['ACCOUNTCODE'])."'
                         , second_account_code = '".trim($athlete['SECONDACCOUNTCODE'])."'
                         , birth_date = '".$bdate."'
-                        , account_info = '".trim($athlete['LASTKNOWNACCOUNTINFO'])."'
+                        , account_info = ''  
+                        
                     WHERE
                         id_athlete = $xAthlete");
+            
+            // , account_info = '".trim($athlete['LASTKNOWNACCOUNTINFO'])."'       Vereinsinfo
             
             if(mysql_errno() > 0){
                 XML_db_error(mysql_errno().": ".mysql_error());
@@ -3629,7 +3633,7 @@ function XML_reg_start($parser, $name, $attr){
         $strEventTypeClubCombined, $strDiscTypeTrack, $strDiscTypeTrackNoWind, 
         $strDiscTypeRelay, $strDiscTypeDistance, $strErrNoSuchDisCode, $strNoSuchCategory;
     global $cfgCombinedDef, $cfgCombinedWO, $appnbr;   
-    global $cfgSVM, $relay_id, $relay_pos, $relay_round, $relay_xStart, $category, $team_type, $paid;
+    global $cfgSVM, $relay_id, $relay_pos, $relay_round, $relay_xStart, $category, $team_type, $paid, $teamID;
     
     global $arr_noCat, $cfgResDisc, $cfgSvmDiscFirst, $cfgSvmDiscLast;          
   
@@ -3681,7 +3685,15 @@ function XML_reg_start($parser, $name, $attr){
              $catcode = 'U12M';
         } 
         else {
-            $catcode = $attr['CATCODE'];   
+            $catcode = $attr['CATCODE'];
+            
+            // since the 2018 relese of the online-services, the masters categories are transmitted 'correctly', however, athletica does not know these categories (M35_, M40_, W35_, ...), but only mASW and MASM --> replace those with that small regular expression
+            // i (pattern modifier): case insensitive; \d: decimal digit; {2,3}: what comes before match between 2 and 3 times (only one value means exactly as many times)
+            $searchM = '#M[\d]{2}_#i'; 
+            $searchW = '#W[\d]{2}_#i';
+			
+            $catcode = preg_replace($searchM, 'MASM', $catcode);
+            $catcode = preg_replace($searchW, 'MASW', $catcode);
         }
         
         $disname = trim($attr['DISNAME']); // special name of discipline, ordinary disname + info (cold be user defined)
@@ -3703,8 +3715,7 @@ function XML_reg_start($parser, $name, $attr){
                     XML_db_error("23-".mysql_errno().": ".mysql_error());
                }
               $row = mysql_fetch_row($res);
-              $xCatSvm = $row[0];
-                
+              $xCatSvm = $row[0];                     
         }            
        
                                     
@@ -3725,23 +3736,27 @@ function XML_reg_start($parser, $name, $attr){
             
             // if this is a self specified discipline, check onlineid to differentiate
             $SQLdisSpecial = "";
-            if($disspecial == "y"){
+            //if($disspecial == "y"){
+            if($disinfo != ""){
                 $SQLdisSpecial = " AND w.OnlineId = '$disid' ";
-            }else{
-                $disname = ""; // do not fill the info-field with disname if there is no need
-            }
+                $disname = $disinfo;
+            }elseif ($svmCatCode!=""){
+                $disname = $cfgSVM[$svmCatCode."_D"];
+            } else {
+                $disname = $disinfo; // do not fill the info-field with disname if there is no need
+            }  
             
+                      
 
             // if this is a discipline with info, check additonal the info to differentiate
             $SQLdisInfo = "";
-            if(strlen($disinfo) != 0){
+            /*if(strlen($disinfo) != 0){
                 //$SQLdisInfo = " AND w.OnlineId = '$disid' ";
                 $SQLdisInfo = " AND w.Info = '$disinfo' "; 
                 $disname = $disinfo;
             }else{
                 $disname = ""; // do not fill the info-field with disname if there is no need
-            }
-
+            }*/
             
             // combined event
             if(isset($cfgCombinedDef[$discode])){
@@ -3800,7 +3815,7 @@ function XML_reg_start($parser, $name, $attr){
                                        $SQLdisSpecial 
                                        $SQLdisInfo ";            
                                                         
-                        $res = mysql_query($query);  
+                        $res = mysql_query($query); 
                         
                  } 
             }
@@ -3884,8 +3899,22 @@ function XML_reg_start($parser, $name, $attr){
                                 $xDis[] = mysql_insert_id();
                             }  
                         }else{
+                        	// wettkampf already exists
                             $row_dis = mysql_fetch_assoc($res);
-                            $xDis[] = $row_dis['xWettkampf'];
+                            $xDis[] = $row_dis['xWettkampf']; // dont know what this is for...
+                            $xWettk = $row_dis['xWettkampf'];
+                            
+                            // 03.10.2017: Update INFO field
+                            $sql = "UPDATE 
+                            			wettkampf
+                            		SET
+                            			Info='$disname'
+                            		WHERE
+                            			xWettkampf = '$xWettk'";
+                            mysql_query($sql);
+                            if(mysql_errno() > 0){                                 
+                        		XML_db_error("4-".mysql_errno().": ".mysql_error());       
+                     		}
                         }
                     }
                    
@@ -3914,6 +3943,11 @@ function XML_reg_start($parser, $name, $attr){
         }
         $team_id = 0;
         $xTeam = 0;      
+          
+        
+        if ($teamID > 0){
+             $team_id =  $teamID;   
+        } 
         
         if (isset($attr['SVMTEAMID'])){
              $team_id =  $attr['SVMTEAMID'];   
@@ -3923,7 +3957,8 @@ function XML_reg_start($parser, $name, $attr){
              if (mysql_num_rows($res) == 0) {
                  return;
              }
-        }
+        } 
+        
         
         if ($relay_id == 0 && $relayDisc){
               // if event is a relay and the relay-id doesn't exist --> no announcement for the athletes
@@ -4371,8 +4406,7 @@ function XML_reg_start($parser, $name, $attr){
                                                             , xAthletenstart = " . $xStart ."
                                                             , xRunde = " . $relay_round ."
                                                             , Position = " . $relay_pos;
-                                                           
-                                                            
+                                                                   
                                                 $res = mysql_query($sql);
                                                 if(mysql_errno() > 0){
                                                     XML_db_error("16-".mysql_errno().": ".mysql_error());
@@ -4380,7 +4414,19 @@ function XML_reg_start($parser, $name, $attr){
                                             }
                                             
                                         }  
-                                    }
+                                    } else{
+                                    	// update the paid status of the existing entry; nothing else is updated
+										$res_arr = mysql_fetch_row($result);
+										$xStart = $res_arr[0];
+										$sql = "UPDATE start SET
+												Bezahlt = '$paid'
+											WHERE
+												xStart = $xStart";
+										mysql_query($sql);
+										if(mysql_errno() > 0){
+                                     	    XML_db_error("16-".mysql_errno().": ".mysql_error());
+                                        }
+									}
                                 }
                             } // enf foreach
                         } // end xReg > 0  
@@ -4527,6 +4573,7 @@ function XML_reg_start($parser, $name, $attr){
                                             LEFT JOIN runde AS r ON (r.xWettkampf = s.xWettkampf) 
                                          WHERE 
                                             s.xWettkampf = " . $xDis1 ." AND s.xStaffel = " .$relay_id;
+                                 
                                  $res= mysql_query($sql);
                                  if(mysql_errno() > 0){
                                     XML_db_error(mysql_errno().": ".mysql_error());  
