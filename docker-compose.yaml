@@ -7,6 +7,8 @@ services:
             - "./src/athletica/sql/athletica.sql:/docker-entrypoint-initdb.d/athletica.sql"
             - "./config/athletica-grant-super.sql:/docker-entrypoint-initdb.d/athletica-grant-super.sql"
             - "db_data:/var/lib/mysql"
+        ports:
+            - "3306:3306"
         restart: always
         environment:
             - MYSQL_ROOT_PASSWORD=roott
