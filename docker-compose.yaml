@@ -37,5 +37,15 @@ services:
         restart: always
         depends_on:
             - db
+    django:
+        container_name: athletica-adapter
+        image: ppoile/athletica-adapter
+        stdin_open: true
+        tty: true
+        ports:
+            - "8000:8000"
+        restart: always
+        depends_on:
+            - db
 volumes:
     db_data:
