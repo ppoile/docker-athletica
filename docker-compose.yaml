@@ -38,8 +38,8 @@ services:
         depends_on:
             - db
     django:
-        container_name: athletica-adapter
         image: ppoile/athletica-adapter
+        container_name: athletica-adapter
         stdin_open: true
         tty: true
         ports:
