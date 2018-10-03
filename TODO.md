@@ -1,7 +1,6 @@
 TODO
 ====
 
-0. add /var/www/html/athletica/tmp/ to fix result upload
 1. add some tests
 2. update PHP: replace dropped mysql library
 3. update mysql: fix sql-mode:

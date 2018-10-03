@@ -9,3 +9,7 @@ RUN apt-get update \
 COPY config/php.ini /usr/local/etc/php/conf.d/
 
 #COPY src/ /var/www/html/  # for development the php sources are bind mounted
+
+# make temporary directory to store results to be uploaded
+RUN mkdir /var/www/html/athletica/tmp \
+  && chown www-data:www-data /var/www/html/athletica/tmp
