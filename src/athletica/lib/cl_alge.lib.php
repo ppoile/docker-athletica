@@ -576,7 +576,8 @@ Name=$fileHeat
 		}else{
 			if($ini){ // parse ini
 				@fclose($fp);
-				return parse_ini_file($tpath.$filename, true);
+				$content = file_get_contents($tpath.$filename);
+				return parse_ini_string($content, true);
 			}
 			$content = array();
 			while(!feof($fp)){
