@@ -11,5 +11,5 @@ COPY config/php.ini /usr/local/etc/php/conf.d/
 COPY src/ /var/www/html/
 
 # make temporary directory to store results to be uploaded
-RUN mkdir /var/www/html/athletica/tmp \
+RUN mkdir -p /var/www/html/athletica/tmp \
   && chown www-data:www-data /var/www/html/athletica/tmp
