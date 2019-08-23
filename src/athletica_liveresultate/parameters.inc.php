@@ -19,7 +19,7 @@ $cfgDBpass_live = 'athletica';   // password
 // Datenbank mit Installation der Live Resultate 
 $cfgDBhost = 'db'; // MySQL hostname
 $cfgDBport = '';          // MySQL port - leave blank for default port
-$cfgDBname = 'athletica_liveResultate';   // database
+$cfgDBname = 'athletica_liveresultate';   // database
 $cfgDBuser = 'athletica';   // user
 $cfgDBpass = 'athletica';   // password
 
