@@ -43,7 +43,7 @@ if (!defined('AA_TIMETABLE_LIB_INCLUDED'))
             SELECT
                 *
             FROM
-                athletica_liveResultate.config");
+                athletica_liveresultate.config");
         if(mysql_errno() > 0) {
             
             AA_printErrorMsg(mysql_errno() . ": " . mysql_error());

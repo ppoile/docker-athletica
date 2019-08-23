@@ -128,7 +128,7 @@ if (!empty($GLOBALS['cfgDBhost'])) {
             SELECT
                 *
             FROM
-                athletica_liveResultate.config", $db_con_local);
+                athletica_liveresultate.config", $db_con_local);
         if(mysql_errno() > 0) {
             AA_printErrorMsg(mysql_errno() . ": " . mysql_error());
             
@@ -173,7 +173,7 @@ if (!empty($GLOBALS['cfgDBhost'])) {
         
         if (isset($_POST['host']) || isset($_GET['host']) ) { 
           $sql = "UPDATE  
-                        athletica_liveResultate.config 
+                        athletica_liveresultate.config 
                     SET 
                         ftpHost = '". $host ."',
                         ftpUser = '". $user ."',    
