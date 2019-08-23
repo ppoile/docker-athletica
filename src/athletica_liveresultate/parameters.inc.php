@@ -9,7 +9,7 @@
  */
  
 // Athletica Server mit Wettkampf-Daten
-$cfgDBhost_live = '127.0.0.1'; // Athletica Server 
+$cfgDBhost_live = 'db'; // Athletica Server
 $cfgDBport_live = '';          // MySQL port - leave blank for default port
 $cfgDBname_live =  'athletica';   // database
 $cfgDBuser_live = 'athletica';   // user
@@ -17,7 +17,7 @@ $cfgDBpass_live = 'athletica';   // password
 
 
 // Datenbank mit Installation der Live Resultate 
-$cfgDBhost = '127.0.0.1'; // MySQL hostname      
+$cfgDBhost = 'db'; // MySQL hostname
 $cfgDBport = '';          // MySQL port - leave blank for default port
 $cfgDBname = 'athletica_liveResultate';   // database
 $cfgDBuser = 'athletica';   // user
