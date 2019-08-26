@@ -1,10 +1,9 @@
 FROM php:5-apache
 
 RUN apt-get update \
-  && apt-get install -y libsmbclient-dev libssl-dev \
+  && apt-get install -y libsmbclient-dev \
   && pecl install smbclient \
   && docker-php-ext-install mysql \
-  && docker-php-ext-install ftp \
   && docker-php-ext-enable smbclient
 
 COPY config/php.ini /usr/local/etc/php/conf.d/
