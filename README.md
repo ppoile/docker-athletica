@@ -26,3 +26,9 @@ docker-compose down
 docker volume rm dockerathletica_db_data
 docker-compose up
 ```
+
+Bash into docker container:
+
+```bash
+docker exec -it athletica-php /bin/bash
+```
