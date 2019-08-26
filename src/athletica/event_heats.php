@@ -102,7 +102,7 @@ else if($_POST['arg'] == 'change_film') {
 else if($_GET['arg'] == 'seed_heat') {
 	AA_heats_seedHeat($heat);
 }
-
+      
 //
 //	Display heats
 //
@@ -272,8 +272,9 @@ if($round > 0)
     }   
 	$status = AA_getRoundStatus($round);
 	$combined = AA_checkCombined(0, $round);
-	$svm = AA_checkSVM(0, $round); // decide whether to show club or team name
-	
+    $svm = AA_checkSVM(0, $round); // decide whether to show club or team name
+	$lmm = AA_checkLMM(0, $round); // decide whether to show club or team name
+	       
 	$cLast = 0;
 	if($combined){
 		// determine if this is the last discipline -> take combined top performance of previously made events
@@ -316,7 +317,6 @@ if($round > 0)
 	else if(($status == $cfgRoundStatus['heats_in_progress'])
 		|| ($status == $cfgRoundStatus['heats_done']))
 	{
-
 		// add form to add new athletes/relays
 		AA_heats_printNewStart($presets['event'], $round, "event_heats.php");
 
@@ -333,7 +333,7 @@ if($round > 0)
                 WHERE
                     r.xRunde=" .$round;
         $res_r = mysql_query($sql_r);
-       
+    
         if(mysql_errno() > 0) {        // DB error
             AA_printErrorMsg(mysql_errno() . ": " . mysql_error());
         }
@@ -354,7 +354,7 @@ if($round > 0)
 		// name. This trick is necessary as 'Bezeichnung' may be alpha-numeric.)
 		if($relay == FALSE) {		// single event
 			if ($teamsm){
-                  $sql = "SELECT DISTINCT
+                 $sql = "SELECT DISTINCT
                           r.Bahnen
                         , rt.Name
                         , rt.Typ
@@ -422,7 +422,7 @@ if($round > 0)
                         , at.Name
                         , at.Vorname
                         , at.Jahrgang
-                        , if('".$svm."', t.Name, IF(a.Vereinsinfo = '', v.Name, a.Vereinsinfo))
+                        , if('".$svm."' OR '".$lmm."', t.Name, IF(a.Vereinsinfo = '', v.Name, a.Vereinsinfo))
                         , LPAD(s.Bezeichnung, 5, '0') as heatid
                         , ss.Bahn
                         , s.Film
@@ -654,7 +654,7 @@ if($round > 0)
 		<th class='dialog'><?php echo $strAthlete; ?></th>
 		<th class='dialog'><?php echo $strYearShort; ?></th>
 		<th class='dialog'><?php echo $strCountry; ?></th>
-		<th class='dialog' colspan='2'><?php if($svm){ echo $strTeam; }elseif ($teamsm){echo $strTeamsm;} else { echo $strClub;} ?></th>
+		<th class='dialog' colspan='2'><?php if($svm || $lmm){ echo $strTeam; }elseif ($teamsm){echo $strTeamsm;} else { echo $strClub;} ?></th>
         <!--<th class='dialog'><?php //echo $strPreviousSeasonBest; ?></th>-->
 		<th class='dialog'><?php echo $strTopPerformance; ?></th>
 		<?php
@@ -681,7 +681,7 @@ if($round > 0)
 		<th class='dialog'><?php echo $strPositionShort; ?></th>
 		<th class='dialog'><?php echo $strNbr; ?></th>
 		<th class='dialog' colspan='2'><?php echo $strRelay; ?></th>
-        <th class='dialog'><?php if($svm){ echo $strTeam; } else { echo $strClub;} ?></th>
+        <th class='dialog'><?php if($svm  ||$lmm){ echo $strTeam; } else { echo $strClub;} ?></th>
         <!--<th class='dialog'><?php //echo $strPreviousSeasonBest; ?></th>-->
 		<th class='dialog'><?php echo $strTopPerformance; ?></th>
 		<th class='dialog' colspan='2'><?php echo $strTrack; ?></th>

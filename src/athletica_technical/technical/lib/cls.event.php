@@ -56,6 +56,7 @@ function getEvents($meeting = 0, $event = 0){
                             , disziplin.xDisziplin AS xDisziplin
                             , kategorie.xKategorie AS xKategorie
                             , rundentyp.xRundentyp AS xRundentyp
+                            , runde.Gruppe As round_group
                       FROM serie
                         LEFT JOIN runde USING(xRunde)
                         LEFT JOIN wettkampf USING(xWettkampf)

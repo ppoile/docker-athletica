@@ -76,8 +76,9 @@
 
                                     $sel = ($event['xSerie']==CFG_CURRENT_EVENT) ? ' selected="selected"' : '';
                                     $round_bez = ($event['round_type'] != '0') ? $event['round_name']." ".$event['serie_bez'] : $event['serie_bez'];
+                                    $round_group = ($event['round_group'] > 0) ? " (G".$event['round_group'].")": "";
                                     ?>
-                                    <option value="<?=$event['xSerie']?>"<?=$sel?>><?=$event['disc_name']?> - <?=$cat_string?> - <?=$round_bez?> (<?=$event['round_start_date']?> - <?=$event['round_start_time']?>)</option>
+                                    <option value="<?=$event['xSerie']?>"<?=$sel?>><?=$event['disc_name']?> - <?=$cat_string?> - <?=$round_bez?><?=$round_group?> (<?=$event['round_start_date']?> - <?=$event['round_start_time']?>)</option>
                                     <?php
                                 }
                             }

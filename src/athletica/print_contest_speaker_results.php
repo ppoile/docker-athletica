@@ -117,6 +117,7 @@ else
     
     $combined = AA_checkCombined(0, $round);
     $svm = AA_checkSVM(0, $round); // decide whether to show club or team name   
+    $lmm = AA_checkSVM(0, $round); // decide whether to show club or team name   
     
     if (!empty($mRounds)){   
         $infoMerged = "";     
@@ -165,7 +166,7 @@ else
     $silent = ($row[13]==0);
     $hasWind=$row[8];
     
-    if(!$combined && !$svm) {
+    if(!$combined && !$svm && !$lmm) {
 
         switch($layout) {
             case($cfgDisciplineType[$strDiscTypeNone]):
@@ -515,7 +516,7 @@ else
                             , at.Name
                             , at.Vorname
                             , at.Jahrgang
-                            , if('$svm', t.Name, IF(a.Vereinsinfo = '', v.Name, a.Vereinsinfo))
+                            , if('$svm' OR '$lmm', t.Name, IF(a.Vereinsinfo = '', v.Name, a.Vereinsinfo))
                             , LPAD(s.Bezeichnung,5,'0') as heatid
                             , ss.Bahn
                             , s.Film
@@ -563,7 +564,7 @@ else
                             , an.Bezeichnung
                             , sf.xStaffel
                             , sf.Name
-                            , if('$svm', t.Name, v.Name)
+                            , if('$svm' OR '$lmm', t.Name, v.Name)
                             , LPAD(s.Bezeichnung,5,'0') as heatid
                             , r.xRunde
                             , s.Film
@@ -975,7 +976,7 @@ else
                                 $doc->printRecordSL($sl_result[$i], $sl_name[$i], $sl_cat[$i]);
                             }
                             
-                            if($combined || $svm) {
+                            if($combined || $svm || $lmm) {
                                 $doc->printHeatTitleCombined($heat, $row[5], $filmnr, $prev_rnd_name);
                             } else  {
                                 $doc->printHeatTitle($heat, $row[5], $filmnr, $prev_rnd_name, $wind);
@@ -1008,7 +1009,7 @@ else
                         
                         if($relay == FALSE) {
                             
-                            if($combined || $svm) {
+                            if($combined || $svm || $lmm) {
                                 $doc->printHeatLine($row[12], $row[6], "$row[8] ".strtoupper($row[7])
                                     , AA_formatYearOfBirth($row[9]), $row[10], $row[4], $row[14],$season_effort,$best_effort, $palmares, $res_prev_text.$res_remark, $row_result['points'], $wind);
                             } else {
@@ -1391,7 +1392,7 @@ else
                             $doc->printRecordSL($sl_result[$i], $sl_name[$i], $sl_cat[$i]);
                         }
                         
-                        if($combined || $svm) {
+                        if($combined || $svm || $lmm) {
                                 $doc->printHeatTitleCombined($heat, $row[5], '', $prev_rnd_name);
                         } else  {
                             $doc->printHeatTitle("$heat", $row[5], '', $prev_rnd_name);
@@ -1420,7 +1421,7 @@ else
                         $b = 1;
                     }
                     
-                    if($combined || $svm) {  
+                    if($combined || $svm || $lmm) {  
                                      
                         $doc->printHeatLine($row[6], "$row[8] ".strtoupper($row[7])
                         , AA_formatYearOfBirth($row[9]), $row[10], $row[14],$season_effort,$best_effort, $row[4], $palmares, $result_qual.$res_remark, $row_result['points'], $res_wind);

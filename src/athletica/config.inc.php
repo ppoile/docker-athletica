@@ -16,7 +16,7 @@
  * Application Info
  */
 $cfgApplicationName = 'Athletica';
-$cfgApplicationVersion = '8.2';
+$cfgApplicationVersion = '8.4';
 $cfgInstallDir = 'C:\Program Files (x86)\athletica';
 
 /**
@@ -93,7 +93,9 @@ $cfgBackupCompatibles = array(
 	'7.2.1',
 	'8.0',
     '8.1',
-    '8.2'
+    '8.2',
+	'8.3',
+	'8.4'
 );
 
 
@@ -540,7 +542,7 @@ $cfgSVM = array('29_01' => array(40,50,70,90,140,271,301,560,310,320,330,340,351
             , '36_09_F' => 1
             , '36_09_ET' => 11 
             , '36_09_C' => 'U12M'   
-            , '36_09_D' => 'MIX'  
+            , '36_09_D' => 'MIXED'  
             
             , '99_01_C' => 'U16W'   
             , '99_02_C' => 'U16M'   
@@ -551,7 +553,7 @@ $cfgSVM = array('29_01' => array(40,50,70,90,140,271,301,560,310,320,330,340,351
             , '99_07_C' => 'U20M'   
             , '99_08_C' => 'WOM_'   
             , '99_09_C' => 'MAN_'   
-            , '99_10_C' => 'MIX'   
+            , '99_10_C' => 'MIXE'   
             , '99_11_C' => 'MASW'   
             , '99_12_C' => 'MASM'   
             );

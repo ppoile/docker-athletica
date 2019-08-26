@@ -108,6 +108,7 @@ else
 // read round data
 if($round > 0)
 {
+    $lmm = AA_checkLMM(0, $round); // decide whether to show club or team name
 	$relay = AA_checkRelay($event);
 	if($relay == FALSE) {		// single event
 		$XXXPresent = $strAthletesPresent;
@@ -472,7 +473,7 @@ if($round > 0)
 ?>
 				 <tr>
 					 <th class='dialog'><?php echo $strMode; ?></th>
-					 <td><input name='mode' type='radio' value='0' checked>
+					 <td><input name='mode' type='radio' value='0' <?php if(!$lmm) {echo 'checked';} ?>>
 						 <?php echo $strModeOpen; ?></input></td>
 				 </tr>
 				 <tr>
@@ -487,7 +488,7 @@ if($round > 0)
 				 </tr>
                  <tr>
                      <td />
-                     <td><input name='mode' type='radio' value='3'>
+                     <td><input name='mode' type='radio' value='3' <?php if($lmm) {echo 'checked';} ?>>
                          <?php echo $strTeam; ?></input></td>
                  </tr>
 <?php

@@ -63,6 +63,7 @@ $(document).ready(function(){
             @import "css/table-results.css";
             @import "css/table-results-details.css";
             @import "css/table-results-combined.css";
+            @import "css/table-results-TeamSM.css";
             @import "css/table-startlist.css";
             @import "css/table-athletes.css";
             @import "css/style.css";

@@ -82,6 +82,17 @@ function AA_heats_seedEntries($event)
 	{
 		$row = mysql_fetch_row($result);
 	}
+    
+    if(($row[0] == $cfgDisciplineType[$strDiscTypeTrack])
+            || ($row[0] == $cfgDisciplineType[$strDiscTypeTrackNoWind])
+            || ($row[0] == $cfgDisciplineType[$strDiscTypeRelay])
+            || ($row[0] == $cfgDisciplineType[$strDiscTypeDistance]))
+    {
+        $trackevent = true;
+    } else {
+        $trackevent = false;
+    }
+    
 	
 	if($mode == 0 && !$svmContest) {	// open mode
 		// random order
@@ -97,7 +108,7 @@ function AA_heats_seedEntries($event)
 			}
 	} 
     elseif  ($mode == 3 && !$svmContest){
-             $order = "t.Name, a.Startnummer";    // field disciplines
+             $order = "t.Name, a.Startnummer";  
              $badValue = "0";
              $orderFirst = '';
         
@@ -188,7 +199,8 @@ function AA_heats_seedEntries($event)
                             s.xStart, 
                             if(Bestleistung = 0, $badValue, Bestleistung) as best, 
                             r.xRunde, 
-                            t.Name
+                            t.Name,
+                            t.xTeam
                      FROM 
                             start as s
                             LEFT JOIN anmeldung as a ON (s.xAnmeldung = a.xAnmeldung)  
@@ -206,7 +218,8 @@ function AA_heats_seedEntries($event)
             $query = "SELECT 
                             xStart, if(Bestleistung = 0, $badValue, Bestleistung) as best, 
                             r.xRunde,
-                            t.Name
+                            t.Name,
+                            t.xTeam
                      FROM 
                             start as s 
                             Left JOIN staffel as st ON (s.xStaffel = st.xStaffel) 
@@ -228,7 +241,8 @@ function AA_heats_seedEntries($event)
                                 if(BestleistungMK = 0, $badValue, BestleistungMK) as best, 
                                 a.xAthlet,
                                 r.xRunde, 
-                                t.Name
+                                t.Name,
+                                t.xTeam
                           FROM 
                                 start as s 
                                  LEFT JOIN anmeldung as a ON (s.xAnmeldung = a.xAnmeldung)  
@@ -246,7 +260,8 @@ function AA_heats_seedEntries($event)
                                 xStart, 
                                 if(Bestleistung = 0, $badValue, Bestleistung) as best, 
                                 a.xAthlet, 
-                                t.Name
+                                t.Name,
+                                t.xTeam
                           FROM 
                                 start as s 
                                 LEFT JOIN anmeldung as a ON (s.xAnmeldung = a.xAnmeldung)  
@@ -264,7 +279,8 @@ function AA_heats_seedEntries($event)
                                 if(Bestleistung = 0, $badValue, Bestleistung) as best, 
                                 a.xAthlet,
                                 r.xRunde, 
-                                t.Name
+                                t.Name,
+                                t.xTeam
                           FROM 
                                 start as s 
                                 LEFT JOIN anmeldung as a ON (s.xAnmeldung = a.xAnmeldung)    
@@ -283,7 +299,8 @@ function AA_heats_seedEntries($event)
         $query = "SELECT 
                         xStart, 
                         if(Bestleistung = 0, $badValue, Bestleistung) as best, 
-                        t.Name
+                        t.Name,
+                        t.xTeam
                   FROM 
                         start as s 
                         LEFT JOIN anmeldung as a ON (s.xAnmeldung = a.xAnmeldung)
@@ -320,7 +337,7 @@ function AA_heats_seedEntries($event)
         $count_team = 0;
         $pos = strpos($query, "ORDER");   
         $query_team = substr($query, 0, $pos);
-        $query_team .= " GROUP BY t.Name";  
+        $query_team .= " GROUP BY t.xTeam";  
         $res_group = mysql_query($query_team);  
         if(mysql_errno() > 0)        // DB error
             {
@@ -607,26 +624,26 @@ function AA_heats_seedEntries($event)
 								{      
                                         //$series_big = $entries%($size-1); //Anzahl Serien mit mehr Athleten als in den anderen (damit es keine Mini-Serien gibt)
                                         $series_big = $h+$entries-$h*$size; //Anzahl Serien mit mehr Athleten als in den anderen (damit es keine Mini-Serien gibt)
-                                        if ($p > $size || ($series_big > 0 && $i+1 > $series_big && $p > $size-1)) {	// heat full -> start new heat
-                                            if ($_POST['mode'] == 3 ) {
+                                        // if ($p > $size || ($series_big > 0 && $i+1 > $series_big && $p > $size-1)) {	// heat full -> start new heat
+                                            if ($_POST['mode'] == 3 && $trackevent) {
                                                 if ($combined && empty($cGroup)){ 
-                                                    if ($row[4] != $team_keep){
+                                                    if ($team_keep>0 && $row[5] != $team_keep){
                                                         $i++;        // next heat
                                                         $p = 1;    // restart with first position  
                                                     }
                                                 }
                                                 else {
-                                                    if ($row[3] != $team_keep){
+                                                    if ($team_keep>0 && $row[4] != $team_keep && $i<($h-1)){
                                                         $i++;        // next heat
                                                         $p = 1;    // restart with first position  
                                                     }
                                                 } 
                                             } 
-                                            else {   
+                                            elseif ($p > $size || ($series_big > 0 && $i+1 > $series_big && $p > $size-1)) {    // heat full -> start new heat {   
 										        $i++;		// next heat
 										        $p = 1;	// restart with first position 
                                             }  
-									    }    
+									    //}    
                                         
 									
                                     if(!empty($cfgTrackOrder[$tracks][$p]) && $_POST['mode'] != 3) {
@@ -663,6 +680,7 @@ function AA_heats_seedEntries($event)
                                                 . ", xStart = " . $row[0]
                                                 . ", Bemerkung = '" . $remark."'");   
                                    }
+                                   
 
 									if(mysql_errno() > 0) {		// DB error
 										AA_printErrorMsg(mysql_errno() . ": " . mysql_error());
@@ -671,11 +689,11 @@ function AA_heats_seedEntries($event)
                                     AA_StatusChanged(0, $heats[$i]);                                   
                                     
 									$p++;		// next position
-                                if ($combined){
-                                    $team_keep=$row[4];
+                                if ($combined && empty($cGroup)){
+                                    $team_keep=$row[5];
                                 }
                                 else {
-                                   $team_keep=$row[3]; 
+                                   $team_keep=$row[4]; 
                                 }
                                 
 								} 
@@ -2054,6 +2072,7 @@ function AA_heats_printNewStart($event, $round, $action)
 	}
 
 	$relay = AA_checkRelay($event);
+    $lmm= AA_checkLMM($event);
     
     $mergedEvents=AA_getMergedEventsFromEvent($event);   
     if ($mergedEvents!='')
@@ -2065,20 +2084,22 @@ function AA_heats_printNewStart($event, $round, $action)
 	if($relay == FALSE) {		// single event
 		$title = $GLOBALS['strAthlete'];
 		
+        
         $query = "SELECT 
                         st.xStart
                         , CONCAT(a.Startnummer, ' ', at.Name , ' ', at.Vorname
-                        , ', ',  at.Jahrgang, ', ', v.Name)
+                        , ', ',  at.Jahrgang, ', ', IF('".$lmm."',t.Name,v.Name))
                   FROM 
                         start AS st
                         LEFT JOIN anmeldung AS a ON (a.xAnmeldung = st.xAnmeldung)
                         LEFT JOIN athlet AS at ON (at.xAthlet = a.xAthlet)
                         LEFT JOIN verein AS v ON (v.xVerein = at.xVerein)
+                        LEFT JOIN team AS t ON (t.xTeam = a.xTeam)
                   WHERE 
                         st.xWettkampf " . $SqlEvents ."
                         AND st.xStart NOT IN (" . $keys . ")  
-                  ORDER BY at.Name, at.Vorname";  
-
+                  ORDER BY IF('".$lmm."',a.Startnummer,at.Name), at.Vorname"; 
+        
 	}
 	else {								// relay event
 		$title = $GLOBALS['strRelay'];

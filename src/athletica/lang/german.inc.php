@@ -946,6 +946,8 @@ $strBackupLast = "letztes Backup:";
 $strBackupText  = "Mit dieser Funktion kann in einem beliebigen Intervall ein automatisches Backup (SQL File alles Meetings ohne Stammdaten) erstellt werden.<br/>Änderungen am Intervall oder Pfad müssen zwingend mit 'Speichern' bestätigt werden!<br/>";
 $strBackupText2  = "Dieses Fenster muss für das automatische Backup immer geöffnet sein (z.B. in einem zweiten Browser-Tab)!";
 
+$ukc_finisherclips = "Export Finisherclips";
+
 $test = "test"; // stehen alssen für translate.php
 
 ?>

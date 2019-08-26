@@ -30,8 +30,12 @@ function getAthletes($event, $xSerienstart = 0) {
                         , Position AS ath_pos
                         , Starthoehe AS ath_start
                         , IF((SELECT COUNT(*) FROM resultat WHERE xSerienstart = serienstart.xSerienstart AND Leistung IN (".implode(',', $glb_results_skip).")), 1, 0) AS skip
+                        , athlet.Geschlecht
                         FROM serienstart  
                             LEFT JOIN resultat USING(xSerienstart) 
+                            LEFT JOIN start USING(xSerienstart)
+                            LEFT JOIN anmeldung USING(xStart)
+                            LEFT JOIN athlet USING(xAnmeldung)
                         WHERE xSerie = :serie 
                         ".$and_id."
                         GROUP BY xSerienstart 
@@ -1407,7 +1411,7 @@ function calcRankingPoints($round){
                         $qry = $glb_connection_server->prepare($sql);
                         $qry->execute();
                         
-                        AA_StatusChanged($row[0]);                           
+                        StatusChanged($row[0]);                           
                         
                         continue; // skip
                     }
@@ -1463,7 +1467,7 @@ function calcRankingPoints($round){
                 $qry = $glb_connection_server->prepare($sql);
                 $qry->execute();
                 
-                 AA_StatusChanged($key);                    
+                 StatusChanged($key);                    
             }
         } // endif $valid
         
@@ -1540,6 +1544,19 @@ function calcPoints($event, $perf, $fraction = 0, $sex = 'M', $startID){
                 // if ranking points are set, return
                 if($row[1] == $cvtTable[$strConvtableRankingPoints] || $row[1] == $cvtTable[$strConvtableRankingPointsU20]){
                     return 0;
+                }
+                
+                // if mixed table assign the correct table
+                if($row[1] == $cvtTable[$strConvtableSLV2010Mixed]) {
+                    switch(strtoupper($sex)) {
+                        case "M":
+                            $row[1] = $cvtTable[$strConvtableSLV2010Men];
+                            break;
+                        case "W" :
+                            $row[1] = $cvtTable[$strConvtableSLV2010Women];
+                            break;
+                        default:
+                    }
                 }
 
                 // track disciplines: performance in 1/100 sec

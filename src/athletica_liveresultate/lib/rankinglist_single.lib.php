@@ -68,8 +68,7 @@ if (!defined('AA_RANKINGLIST_SINGLE_LIB_INCLUDED'))
                     rt.Name As rnd_rtName,
                     rt.Typ As rnd_rtTyp,
                     rt.Wertung As rnd_rtWertung,
-                    rs.Hauptrunde As rnd_main,
-                    r.StatusZeitmessung As rnd_status_timing
+                    rs.Hauptrunde As rnd_main 
                 FROM
                     athletica.wettkampf AS w
                     LEFT JOIN athletica.kategorie AS k ON (k.xKategorie = w.xKategorie)
@@ -137,7 +136,6 @@ if (!defined('AA_RANKINGLIST_SINGLE_LIB_INCLUDED'))
         }
         else {
             $event_act = 0;
-            $cat_merged = "";
             
             $content_res = "<?php\r\n ";
             $content_res .= "include('include/header.php');\r\n ";
@@ -146,14 +144,6 @@ if (!defined('AA_RANKINGLIST_SINGLE_LIB_INCLUDED'))
             $content_res .= "<div data-role='header' data-theme='b' data-id='header' data-position='fixed' data-tap-toggle='false'>\r\n";
             $content_res .= "<a href='timetable".$id_back.".php' data-icon='back' data-transition='slide' data-direction='reverse'>".$GLOBALS['strBack']."</a>\r\n";
             $content_res .= "<a data-icon='refresh' onclick='refreshPage();'>".$GLOBALS['strRefresh']."</a>\r\n";
-            
-            if($eventMerged) {
-                while($row_rnd = mysql_fetch_assoc($res_rnd)){
-                    $cat_merged .= $row_rnd['rnd_cat'] . " / ";    
-                }
-                $cat_merged = substr($cat_merged,0, -3);  
-                $res_rnd = mysql_query($sql_rnd);
-            }
             
             while($row_rnd = mysql_fetch_assoc($res_rnd)){
                 $show_all = false;
@@ -189,11 +179,7 @@ if (!defined('AA_RANKINGLIST_SINGLE_LIB_INCLUDED'))
                             $round_name = ", ".$roundName;
                         }          
         
-                        if(!$eventMerged) {
-                            $content_res .= "<h1>".$row_rnd['rnd_dis'].$round_name." - ".$row_rnd['rnd_cat']."</h1>\r\n";
-                        } else {
-                            $content_res .= "<h1>".$row_rnd['rnd_dis'].$round_name." - ".$cat_merged."</h1>\r\n";
-                        }
+                        $content_res .= "<h1>".$row_rnd['rnd_dis'].$round_name." - ".$row_rnd['rnd_cat']."</h1>\r\n";
                         
                         $content_res .= "</div>\r\n";
                         $content_res .= "<div class='header-content' data-id='header-content'>\r\n";
@@ -395,7 +381,6 @@ if (!defined('AA_RANKINGLIST_SINGLE_LIB_INCLUDED'))
                                 at.Vorname,
                                 res_perf_sort " 
                                 .$order_perf; 
-                                
                     }
                     else {                        // relay event
                         $sql_res = "
@@ -440,7 +425,7 @@ if (!defined('AA_RANKINGLIST_SINGLE_LIB_INCLUDED'))
                             GROUP BY 
                                 ss.xSerienstart 
                             ORDER BY 
-                                ".$order_heat." 
+                                ".$order." 
                                 ".$order_rank."
                                 res_perf_sort 
                                 ".$order_perf.", 

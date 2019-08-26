@@ -124,7 +124,8 @@ else if(mysql_num_rows($result) > 0)  // data found
 					LEFT JOIN athlet AS at ON (a.xAthlet = at.xAthlet)
 				WHERE a.xTeam = $row[0]    
 				ORDER BY
-					at.Name
+                    a.Startnummer
+					, at.Name
 					, at.Vorname
 			");                
            

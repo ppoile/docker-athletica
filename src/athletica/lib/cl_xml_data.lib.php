@@ -3726,7 +3726,10 @@ function XML_reg_start($parser, $name, $attr){
             // check discode and return if it doesn't exists
             $res = mysql_query("SELECT xDisziplin FROM disziplin_" . $_COOKIE['language'] . " WHERE Code = '$discode'");
             if(mysql_errno() == 0){
-                if(mysql_num_rows($res) == 0 && ($discode < $cfgResDisc && $discode > $cfgSvmDiscLast )){
+            	// RF 2019: here was something wrong:
+            	// $sfgResDisc=811, $cfgSvmDiscLast=819 --> it is not possible that the latter part of the following statement will ever be true like this; it should likely be an || instead of && in the latter part. (as it is also on line 3875)
+                //if(mysql_num_rows($res) == 0 && ($discode < $cfgResDisc && $discode > $cfgSvmDiscLast )){ 
+                if(mysql_num_rows($res) == 0 && ($discode < $cfgResDisc || $discode > $cfgSvmDiscLast )){ 
                     echo "<p>$strErrNoSuchDisCode $disname ($discode)</p>";
                     return;
                 }
@@ -3939,8 +3942,11 @@ function XML_reg_start($parser, $name, $attr){
         $effort = $attr['NOTIFICATIONEFFORT'];
                                               
         if ($relay_id > 0){
-             $relay_pos++;
+             $relay_pos = $attr['SORT'];     
         }
+        
+        
+        
         $team_id = 0;
         $xTeam = 0;      
           
@@ -4227,7 +4233,7 @@ function XML_reg_start($parser, $name, $attr){
                                     $xCat = $row[0];                                    
                                     
                                     if($xCat!=''){
-                                        mysql_query("    INSERT INTO anmeldung SET
+                                        mysql_query("INSERT INTO anmeldung SET
                                                     Startnummer = 0
                                                     , Bezahlt = '$paid'
                                                     , xAthlet = $xAthlete
@@ -4472,7 +4478,19 @@ function XML_reg_start($parser, $name, $attr){
                     
                     if(mysql_num_rows($result) > 0){   
                         $row = mysql_fetch_array($result);
-                        $cat = $row[0];
+                        
+                        $result = mysql_query("    SELECT w.xKategorie FROM wettkampf As w
+                                        WHERE 
+                                                w.xWettkampf = '$xDis1'");
+                                                                                                      
+                        if(mysql_errno() > 0){
+                            XML_db_error(mysql_errno().": ".mysql_error());
+                        }else{
+                            $row = mysql_fetch_array($result);
+                        
+                        
+                            $cat = $row[0];
+                        }
                         
                          if (empty($teamID)) { 
                              $teamID = 0;
@@ -4628,6 +4646,9 @@ function XML_reg_start($parser, $name, $attr){
                                                 XML_db_error(mysql_errno().": ".mysql_error());
                                             }
                                             $relay_round = mysql_insert_id();      
+                                    } else {
+                                        $row=mysql_fetch_row($res);
+                                        $relay_round = $row[0];   
                                     }  
                             }                           
                       }                             

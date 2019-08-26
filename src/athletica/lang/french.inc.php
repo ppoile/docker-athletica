@@ -67,6 +67,7 @@ $strConvtableIAAF85Men = "IAAF 85, hommes";
 $strConvtableIAAF85Women = "IAAF 85 femmes"; 
 $strConvtableSLV2010Men = "FSA 2010, hommes"; 
 $strConvtableSLV2010Women = "FSA 2010 femmes"; 
+$strConvtableSLV2010Mixed = "FSA 2010, mixed";
 $strConvtableSVMMenNL = "LNA-C CSI, hommes"; 
 $strConvtableSVMWomenNL = "LNA-C CSI, femmes"; 
 $strCover = "Page de titre"; 
@@ -932,4 +933,6 @@ $strStopp = "stop";
 $strBackupTime1 = "sauvegarde toutes les "; 
 $strBackupTime2 = " minutes"; 
 $strBackupLast = "dernière sauvegarde"; 
+
+$ukc_finisherclips = "Export Finisherclips";
 ?>

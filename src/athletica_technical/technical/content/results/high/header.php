@@ -62,7 +62,7 @@ $meeting_date = ($meeting['meeting_date_from'] != $meeting['meeting_date_to']) ?
         </td>
     </tr>
     <tr class="event_header">
-        <td><?=($events['round_name']!='') ? $events['round_name']." ".$events['serie_bez'] : ''?></td>
+        <td colspan="2"><?=($events['round_name']!='') ? $events['round_name']." ".$events['serie_bez'] : ''?><?=($events['round_group'] > 0) ? " (G".$events['round_group'].")" : ''?></td>
     </tr>
     
 </table>

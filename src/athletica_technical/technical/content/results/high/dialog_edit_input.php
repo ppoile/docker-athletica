@@ -89,7 +89,7 @@ $athlete = getAthleteDetails($athlete_id, false, 'ath_pos', 0, true);
                 res_id: res_id,  
                 round: round,
                 event: event,          
-                height: height,          
+                height: height,                  
             };
             
             $.ajax({

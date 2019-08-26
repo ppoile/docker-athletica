@@ -181,11 +181,8 @@ if($_GET['arg'] == 'backup')
 					$cma = "";
 					
 					foreach($fieldArray as $f){
-						if(substr($f['Type'],0,3) == 'int') {
-							if($tabrow[$f['Field']] == '')
-								$values = $values . $cma . "NULL";
-							else
-								$values = $values . $cma . $tabrow[$f['Field']];
+						if(substr($f['Type'],0,3) == 'int') {	
+							$values = $values . $cma . $tabrow[$f['Field']];
 						} else {
 							$values = $values . $cma . "'" . addslashes($tabrow[$f['Field']]) . "'";
 						}
@@ -340,7 +337,7 @@ else if ($_POST['arg'] == 'restore')
          
 		// since version 1.9 the backup contains a termination line
 		if($shortVersion >= 1.9){
-			$term = substr(rtrim($content), -9);
+			$term = substr($content, -9);
 			if($term != "#*ENDLINE"){
 				$validBackup = false;
 			}else{
@@ -2725,8 +2722,10 @@ else if ($_POST['arg'] == 'restore')
                                     (35,'W09','U10 W09',37,9,'W09','w','y','y'),
                                     (36,'W08','U10 W08',38,8,'W08','w','y','y'),
                                     (37,'W07','U10 W07',39,7,'W07','w','y','y'),
-                                    (38,'MIX','Mixed',19,99,'MIX','m','y','n'),
-                                    (39,'U18X','U18 Mixed',20,17,'U18X','m','y','n');");
+                                    (38,'MIXE','Männer/Frauen Mixed',22,99,'MIXE','m','y','n'),
+                                    (39,'U18X','U18 Mixed',19,17,'U18X','m','y','n'),
+                                    (40,'U20X','U20 Mixed',20,19,'U20X','m','y','n'),
+                                    (41,'U23X','U23 Mixed',21,22,'U23X','m','y','n');");
                                     
             // update disziplin for all backups
             mysql_query("REPLACE INTO disziplin_de(xDisziplin,Kurzname,Name,Anzeige,Seriegroesse,Staffellaeufer,Typ,Appellzeit,Stellzeit,Strecke,Code,xOMEGA_Typ,aktiv) VALUES 

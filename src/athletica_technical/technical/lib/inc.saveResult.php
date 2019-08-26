@@ -642,7 +642,7 @@ function AA_utils_calcRankingPoints($round){
                             AA_printErrorMsg(mysql_errno() . ": " . mysql_error());
                         }
                         
-                        AA_StatusChanged($row[0]);                           
+                        StatusChanged($row[0]);                           
                         
                         continue; // skip
                     }
@@ -698,7 +698,7 @@ function AA_utils_calcRankingPoints($round){
                     AA_printErrorMsg(mysql_errno() . ": " . mysql_error());
                 }
                 
-                 AA_StatusChanged($key);                    
+                 StatusChanged($key);                    
             }
             
         }

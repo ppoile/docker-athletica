@@ -118,6 +118,12 @@ $disc_code = array(
 // end config
 // **********
 
+// first get the year of the competition, for the calculation of the ages of athletes...
+$res = mysql_query("select DatumVon from meeting where xMeeting='".$_COOKIE['meeting_id']."'") or die(mysql_error());
+$row = mysql_fetch_row($res);
+$arr = explode("-",$row[0]);
+$meetingYear = $arr[0];
+
 if (!empty($_POST['project']) and !empty($_FILES['csvfile']['name'])) {
 
 	$wettk = array();
@@ -144,15 +150,23 @@ if (!empty($_POST['project']) and !empty($_FILES['csvfile']['name'])) {
 			$z=$disc["1000"]; 
 		}else{
 			$z=$disc[$catname];
-		}
-		$res = mysql_query("select xWettkampf from wettkampf where xKategorie='".$c."' and xDisziplin='".$z."' and Info='".$catname."' and xMeeting='".$_COOKIE['meeting_id']."'") or die (mysql_error());
-		if (mysql_num_rows($res)>1) {
+		}        
+                
+        // calculate the birthyear of this category, as it is used in the new way of Info-Definition.
+        $catBirthyear = $meetingYear - (int)substr($catname,1);
+        
+        // category and info together should be unique
+        $res = mysql_query("select xWettkampf from wettkampf where xKategorie='".$c."' and xDisziplin='".$z."' and Info in ('".$catname."', '".$catBirthyear."') and xMeeting='".$_COOKIE['meeting_id']."'") or die (mysql_error());
+        if (mysql_num_rows($res)>1) {
 			// only one wettkampf per categorie and discipline is allowed
 			exit("In der Kategorie ".$catname." ist die Disziplin mehrmals erfasst. Der Import wird abgebrochen. ");
 		} elseif (mysql_num_rows($res)==0) {
 			// create wettkampf
-			mysql_query("insert into wettkampf(xDisziplin, xMeeting, xKategorie, Info) values('".$z."','".$_COOKIE['meeting_id']."','".$c."','".$catname."')") or die(mysql_error());
-			$wettk[$catname] = mysql_insert_id();
+			// old:
+            //mysql_query("insert into wettkampf(xDisziplin, xMeeting, xKategorie, Info) values('".$z."','".$_COOKIE['meeting_id']."','".$c."','".$catname."')") or die(mysql_error());
+            // new: uses catBirthYear as info
+            mysql_query("insert into wettkampf(xDisziplin, xMeeting, xKategorie, Info) values('".$z."','".$_COOKIE['meeting_id']."','".$c."','".$catBirthyear."')") or die(mysql_error());
+            $wettk[$catname] = mysql_insert_id();
 		} else {
 			// wettkampf exists --> get id
 			$row = mysql_fetch_array($res);
@@ -287,10 +301,7 @@ if (!empty($_POST['project']) and !empty($_FILES['csvfile']['name'])) {
 		    
 		    // if not athlet has already inscription, make inscription for meeting
 		    // calculate "Category-Name" by finding out the age
-		    $res = mysql_query("select DatumVon from meeting where xMeeting='".$_COOKIE['meeting_id']."'") or die(mysql_error());
-		    $row = mysql_fetch_row($res);
-		    $arr = explode("-",$row[0]);
-		    $age_i = $arr[0]-$year;
+		    $age_i = $meetingYear-$year;
 		    
 		    // if younger than 7 years -> Category is M07/W07
 		    if ($age_i<7) {

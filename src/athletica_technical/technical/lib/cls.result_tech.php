@@ -204,7 +204,7 @@ function getAthleteDetails($athlete = 0, $result = false, $order = 'ath_pos', $m
                         , athlet.Name AS ath_name
                         , athlet.Vorname AS ath_firstname
                         , athlet.Jahrgang AS ath_yob
-                        , verein.Name AS ath_club
+                        , IF(team.Name != '', team.Name, verein.Name) AS ath_club
                         ".$select_result."
                     FROM serienstart
                         LEFT JOIN serie USING(xSerie)
@@ -213,6 +213,7 @@ function getAthleteDetails($athlete = 0, $result = false, $order = 'ath_pos', $m
                         LEFT JOIN athlet USING(xAthlet)
                         LEFT JOIN verein USING(xVerein) 
                         LEFT JOIN resultat USING(xSerienstart)
+                        LEFT JOIN team USING (xTeam)
                     WHERE 
                         ".$where."
                         ".$and."
@@ -600,12 +601,11 @@ function getCurrentAttempt($event, $maxRang) {
         $sql_attempt = "    SELECT xSerienstart
                                 ,COUNT(Leistung) AS results
                                 , IF((SELECT COUNT(*) FROM resultat WHERE xSerienstart = serienstart.xSerienstart AND Leistung IN (".implode(',', $glb_results_skip).")), 1, 0) AS skip
-                        FROM resultat
-                            LEFT JOIN serienstart USING(xSerienstart)
+                        FROM serienstart
+                            LEFT JOIN resultat USING(xSerienstart)
                         WHERE xSerie = :serie
                         ".$and_rank."
                         GROUP BY xSerienstart
-                        HAVING skip = 0
                         ORDER BY results ASC
                         LIMIT 1;";
                         
@@ -762,13 +762,12 @@ function checkDrop($event, $maxRang) {
         $sql_attempts = "SELECT xSerienstart
                                 ,COUNT(Leistung) AS results
                                 , IF((SELECT COUNT(*) FROM resultat WHERE xSerienstart = serienstart.xSerienstart AND Leistung IN (".implode(',', $glb_results_skip).")), 1, 0) AS skip
-                        FROM resultat
-                            LEFT JOIN serienstart USING(xSerienstart)
+                        FROM serienstart
+                            LEFT JOIN resultat USING(xSerienstart)
                             LEFT JOIN serie USING(xSerie)
                         WHERE xRunde = :runde
                         ".$and_rank."
                         GROUP BY xSerienstart
-                        HAVING skip = 0
                         ORDER BY results ASC;";
               
         $query_attempts = $glb_connection_server->prepare($sql_attempts);
@@ -1189,7 +1188,7 @@ function calcRankingPoints($round){
                         $qry = $glb_connection_server->prepare($sql);
                         $qry->execute();
                         
-                        AA_StatusChanged($row[0]);                           
+                        StatusChanged($row[0]);                           
                         
                         continue; // skip
                     }
@@ -1245,7 +1244,7 @@ function calcRankingPoints($round){
                 $qry = $glb_connection_server->prepare($sql);
                 $qry->execute();
                 
-                 AA_StatusChanged($key);                    
+                StatusChanged($key);                    
             }
         } // endif $valid
         
@@ -1254,7 +1253,7 @@ function calcRankingPoints($round){
     }
 }
 
-function calcPoints($event, $perf, $fraction = 0, $sex = 'M', $startID){  
+function calcPoints($event, $perf, $fraction = 0, $sex = 'M', $startID, $sex_ath = 'M'){  
     global $glb_connection_server;
     global $cvtTable, $cfgDisciplineType, $strDiscTypeTrack, $strDiscTypeTrackNoWind, $strDiscTypeRelay, $strDiscTypeDistance, $cvtFormulas;
     
@@ -1322,6 +1321,19 @@ function calcPoints($event, $perf, $fraction = 0, $sex = 'M', $startID){
                 // if ranking points are set, return
                 if($row[1] == $cvtTable[$strConvtableRankingPoints] || $row[1] == $cvtTable[$strConvtableRankingPointsU20]){
                     return 0;
+                }
+                
+                // if mixed table assign the correct table
+                if($row[1] == $cvtTable[$strConvtableSLV2010Mixed]) {
+                    switch(strtoupper($sex)) {
+                        case "M":
+                            $row[1] = $cvtTable[$strConvtableSLV2010Men];
+                            break;
+                        case "W" :
+                            $row[1] = $cvtTable[$strConvtableSLV2010Women];
+                            break;
+                        default:
+                    }
                 }
 
                 // track disciplines: performance in 1/100 sec

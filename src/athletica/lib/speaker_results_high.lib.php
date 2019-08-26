@@ -21,6 +21,7 @@ function AA_speaker_High($event, $round, $layout)
 	$status = AA_getRoundStatus($round);
     
     $svm = AA_checkSVM(0, $round); // decide whether to show club or team name
+    $lmm = AA_checkLMM(0, $round); // decide whether to show club or team name
     
     $mergedMain=AA_checkMainRound($round);
     if ($mergedMain != 1) {
@@ -67,7 +68,7 @@ function AA_speaker_High($event, $round, $layout)
                 , at.Name
                 , at.Vorname
                 , at.Jahrgang
-                , if('".$svm."', te.Name, IF(a.Vereinsinfo = '', v.Name, a.Vereinsinfo))   
+                , if('".$svm."' OR '".$lmm."', te.Name, IF(a.Vereinsinfo = '', v.Name, a.Vereinsinfo))   
                 , LPAD(s.Bezeichnung,5,'0') as heatid
                 , st.Bestleistung
                 , at.xAthlet

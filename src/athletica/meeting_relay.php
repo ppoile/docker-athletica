@@ -742,7 +742,7 @@ else if (mysql_num_rows($result) > 0)
 			//
 			// get different positions for each round
 			//
-			foreach($arrRounds as $r){
+			foreach($arrRounds as $r){    
 				$resPos = mysql_query("
 						SELECT sa.Position, rt.Typ, sa.xRunde FROM
 							staffelathlet as sa

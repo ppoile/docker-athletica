@@ -77,6 +77,7 @@ $strConvtableIAAF85Men = "IAAF 85 Uomini";
 $strConvtableIAAF85Women = "IAAF 85 Donne";
 $strConvtableSLV20104Men = "FSA 2010 Uomini";
 $strConvtableSLV2010Women = "FSA 2010 Donne";
+$strConvtableSLV2010Mixed = "FSA 2010, Mixed";
 $strConvtableSVMMenNL = "CSI  LNA-C Uomini";
 $strConvtableSVMWomenNL = "CSI LNA-B Donne";
 $strCopy = "Copia";
@@ -835,5 +836,5 @@ $strBackupLast = "Ultimo salvataggio";
 $strBackupText = "Con questa funzione può essere creato in un qualsiasi intervallo un salvataggio automatico (file SQL di tutti i meeting senza dati di base). Le modifiche dell\'intervallo o del percorso devo essere salvate obbligatoriamente con \'Salva\'."; 
 $strBackupText2 = "Questa finestra deve essere sempre aperta per il salvataggio automatico (per esempio in un\'altra scheda)!";
 
-
+$ukc_finisherclips = "Export Finisherclips";
 ?>

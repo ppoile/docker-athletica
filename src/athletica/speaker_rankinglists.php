@@ -128,14 +128,22 @@ $eventTypeCat = AA_getEventTypesCat();
              <?php echo $strRankingList . " " . $strUKC; ?></input>   
     </th>
 </tr>
-</table>
-
-
-
 <?php } ?>
 
+<?php
+if (isset($eventTypeCat['lmm'])){?>
+<tr>
+    <th class='dialog'>
+        <input type='radio' name='type' value='lmm'>
+            <?php echo $strLMMRanking; ?></input>
+    </td>
+</tr>
+<?php
+}
+?>    
+</table>
 <?php if (isset($eventTypeCat['club'])){?>
-
+<table>
 <tr>
 	<th class='dialog'>
 		<input type='radio' name='type' value='team'>

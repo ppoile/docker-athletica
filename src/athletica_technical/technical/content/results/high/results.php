@@ -77,7 +77,7 @@ $type = $glb_types_results[$events['disc_type']];
                 res_id: res_id,  
                 round: round,
                 event: event,          
-                height: height,          
+                height: height,                    
             };
             
             $.ajax({

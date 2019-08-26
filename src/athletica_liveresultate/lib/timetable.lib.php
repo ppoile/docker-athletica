@@ -43,7 +43,7 @@ if (!defined('AA_TIMETABLE_LIB_INCLUDED'))
             SELECT
                 *
             FROM
-                athletica_liveresultate.config");
+                athletica_liveResultate.config");
         if(mysql_errno() > 0) {
             
             AA_printErrorMsg(mysql_errno() . ": " . mysql_error());
@@ -94,7 +94,7 @@ if (!defined('AA_TIMETABLE_LIB_INCLUDED'))
             $fp = @fopen($ftp_tmp_path.$ftp_tmp_name,'w');
 
             if(!$fp){     
-                AA_printErrorMsg($GLOBALS['strErrFileOpenFailed'] . ": " . @getcwd() . " " . $ftp_tmp_path.$ftp_tmp_name);
+                AA_printErrorMsg($GLOBALS['strErrFileOpenFailed']);  
                 return;
             }
             
@@ -111,7 +111,7 @@ if (!defined('AA_TIMETABLE_LIB_INCLUDED'))
             }
             $content .= "</div>\r\n";
             $content .= "<div data-role='header' data-theme='b' data-id='header' data-position='block' data-tap-toggle='false'>\r\n ";
-            $content .= "<a href='../' data-icon='home' data-transition='slide' data-direction='reverse'>Home</a>\r\n";
+            $content .= "<a href='../index.php' data-icon='home' data-transition='slide' data-direction='reverse'>Home</a>\r\n";
             $content .= "<a class='ui-btn-right' data-icon='refresh' onclick='refreshPage();'>".$GLOBALS['strRefresh']."</a>\r\n";
             $content .= "<h1>&copy; Swiss Athletics 2017</h1>\r\n";
             $content .= "</div>\r\n";
@@ -277,7 +277,7 @@ if (!defined('AA_TIMETABLE_LIB_INCLUDED'))
                             $status = $row_rnd['rnd_status'];
                             
                             if($row_rnd['rnd_status_timing'] == 1 && $row_rnd['rnd_status'] != $cfgRoundStatus['results_done']){
-                                //$status = $cfgRoundStatus['results_live'];
+                                $status = $cfgRoundStatus['results_live'];
                                 $m_statusChanged = 'y';
                             }
                              

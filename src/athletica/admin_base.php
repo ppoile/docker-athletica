@@ -172,7 +172,7 @@ if($_GET['arg'] == "reset"){
         die();
     } else {
         // reset athletes
-        mysql_query("DELETE start FROM start LEFT JOIN wettkampf USING(xWettkampf) WHERE xMeeting = ". $_COOKIE['meeting_id'] ."");
+        mysql_query("DELETE staffelathlet FROM staffelathlet LEFT JOIN start ON start.xStart=staffelathlet.xStaffelstart LEFT JOIN wettkampf USING(xWettkampf) WHERE xMeeting = ". $_COOKIE['meeting_id'] ."");
         if(mysql_errno > 0){
             AA_printErrorMsg(mysql_errno().": ".mysql_error());
         }else{
@@ -192,7 +192,7 @@ if($_GET['arg'] == "reset"){
                         AA_printErrorMsg(mysql_errno().": ".mysql_error());
                     }else{
                         // reset relay athletes
-                        mysql_query("DELETE staffelathlet FROM staffelathlet LEFT JOIN runde USING(xRunde) LEFT JOIN wettkampf USING(xWettkampf) WHERE xMeeting = ". $_COOKIE['meeting_id'] ."");
+                        mysql_query("DELETE start FROM start LEFT JOIN wettkampf USING(xWettkampf) WHERE xMeeting = ". $_COOKIE['meeting_id'] ."");
                         if(mysql_errno > 0){
                             AA_printErrorMsg(mysql_errno().": ".mysql_error());
                         }else{

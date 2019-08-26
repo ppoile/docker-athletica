@@ -839,4 +839,91 @@ function format_limit_time($limite){
 	return false;
 }
 
+function AA_StatusChanged($xSerienstart){
+
+    $sql = "SELECT 
+                r.xRunde
+            FROM  
+                serienstart as ss 
+                LEFT JOIN serie as s ON (s.xSerie = ss.xSerie)
+                LEFT JOIN runde as r ON (r.xRunde = s.xRunde)
+        WHERE  ss.xSerienstart = " . $xSerienstart;
+    
+   
+    $res = mysql_query($sql);
+    if(mysql_errno() > 0) {        // DB error
+        AA_printErrorMsg(mysql_errno() . ": " . mysql_error());      
+    }
+    else {  
+         if (mysql_num_rows($res) >  0){
+             $row = mysql_fetch_row($res);
+             $runde = $row[0];
+             
+         }
+    }
+    
+    
+    $mRounds= AA_getMergedRounds($runde);
+    
+    if (empty($mRounds)){
+    $sqlRound = "= ". $runde;      
+        }
+        else {
+             $sqlRound = "IN ". $mRounds;   
+        }
+    
+     $sql = "UPDATE runde SET StatusChanged = 'y' WHERE xRunde " . $sqlRound;
+     
+     $res = mysql_query($sql);
+     if(mysql_errno() > 0) {        // DB error
+        AA_printErrorMsg(mysql_errno() . ": " . mysql_error());      
+     }
+             
+   return $runde; 
+}
+
+function AA_getMergedRounds($round){  
+    $sqlRounds = "";
+    $roundMerged = false;
+    $result = mysql_query("SELECT 
+                                xRundenset 
+                           FROM 
+                                rundenset
+                           WHERE    
+                                xRunde = $round
+                                AND xMeeting = ".$_COOKIE['meeting_id']);
+    if(mysql_errno() > 0){
+        AA_printErrorMsg(mysql_errno() . ": " . mysql_error());
+    }else{
+        $rsrow = mysql_fetch_array($result); // get round set id   
+    }
+    
+    if($rsrow[0] > 0){   
+        $sql = "SELECT 
+                    xRunde 
+                FROM 
+                    rundenset
+                WHERE    
+                    xRundenset = $rsrow[0]
+                    AND xMeeting = ".$_COOKIE['meeting_id'];
+                    
+        $res = mysql_query($sql);
+        if(mysql_errno() > 0){
+            AA_printErrorMsg(mysql_errno() . ": " . mysql_error());
+        }else{
+              $sqlRounds .= "(".$row[0];   
+              while($row = mysql_fetch_array($res)){   // get merged rounds  
+                   $roundMerged = true;  
+                   $sqlRounds .= $row[0] . ","; 
+                }
+                $sqlRounds = substr($sqlRounds,0,-1).")";  
+            }   
+        }   
+    if (!$roundMerged) {  
+           $sqlRounds = ""; 
+    }  
+    return  $sqlRounds;
+
+}
+
 ?>

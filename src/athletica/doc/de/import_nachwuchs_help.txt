@@ -7,7 +7,7 @@ Import Nachwuchsprojekte
 	- die Datei als .csv speichern (Dateityp: "CSV (Trennzeichen-getrennt) (*.csv)")
 	
 - Athletica vorbereiten:
-	- Athletica selbst muss nicht vorbereitet werden, jedoch müssen die Disziplinen bei der Event-Verwaltung von Swiss-Athletics korrekt definiert sein: im Infofeld muss das Kürzel mit Geschlecht(M oder W) und Alter (immer Zweistellig: 07 bis 15) stehen, also zB M08
+	- Athletica selbst muss nicht vorbereitet werden, jedoch müssen die Disziplinen bei der Event-Verwaltung von Swiss-Athletics korrekt definiert sein: im Infofeld muss  entweder der Jahrgang (zB 2008) stehen oder (veraltet!) das Kürzel mit Geschlecht(M oder W) und Alter (immer Zweistellig: 07 bis 15) stehen, also zB M08
 	- danach den Abgleich mit der Online-Meetingbewilligung in Athletica machen. Damit werden die Disziplinen korrekt heruntergeladen. Mit falschem Infofeld würden neue Disziplinen angelegt beim Import. 
 	- unter "Import Anmeldungen Nachwuchsprojekte" das Projekt auswählen und die csv-Datei angeben.
 	- den Import mit "csv einspielen" starten

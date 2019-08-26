@@ -30,14 +30,14 @@ $disc_clause="";
 $club_clause="";
 $contestcat_clause="";
 $athlete_clause="";
-$licType_clause=""; 
+$licType_clause="";   
 
 
 // basic sort argument (default: sort by name)
 if ($_GET['sort'] == "nbr") {
 	$argument = "a.Startnummer, at.Name, at.Vorname, d.Anzeige";
 } elseif ($_GET['sort'] == "bestperf" && ($_GET['discgroup'] || $_GET['discipline'] > 0)) { 
-      $argument = "s.Bestleistung, at.Name, at.Vorname"; 
+      $argument = "perf_sort, at.Name, at.Vorname"; 
 }
  else
  {
@@ -182,7 +182,7 @@ if($_GET['cover'] == 'cover' && !$export) { // print cover page
  
  $reduction=AA_getReduction();      
 
-    $sql = "SELECT 
+   $sql = "SELECT 
                 DISTINCT a.xAnmeldung
                 , a.Startnummer
                 , at.Name
@@ -206,7 +206,8 @@ if($_GET['cover'] == 'cover' && !$export) { // print cover page
                 , v.Sortierwert
                 , k.Anzeige
                 , w.Startgeld  
-                , w.mehrkampfcode                 
+                , w.mehrkampfcode
+                , if(s.Bestleistung>0, s.Bestleistung, if(d.Typ IN($cfgDisciplineType[$strDiscTypeTrack],$cfgDisciplineType[$strDiscTypeTrackNoWind],$cfgDisciplineType[$strDiscTypeRelay],$cfgDisciplineType[$strDiscTypeDistance]),99999999, 0)) * if(d.Typ IN($cfgDisciplineType[$strDiscTypeTrack],$cfgDisciplineType[$strDiscTypeTrackNoWind],$cfgDisciplineType[$strDiscTypeRelay],$cfgDisciplineType[$strDiscTypeDistance]), 1, -1) As perf_sort         
             FROM
                 anmeldung AS a
                 LEFT JOIN kategorie AS k ON (a.xKategorie = k.xKategorie) 

@@ -163,7 +163,7 @@ if($discFrom > 0) {    //
     } 
     else {  
    
-            $sql = "SELECT 
+           $sql = "SELECT 
                 r.xRunde
                 , k.Name
                 , d.Name
@@ -177,16 +177,20 @@ if($discFrom > 0) {    //
                 , d.Staffellaeufer
                 , CONCAT(DATE_FORMAT(r.Datum,'$cfgDBdateFormat'), ' ', TIME_FORMAT(r.Startzeit, '$cfgDBtimeFormat'))
                 , w.xDisziplin  
-                , w.info          
+                , w.info   
+                ,''
+                , r.Gruppe       
             FROM
                 wettkampf AS w
                 LEFT JOIN kategorie AS k ON (k.xKategorie = w.xKategorie)
                   LEFT JOIN disziplin_" . $_COOKIE['language'] . " as d ON (d.xDisziplin = w.xDisziplin) 
                   LEFT JOIN runde AS r ON (r.xWettkampf = w.xWettkampf) 
+                  LEFT JOIN rundenset as rs USING(xRunde)
             WHERE " . $selection . "
             w.xMeeting = " . $_COOKIE['meeting_id'] . "     
             AND r.Status = " . $cfgRoundStatus['results_done'] . " 
             AND r.Datum LIKE '".$date."'
+            AND (rs.Hauptrunde = 1 OR rs.Hauptrunde IS NULL)
             ORDER BY
                 k.Anzeige
                 , d.Anzeige
@@ -218,7 +222,8 @@ if($discFrom > 0) {    //
                 TIME_FORMAT(r.Startzeit, '%H:%i')) ,
                 w.xDisziplin ,  
                 rs.Hauptrunde,
-                w.info     
+                w.info,
+                r.Gruppe     
             FROM 
                 wettkampf AS w 
                 LEFT JOIN kategorie AS k ON (k.xKategorie = w.xKategorie) 
@@ -229,7 +234,7 @@ if($discFrom > 0) {    //
                 " . $selection . "  
                 w.xMeeting  = " . $_COOKIE['meeting_id'] . " 
                 AND r.Status = 4  
-                AND r.Datum LIKE '%' 
+                AND r.Datum LIKE '".$date."' 
             ORDER BY
                 k.Anzeige
                 , d.Anzeige
@@ -444,7 +449,11 @@ else {
                 $eval = $row_rt[2];
                 if($round != 0) {        // specific round selected
                     $roundName = $row_rt[0];
+                    if($row[15]>0) {
+                        $roundName .= " G".$row[15];
+                    }
                 }
+                
             }
             mysql_free_result($res);
         }
@@ -518,11 +527,12 @@ else {
               
         $relay = AA_checkRelay($row[4]);    // check, if this is a relay event
         $svm = AA_checkSVM($row[4]);    
+        $lmm = AA_checkLMM($row[4]);    
         
         // If round evaluated per heat, group results accordingly    
         $order_heat = "";  
         if($eval == $cfgEvalType[$strEvalTypeHeat]) {    // eval per heat
-            $order_heat = "heatid, ";
+            $order_heat = "ru.gruppe, heatid, ";
         }
        
         $valid_result ="";
@@ -608,7 +618,7 @@ else {
                              s.Bezeichnung, 
                              s.Wind, 
                              r.Punkte, 
-                             IF('".$svm."', t.Name, IF(a.Vereinsinfo = '', v.Name, a.Vereinsinfo)), 
+                             IF('".$svm."' OR '".$lmm."', t.Name, IF(a.Vereinsinfo = '', v.Name, a.Vereinsinfo)), 
                              at.Name, 
                              at.Vorname, 
                              at.Jahrgang, 
@@ -627,7 +637,8 @@ else {
                              w.info,
                              a.Startnummer,
                              w.xWettkampf,
-                             at.Geschlecht
+                             at.Geschlecht,
+                             ru.Gruppe AS gruppe
                              
                         FROM serie AS s USE INDEX(Runde)
                    LEFT JOIN serienstart AS ss USING(xSerie) 
@@ -695,7 +706,8 @@ else {
                              w.info,
                              a.Startnummer,
                              w.xWettkampf,
-                             at.Geschlecht
+                             at.Geschlecht,
+                             ru.Gruppe AS gruppe
                              
                         FROM serie AS s USE INDEX(Runde)
                    LEFT JOIN serienstart AS ss USING(xSerie) 
@@ -723,7 +735,7 @@ else {
                              .$order_perf;  
                 }
                 else {
-                    $query = "SELECT ss.xSerienstart, 
+                  $query = "SELECT ss.xSerienstart, 
                              IF(ss.Rang=0, $max_rank, ss.Rang) AS rank, 
                              ss.Qualifikation, 
                              ".$sql_leistung." AS leistung_neu, 
@@ -731,7 +743,7 @@ else {
                              s.Bezeichnung, 
                              s.Wind, 
                              r.Punkte, 
-                             IF('".$svm."', t.Name, IF(a.Vereinsinfo = '', v.Name, a.Vereinsinfo)), 
+                             IF('".$svm."' OR '".$lmm."', t.Name, IF(a.Vereinsinfo = '', v.Name, a.Vereinsinfo)), 
                              at.Name, 
                              at.Vorname, 
                              at.Jahrgang, 
@@ -750,7 +762,8 @@ else {
                              w.info,
                              a.Startnummer,
                              w.xWettkampf,
-                             at.Geschlecht
+                             at.Geschlecht,
+                             ru.Gruppe AS gruppe
                              
                         FROM serie AS s USE INDEX(Runde)
                    LEFT JOIN serienstart AS ss USING(xSerie) 
@@ -789,7 +802,7 @@ else {
                              s.Bezeichnung, 
                              s.Wind, 
                              r.Punkte, 
-                             IF('".$svm."', t.Name, v.Name), 
+                             IF('".$svm."' OR '".$lmm."', t.Name, v.Name), 
                              sf.Name, 
                              LPAD(s.Bezeichnung, 5, '0') AS heatid, 
                              st.xStart, 
@@ -993,6 +1006,10 @@ else {
                              
                         }
                         
+                        if($row_res[28] > 0 && $round == 0 && $eval == $cfgEvalType[$strEvalTypeHeat]) {
+                            $title = "G".$row_res[28]." ".$title;
+                        }
+                        
                         $title = trim($title);
                          
                         // wind per heat
@@ -1016,12 +1033,12 @@ else {
                         }
 
                         // add column header 'points' if required
-                        $points= FALSE;
+                        $points_show= FALSE;
                         if($row[7] != '0' || $row_res[23] != '0') {
-                            $points= TRUE;
+                            $points_show= TRUE;
                         }
                         elseif ($ukc){
-                               $points= TRUE;
+                               $points_show= TRUE;
                         }
                        
                         if ($show_efforts == 'sb_pb'){
@@ -1044,16 +1061,16 @@ else {
                                 }  
                               }                            
                            }     
-                       
+                                  
                            $list->startList(); 
                         if ($saison == "I"){
                             $heatwind = '';
                         }
                         if ($relay && !$svm){   
-                           $points = false;
+                           $points_show = false;
                         }
                         
-                        $list->printHeaderLine($title, $relay, $points, $wind, $heatwind, $row[11], $svm, $base_perf, $qual_mode, $eval, $withStartnr, $teamsm);
+                        $list->printHeaderLine($title, $relay, $points_show, $wind, $heatwind, $row[11], $svm, $base_perf, $qual_mode, $eval, $withStartnr, $teamsm, $lmm);
                         
                           
                          if ($athleteCat && !$relay){                         
@@ -1081,7 +1098,8 @@ else {
                   
                     $count_rank++;                       
                    
-                    // rank    
+                    // rank  
+                    /* keine gleichen Rangierungen mehr (18.9.2018)  
                     if ($teamsm){
                         if ($perf_save !=''){
                             if ($perf_save == $row_res[3]){
@@ -1098,6 +1116,7 @@ else {
                         
                     } 
                     else { 
+                    */
                          if ($heatSeparate){
                               if ($row_res[1]==$max_rank || $row_res[1]==$max_rank-1) {   // invalid result
                                     $rank='';
@@ -1128,7 +1147,7 @@ else {
                                 }  
                              }
                          }  
-                    }
+                    //}
                             
                     $r= $row_res[1];                // keep rank  
                     $heat_keep= $row_res[5];        // keep heat    
@@ -1205,7 +1224,7 @@ else {
                     }    // ET athlete qualified
 
                     // points for performance
-                    if($row[7] != '0' || $row_res[23] != '0') {
+                    if($points_show) {
                         $points = '';
                         if($row[7] != '0') {
                             $points = $row_res[7];
@@ -1870,6 +1889,7 @@ else {
               
         $relay = AA_checkRelay($row[4]);    // check, if this is a relay event
         $svm = AA_checkSVM($row[4]);    
+        $lmm = AA_checkLMM($row[4]);    
         
         // If round evaluated per heat, group results accordingly    
         $order_heat = "";  
@@ -1928,7 +1948,7 @@ else {
         // rank is set to max_rank to put them to the end of the list.
         $max_rank = 999999999;  
         $sql_leistung = ($order_perf=='ASC') ? "r.Leistung" : "IF(r.Leistung<0, (If(r.Leistung = -99, -9, (If (r.Leistung = -98, -8,r.Leistung))) * -1), r.Leistung)";        
-        $sql_leistung_order = "IF(r.Leistung is NULL, 999999999  , (IF (r.Leistung < 0,999999999 - r.Leistung,  r.Leistung )))";       
+        $sql_leistung_order = ($order_perf=='ASC') ? "IF(r.Leistung is NULL, 999999999  , (IF (r.Leistung < 0,999999999 - r.Leistung,  r.Leistung )))" : "r.Leistung";              
         $order= $order_heat;          
         
         if($relay == FALSE) {                                 
@@ -1936,6 +1956,7 @@ else {
                 if ($athleteCat){
                     $order=$orderAthleteCat . $order_heat;   
                 }
+                /*
                 $query = "SELECT ss.xSerienstart, 
                              IF(ss.Rang=0, $max_rank, ss.Rang) AS rank, 
                              ss.Qualifikation, 
@@ -1944,7 +1965,7 @@ else {
                              s.Bezeichnung, 
                              s.Wind, 
                              r.Punkte, 
-                             IF('".$svm."', t.Name, IF(a.Vereinsinfo = '', v.Name, a.Vereinsinfo)), 
+                             IF('".$svm."' OR '".$lmm."', t.Name, IF(a.Vereinsinfo = '', v.Name, a.Vereinsinfo)), 
                              at.Name, 
                              at.Vorname, 
                              at.Jahrgang, 
@@ -1983,12 +2004,64 @@ else {
                        ".$sqlSeparate." 
                        ".$selectionHeats."  
                     ORDER BY leistung_order " 
+                             .$order_perf;
+                             
+                     */
+                             
+                $query = "SELECT ss.xSerienstart, 
+                             IF(ss.Rang=0, $max_rank, ss.Rang) AS rank, 
+                             ss.Qualifikation, 
+                             ".$sql_leistung." AS leistung_neu, 
+                             r.Info, 
+                             s.Bezeichnung, 
+                             s.Wind, 
+                             r.Punkte, 
+                             IF('".$svm."' OR '".$lmm."', t.Name, IF(a.Vereinsinfo = '', v.Name, a.Vereinsinfo)), 
+                             at.Name, 
+                             at.Vorname, 
+                             at.Jahrgang, 
+                             LPAD(s.Bezeichnung, 5, '0') AS heatid, 
+                             IF(at.xRegion = 0, at.Land, re.Anzeige) AS Land, 
+                             at.xAthlet, 
+                             ru.Datum, 
+                             ru.Startzeit ,
+                             ss.RundeZusammen,
+                             ru.xRunde,  
+                             k.Name , 
+                             k1.Name ,                             
+                             k1.Anzeige ,
+                             ss.Bemerkung,
+                             w.Punkteformel,
+                             w.info,
+                             a.Startnummer,
+                             ".$sql_leistung_order." AS leistung_order, 
+                             r.Leistung
+                        FROM serie AS s USE INDEX(Runde)
+                   LEFT JOIN serienstart AS ss USING(xSerie) 
+                   LEFT JOIN resultat AS r USING(xSerienstart) 
+                   LEFT JOIN start AS st ON(ss.xStart = st.xStart) 
+                   LEFT JOIN anmeldung AS a USING(xAnmeldung) 
+                   LEFT JOIN athlet AS at USING(xAthlet) 
+                   LEFT JOIN verein AS v USING(xVerein) 
+                   LEFT JOIN region AS re ON(at.xRegion = re.xRegion) 
+                   LEFT JOIN team AS t ON(a.xTeam = t.xTeam) 
+                   LEFT JOIN runde AS ru ON(s.xRunde = ru.xRunde) 
+                   LEFT JOIN wettkampf AS w On (w.xWettkampf= st.xWettkampf)   
+                   LEFT JOIN kategorie AS k On (w.xKategorie= k.xKategorie)
+                   LEFT JOIN kategorie AS k1 ON (a.xKategorie = k1.xKategorie)   
+                       WHERE ".$roundSQL." 
+                       ".$limitRankSQL." 
+                       ".$valid_result." 
+                       ".$sqlSeparate." 
+                       ".$selectionHeats."  
+                    ORDER BY rank,
+                            leistung_order " 
                              .$order_perf;  
                   
         }
         else {                        // relay event
                                 
-            $query = "SELECT ss.xSerienstart,                                   
+           $query = "SELECT ss.xSerienstart,                                   
                              IF(r.Leistung < 0 , $max_rank, if (ss.Rang=0, $max_rank-1, ss.Rang)) AS rank, 
                              ss.Qualifikation, 
                              ".$sql_leistung." AS leistung_neu, 
@@ -1996,7 +2069,7 @@ else {
                              s.Bezeichnung, 
                              s.Wind, 
                              r.Punkte, 
-                             IF('".$svm."', t.Name, v.Name), 
+                             IF('".$svm."' OR '".$lmm."', t.Name, v.Name), 
                              sf.Name, 
                              LPAD(s.Bezeichnung, 5, '0') AS heatid, 
                              st.xStart, 
@@ -2005,7 +2078,8 @@ else {
                              ss.RundeZusammen,
                              ru.xRunde,
                              k.Name ,
-                             ss.Bemerkung    
+                             ss.Bemerkung,
+                             ".$sql_leistung_order." AS leistung_order   
                         FROM serie AS s USE INDEX(Runde) 
                    LEFT JOIN serienstart AS ss USING(xSerie) 
                    LEFT JOIN resultat AS r USING(xSerienstart) 
@@ -2021,10 +2095,8 @@ else {
                       ".$valid_result." 
                       ".$sqlSeparate."                         
                     GROUP BY r.xSerienstart 
-                    ORDER BY ".$order." 
-                             rank, 
-                             r.Leistung 
-                             ".$order_perf.", 
+                    ORDER BY leistung_order " 
+                             .$order_perf.", 
                              sf.Name;";   
                  
         }    
@@ -2064,7 +2136,7 @@ else {
                         }
                         else {
                              if (!$athleteCat){  
-                                  $list->printSubTitle($row_res[19], $row2_keep, $roundName, $row_res[24]);                                 
+                                  $list->printSubTitle($row_res[19], $row[2], $roundName, $row_res[24]);                                 
                              } 
                         }  
                     }
@@ -2148,16 +2220,15 @@ else {
                         $wind= FALSE;
                         if(($row[8] == 1) 
                             && ($row[3] == $cfgDisciplineType[$strDiscTypeJump]) 
-                            || (($row[3] == $cfgDisciplineType[$strDiscTypeTrack]) 
-                                && ($eval == $cfgEvalType[$strEvalTypeAll])))
+                            || $row[3] == $cfgDisciplineType[$strDiscTypeTrack])
                         {
                             $wind= TRUE;
                         }
 
                         // add column header 'points' if required
-                        $points= FALSE;
+                        $points_show= FALSE;
                         if($row[7] != '0' || $row_res[23] != '0') {
-                            $points= TRUE;
+                            $points_show= TRUE;
                         }
                        
                         if ($show_efforts == 'sb_pb'){
@@ -2188,7 +2259,7 @@ else {
                         }
                         
                       
-                       $list->printHeaderLine($title, $relay, $points, $wind, $heatwind, $row[11], $svm, $base_perf, $qual_mode, $eval, $withStartnr);
+                       $list->printHeaderLine($title, $relay, $points_show, $wind, $heatwind, $row[11], $svm, $base_perf, $qual_mode, $eval, $withStartnr, false, $lmm);
                       
                           
                          if ($athleteCat && !$relay){                         

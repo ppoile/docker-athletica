@@ -199,7 +199,7 @@ else
 	</tr>
 	<tr>
 		<td class='dialog'><?php echo $strPageBreakHeat; ?></td>
-		<th class='dialog'><input type="checkbox" name="heatpagebreak" value="yes"></th>
+		<th class='dialog'><input type="checkbox" name="heatpagebreak" checked="checked" value="yes"></th>
 	</tr>
 	<tr>
 		<td class='dialog'><?php echo $XXXPresent; ?></td>
@@ -213,10 +213,14 @@ else
 		|| $row[7] == $cfgDisciplineType[$strDiscTypeJumpNoWind]
 		|| $row[7] == $cfgDisciplineType[$strDiscTypeThrow])
 	{
+        $attempts = 3;
+        if ($row[10] != 'D') {
+            $attempts = $cfgCountAttempts[$row[7]];
+        } 
 		?>
 	<tr>
 		<td class='dialog'><?php echo $strCountAttempts; ?>:</td>
-		<th class='dialog'><input type="text" value="<?php echo $cfgCountAttempts[$row[7]];?>" id="countattempts" name="countattempts" size="3" onchange="addSelects()"></th>
+		<th class='dialog'><input type="text" value="<?php echo $attempts;?>" id="countattempts" name="countattempts" size="3" onchange="addSelects()"></th>
 	</tr> 
     <tr> 
         <td class='dialog'><?php echo $strOnlyBestResult; ?>:</td>     

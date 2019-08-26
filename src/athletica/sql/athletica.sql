@@ -60,8 +60,9 @@ CREATE TABLE `anmeldung` (
   KEY `Startnummer` (`Startnummer`),
   KEY `xTeam` (`xTeam`),
   KEY `Vereinsinfo` (`Vereinsinfo`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=899 DEFAULT CHARSET=utf8;
 
+/*Data for the table `anmeldung` */
 
 /*Table structure for table `athlet` */
 
@@ -94,6 +95,7 @@ CREATE TABLE `athlet` (
   KEY `Lizenznummer` (`Lizenznummer`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+/*Data for the table `athlet` */
 
 /*Table structure for table `backup` */
 
@@ -105,6 +107,7 @@ CREATE TABLE `backup` (
   `Backup_Zuletzt` datetime NOT NULL DEFAULT '0000-00-00 00:00:00'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+/*Data for the table `backup` */
 
 /*Table structure for table `base_account` */
 
@@ -119,6 +122,7 @@ CREATE TABLE `base_account` (
   KEY `account_code` (`account_code`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+/*Data for the table `base_account` */
 
 /*Table structure for table `base_athlete` */
 
@@ -145,7 +149,7 @@ CREATE TABLE `base_athlete` (
   KEY `firstname` (`firstname`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-
+/*Data for the table `base_athlete` */
 
 /*Table structure for table `base_log` */
 
@@ -157,9 +161,9 @@ CREATE TABLE `base_log` (
   `update_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `global_last_change` date NOT NULL DEFAULT '0000-00-00',
   PRIMARY KEY (`id_log`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-
+/*Data for the table `base_log` */
 
 /*Table structure for table `base_performance` */
 
@@ -187,6 +191,7 @@ CREATE TABLE `base_performance` (
   KEY `season` (`season`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+/*Data for the table `base_performance` */
 
 /*Table structure for table `base_relay` */
 
@@ -204,7 +209,7 @@ CREATE TABLE `base_relay` (
   KEY `discipline` (`discipline`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-
+/*Data for the table `base_relay` */
 
 /*Table structure for table `base_svm` */
 
@@ -220,7 +225,7 @@ CREATE TABLE `base_svm` (
   KEY `account_code` (`account_code`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-
+/*Data for the table `base_svm` */
 
 /*Table structure for table `disziplin_de` */
 
@@ -876,14 +881,14 @@ CREATE TABLE `kategorie` (
   `Name` varchar(30) NOT NULL DEFAULT '',
   `Anzeige` int(11) NOT NULL DEFAULT '1',
   `Alterslimite` tinyint(4) NOT NULL DEFAULT '99',
-  `Code` varchar(4) NOT NULL DEFAULT '',
+  `Code` varchar(8) NOT NULL DEFAULT '',
   `Geschlecht` enum('m','w') NOT NULL DEFAULT 'm',
   `aktiv` enum('y','n') NOT NULL DEFAULT 'y',
   `UKC` enum('y','n') DEFAULT 'n',
   PRIMARY KEY (`xKategorie`),
   UNIQUE KEY `Kurzname` (`Kurzname`),
   KEY `Anzeige` (`Anzeige`)
-) ENGINE=MyISAM AUTO_INCREMENT=40 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=42 DEFAULT CHARSET=utf8;
 
 /*Data for the table `kategorie` */
 
@@ -906,26 +911,28 @@ insert  into `kategorie`(`xKategorie`,`Kurzname`,`Name`,`Anzeige`,`Alterslimite`
 (17,'U10W','U10 W',18,9,'U10W','w','y','n'),
 (18,'MASM','MASTERS M',2,99,'MASM','m','y','n'),
 (19,'MASW','MASTERS W',11,99,'MASW','w','y','n'),
-(20,'M15','U16 M15',21,15,'M15','m','y','y'),
-(21,'M14','U16 M14',22,14,'M14','m','y','y'),
-(22,'M13','U14 M13',23,13,'M13','m','y','y'),
-(23,'M12','U14 M12',24,12,'M12','m','y','y'),
-(24,'M11','U12 M11',25,11,'M11','m','y','y'),
-(25,'M10','U12 M10',26,10,'M10','m','y','y'),
-(26,'M09','U10 M09',27,9,'M09','m','y','y'),
-(27,'M08','U10 M08',28,8,'M08','m','y','y'),
-(28,'M07','U10 M07',29,7,'M07','m','y','y'),
-(29,'W15','U16 W15',31,15,'W15','w','y','y'),
-(30,'W14','U16 W14',32,14,'W14','w','y','y'),
-(31,'W13','U14 W13',33,13,'W13','w','y','y'),
-(32,'W12','U14 W12',34,12,'W12','w','y','y'),
-(33,'W11','U12 W11',35,11,'W11','w','y','y'),
-(34,'W10','U12 W10',36,10,'W10','w','y','y'),
-(35,'W09','U10 W09',37,9,'W09','w','y','y'),
-(36,'W08','U10 W08',38,8,'W08','w','y','y'),
-(37,'W07','U10 W07',39,7,'W07','w','y','y'),
-(38,'MIX','Mixed',19,99,'MIX','m','y','n'),
-(39,'U18X','U18 Mixed',20,17,'U18X','m','y','n');
+(20,'M15','U16 M15',31,15,'M15','m','y','y'),
+(21,'M14','U16 M14',32,14,'M14','m','y','y'),
+(22,'M13','U14 M13',33,13,'M13','m','y','y'),
+(23,'M12','U14 M12',34,12,'M12','m','y','y'),
+(24,'M11','U12 M11',35,11,'M11','m','y','y'),
+(25,'M10','U12 M10',36,10,'M10','m','y','y'),
+(26,'M09','U10 M09',37,9,'M09','m','y','y'),
+(27,'M08','U10 M08',38,8,'M08','m','y','y'),
+(28,'M07','U10 M07',39,7,'M07','m','y','y'),
+(29,'W15','U16 W15',41,15,'W15','w','y','y'),
+(30,'W14','U16 W14',42,14,'W14','w','y','y'),
+(31,'W13','U14 W13',43,13,'W13','w','y','y'),
+(32,'W12','U14 W12',44,12,'W12','w','y','y'),
+(33,'W11','U12 W11',45,11,'W11','w','y','y'),
+(34,'W10','U12 W10',46,10,'W10','w','y','y'),
+(35,'W09','U10 W09',47,9,'W09','w','y','y'),
+(36,'W08','U10 W08',48,8,'W08','w','y','y'),
+(37,'W07','U10 W07',49,7,'W07','w','y','y'),
+(38,'MIXE','Männer/Frauen Mixed',22,99,'MIXE','m','y','n'),
+(39,'U18X','U18 Mixed',19,17,'U18X','m','y','n'),
+(40,'U20X','U20 Mixed',20,19,'U20X','m','y','n'),
+(41,'U23X','U23 Mixed',21,22,'U23X','m','y','n');
 
 /*Table structure for table `kategorie_svm` */
 
@@ -937,7 +944,7 @@ CREATE TABLE `kategorie_svm` (
   `Code` varchar(5) NOT NULL DEFAULT '',
   PRIMARY KEY (`xKategorie_svm`),
   KEY `Code` (`Code`)
-) ENGINE=MyISAM AUTO_INCREMENT=38 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=50 DEFAULT CHARSET=utf8;
 
 /*Data for the table `kategorie_svm` */
 
@@ -970,7 +977,19 @@ insert  into `kategorie_svm`(`xKategorie_svm`,`Name`,`Code`) values
 (30,'36.08 U12 W Mannschaftswettkampf','36_08'),
 (31,'36.09 Mixed Team U12 M und U12 W','36_09'),
 (36,'32.07 Promotionsliga B Männer','32_07'),
-(37,'32.08 Promotionsliga B Frauen','32_08');
+(37,'32.08 Promotionsliga B Frauen','32_08'),
+(38,'99.01 LMM U16W','99_01'),
+(39,'99.02 LMM U16M','99_02'),
+(40,'99.03 LMM U18W','99_03'),
+(41,'99.04 LMM U18M','99_04'),
+(42,'99.05 LMM U18 Mixed','99_05'),
+(43,'99.06 LMM U20W','99_06'),
+(44,'99.07 LMM U20M','99_07'),
+(45,'99.08 LMM Frauen','99_08'),
+(46,'99.09 LMM Männer','99_09'),
+(47,'99.10 LMM Aktive Mixed','99_10'),
+(48,'99.11 LMM Seniorinnen','99_11'),
+(49,'99.12 LMM Senioren','99_12');
 
 /*Table structure for table `land` */
 
@@ -1225,8 +1244,14 @@ CREATE TABLE `layout` (
   `BildBR` varchar(255) NOT NULL DEFAULT '',
   `xMeeting` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`xLayout`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
+/*Data for the table `layout` */
+
+insert  into `layout`(`xLayout`,`BildT`,`TypTL`,`TextTL`,`BildTL`,`TypTC`,`TextTC`,`BildTC`,`TypTR`,`TextTR`,`BildTR`,`BildB`,`TypBL`,`TextBL`,`BildBL`,`TypBC`,`TextBC`,`BildBC`,`TypBR`,`TextBR`,`BildBR`,`xMeeting`) values 
+(2,'',6,'','Logo rm2018.jpg',1,'','',3,'','','',2,'','',6,'','',0,'','',2),
+(3,'',1,'','',6,'','UBS Kids Cup Logo.png',3,'','','',2,'','',6,'','wappen_bs.png',0,'','',3),
+(4,'',1,'','',6,'','UBS Kids Cup Logo.png',3,'','','',2,'','',6,'','wappen_bl.png',0,'','',4);
 
 /*Table structure for table `meeting` */
 
@@ -1256,8 +1281,9 @@ CREATE TABLE `meeting` (
   PRIMARY KEY (`xMeeting`),
   KEY `Name` (`Name`),
   KEY `xStadion` (`xStadion`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
+/*Data for the table `meeting` */
 
 /*Table structure for table `omega_typ` */
 
@@ -1290,6 +1316,7 @@ CREATE TABLE `palmares` (
   `palmares_national` longtext
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+/*Data for the table `palmares` */
 
 
 /*Table structure for table `region` */
@@ -1352,6 +1379,7 @@ CREATE TABLE `rekorde` (
   `city` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+/*Data for the table `rekorde` */
 
 
 /*Table structure for table `resultat` */
@@ -1367,7 +1395,7 @@ CREATE TABLE `resultat` (
   PRIMARY KEY (`xResultat`),
   KEY `Leistung` (`Leistung`),
   KEY `Serienstart` (`xSerienstart`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=2613 DEFAULT CHARSET=utf8;
 
 /*Data for the table `resultat` */
 
@@ -1403,9 +1431,9 @@ CREATE TABLE `runde` (
   KEY `xWettkampf` (`xWettkampf`),
   KEY `Zeit` (`Datum`,`Startzeit`),
   KEY `Status` (`Status`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=1394 DEFAULT CHARSET=utf8;
 
-
+/*Data for the table `runde` */
 
 /*Table structure for table `rundenlog` */
 
@@ -1419,7 +1447,7 @@ CREATE TABLE `rundenlog` (
   PRIMARY KEY (`xRundenlog`),
   KEY `Zeit` (`Zeit`),
   KEY `Runde` (`xRunde`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=486 DEFAULT CHARSET=utf8;
 
 /*Data for the table `rundenlog` */
 
@@ -1540,7 +1568,7 @@ CREATE TABLE `serie` (
   UNIQUE KEY `Bezeichnung` (`xRunde`,`Bezeichnung`),
   KEY `Runde` (`xRunde`),
   KEY `Anlage` (`xAnlage`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=176 DEFAULT CHARSET=utf8;
 
 /*Data for the table `serie` */
 
@@ -1568,7 +1596,7 @@ CREATE TABLE `serienstart` (
   KEY `Qualifikation` (`Qualifikation`),
   KEY `xSerie` (`xSerie`),
   KEY `xStart` (`xStart`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=1561 DEFAULT CHARSET=utf8;
 
 /*Data for the table `serienstart` */
 
@@ -1584,8 +1612,12 @@ CREATE TABLE `stadion` (
   `Ueber1000m` enum('y','n') NOT NULL DEFAULT 'n',
   `Halle` enum('y','n') NOT NULL DEFAULT 'n',
   PRIMARY KEY (`xStadion`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
+/*Data for the table `stadion` */
+
+insert  into `stadion`(`xStadion`,`Name`,`Bahnen`,`BahnenGerade`,`Ueber1000m`,`Halle`) values 
+(1,'Grendelmatte',6,6,'n','n');
 
 /*Table structure for table `staffel` */
 
@@ -1649,8 +1681,9 @@ CREATE TABLE `start` (
   KEY `Wettkampf` (`xWettkampf`),
   KEY `WettkampfAnmeldung` (`xAnmeldung`,`xWettkampf`),
   KEY `WettkampfStaffel` (`xStaffel`,`xWettkampf`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=2502 DEFAULT CHARSET=utf8;
 
+/*Data for the table `start` */
 
 /*Table structure for table `sys_backuptabellen` */
 
@@ -1661,7 +1694,7 @@ CREATE TABLE `sys_backuptabellen` (
   `Tabelle` varchar(50) DEFAULT NULL,
   `SelectSQL` text,
   PRIMARY KEY (`xBackup`)
-) ENGINE=MyISAM AUTO_INCREMENT=47 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=46 DEFAULT CHARSET=utf8;
 
 /*Data for the table `sys_backuptabellen` */
 
@@ -1708,8 +1741,7 @@ insert  into `sys_backuptabellen`(`xBackup`,`Tabelle`,`SelectSQL`) values
 (42,'kategorie_svm','SELECT * FROM kategorie_svm'),
 (43,'land','SELECT * FROM land'),
 (44,'rekorde','SELECT * FROM rekorde'),
-(45,'palmares','SELECT * FROM palmares'),
-(46,'backup','SELECT * FROM backup');
+(45,'palmares','SELECT * FROM palmares');
 
 /*Table structure for table `team` */
 
@@ -1732,6 +1764,7 @@ CREATE TABLE `team` (
   KEY `xKategorie_svm` (`xKategorie_svm`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+/*Data for the table `team` */
 
 /*Table structure for table `teamsm` */
 
@@ -1751,6 +1784,7 @@ CREATE TABLE `teamsm` (
   PRIMARY KEY (`xTeamsm`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+/*Data for the table `teamsm` */
 
 /*Table structure for table `teamsmathlet` */
 
@@ -1762,6 +1796,7 @@ CREATE TABLE `teamsmathlet` (
   PRIMARY KEY (`xTeamsm`,`xAnmeldung`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+/*Data for the table `teamsmathlet` */
 
 /*Table structure for table `verein` */
 
@@ -1779,6 +1814,7 @@ CREATE TABLE `verein` (
   KEY `xCode` (`xCode`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+/*Data for the table `verein` */
 
 /*Table structure for table `videowand` */
 
@@ -1800,6 +1836,7 @@ CREATE TABLE `videowand` (
   PRIMARY KEY (`xVideowand`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+/*Data for the table `videowand` */
 
 /*Table structure for table `wertungstabelle` */
 
@@ -1809,8 +1846,9 @@ CREATE TABLE `wertungstabelle` (
   `xWertungstabelle` int(11) NOT NULL AUTO_INCREMENT,
   `Name` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`xWertungstabelle`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=100 DEFAULT CHARSET=utf8;
 
+/*Data for the table `wertungstabelle` */
 
 /*Table structure for table `wertungstabelle_punkte` */
 
@@ -1826,6 +1864,7 @@ CREATE TABLE `wertungstabelle_punkte` (
   PRIMARY KEY (`xWertungstabelle_Punkte`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+/*Data for the table `wertungstabelle_punkte` */
 
 /*Table structure for table `wettkampf` */
 
@@ -1856,8 +1895,9 @@ CREATE TABLE `wettkampf` (
   KEY `xDisziplin` (`xDisziplin`),
   KEY `xMeeting` (`xMeeting`),
   KEY `OnlineId` (`OnlineId`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=343 DEFAULT CHARSET=utf8;
 
+/*Data for the table `wettkampf` */
 
 /*Table structure for table `zeitmessung` */
 
@@ -1882,8 +1922,13 @@ CREATE TABLE `zeitmessung` (
   `xMeeting` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`xZeitmessung`),
   KEY `xMeeting` (`xMeeting`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
+/*Data for the table `zeitmessung` */
+
+insert  into `zeitmessung`(`xZeitmessung`,`OMEGA_Verbindung`,`OMEGA_Pfad`,`OMEGA_Server`,`OMEGA_Benutzer`,`OMEGA_Passwort`,`OMEGA_Ftppfad`,`OMEGA_Sponsor`,`ALGE_Typ`,`ALGE_Ftppfad`,`ALGE_Passwort`,`ALGE_Benutzer`,`ALGE_Server`,`ALGE_Pfad`,`ALGE_Verbindung`,`xMeeting`) values 
+(1,'local','','','','','','TVR Timing','','','','','','','local',3),
+(2,'local','','','','','','TVR Timing','','','','','','','local',4);
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

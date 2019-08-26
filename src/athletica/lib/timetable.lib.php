@@ -115,6 +115,7 @@ function AA_timetable_display($arg = 'monitor')
                 , r.Startzeit
                 , k.Anzeige
                 , k.Kurzname
+                , r.Gruppe
                 , d.Anzeige";    
         
         $res = mysql_query($sql);  

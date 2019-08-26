@@ -25,6 +25,7 @@ function AA_speaker_Track($event, $round, $layout)
 	$status = AA_getRoundStatus($round);
     
     $svm = AA_checkSVM(0, $round); // decide whether to show club or team name  
+    $lmm = AA_checkLMM(0, $round); // decide whether to show club or team name  
 
 	// No action yet
 	if(($status == $cfgRoundStatus['open'])
@@ -101,7 +102,7 @@ function AA_speaker_Track($event, $round, $layout)
                     , at.Name
                     , at.Vorname
                     , at.Jahrgang
-                    , if('".$svm."', te.Name, IF(a.Vereinsinfo = '', v.Name, a.Vereinsinfo))  
+                    , if('".$svm."' OR '".$lmm."', te.Name, IF(a.Vereinsinfo = '', v.Name, a.Vereinsinfo))  
                     , LPAD(s.Bezeichnung,5,'0') as heatid
                     , at.Land
                     , st.Bestleistung
@@ -142,7 +143,7 @@ function AA_speaker_Track($event, $round, $layout)
                     , ss.Rang
                     , ss.Qualifikation
                     , sf.Name
-                    , if('".$svm."', te.Name, v.Name)  
+                    , if('".$svm."' OR '".$lmm."', te.Name, v.Name)  
                     , LPAD(s.Bezeichnung,5,'0') as heatid
                     , r.xRunde
                     , st.xStart

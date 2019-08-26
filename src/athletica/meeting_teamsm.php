@@ -42,7 +42,7 @@ if ($_POST['arg']=="change")
                     r.xRunde,
                     w.xDisziplin,
                     s.xStart
-                FROM
+                FROM   
                     teamsm as ts
                     LEFT JOIN teamsmathlet as tat ON (ts.xTeamsm = tat.xTeamsm)
                     LEFT JOIN anmeldung as a ON (tat.xAnmeldung = a.xAnmeldung)
@@ -52,8 +52,9 @@ if ($_POST['arg']=="change")
                     LEFT JOIN disziplin_" . $_COOKIE['language'] . " AS d ON (d.xDisziplin = w.xDisziplin)    
                 WHERE 
                     (d.Typ >= ". $cfgDisciplineType[$strDiscTypeJump] . " AND d.Typ <= ". $cfgDisciplineType[$strDiscTypeThrow] . " AND d.Typ != ". $cfgDisciplineType[$strDiscTypeDistance] . ")                  
-                    AND ts.xTeamsm = ".$_POST['item'];
-        
+                    AND ts.xTeamsm = ".$_POST['item']." 
+                    AND w.xWettkampf = ".$_POST['wettkampf'];
+                    
         $res = mysql_query($sql);
         if(mysql_errno()>0){ 
             AA_printErrorMsg(mysql_errno().": ".mysql_error());
@@ -115,11 +116,10 @@ if ($_POST['arg']=="change")
             mysql_query("UPDATE teamsm SET
                     Name = '".$_POST['name']."',
                     Gruppe = '".$_POST['group']."', 
-                     Quali = ".$_POST['quali'].",
-                      Leistung = ".$perf." 
+                     Quali = '".$_POST['quali']."',
+                      Leistung = '".$perf."' 
                 WHERE
                     xTeamsm = ".$_POST['item']."");
-            
             if(mysql_errno()>0){ 
                 AA_printErrorMsg(mysql_errno().": ".mysql_error());
             } 
@@ -587,6 +587,7 @@ else if(mysql_num_rows($result) > 0)  // data found
 	<form action="meeting_teamsm.php" method="POST" name="teamsm">
 	<input type="hidden" name="arg" value="change">
 	<input type="hidden" name="item" value="<?php echo $_POST['item'] ?>">
+    <input type="hidden" name="wettkampf" value="<?php echo $row[5]; ?>">
     <input type="hidden" name="disc" value="<?php echo $row[13]; ?>">
     <input type="hidden" name="dTyp" value="<?php echo $row[16]; ?>">    
 	<tr>

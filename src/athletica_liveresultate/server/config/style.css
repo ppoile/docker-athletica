@@ -46,6 +46,16 @@
     color: #000;
 }
 
+.list-results_TeamSM-small {
+    background: #FF1A00;
+    color: #fff;
+}
+
+.list-results_TeamSM-big {
+    background: #FF1A00;
+    color: #000;
+}
+
 .list-results_pending-small {
     background: #FF8000;
     color: #000;

@@ -704,6 +704,86 @@ class GUI_TeamRankingList extends GUI_ListPage
 } // end GUI_TeamRankingList
 
 
+/********************************************
+ * GUI_LMMRankingList: ranking list for LMM events
+ *******************************************/
+ 
+class GUI_LMMRankingList extends GUI_ListPage
+{
+
+    function printHeaderLine()
+    {
+        ?>
+    <tr>
+        <th class='dialog'><?php echo $GLOBALS['strRank']; ?></th>
+        <th class='dialog'><?php echo $GLOBALS['strTeam']; ?></th>
+        <th class='dialog'></th>
+        <th class='dialog'><?php echo $GLOBALS['strPoints']; ?></th>             
+    </tr>
+        <?php
+    }
+
+
+    function printLine($rank, $name, $club, $points, $type)
+    {   
+        $this->switchRowClass();   
+        ?>
+    <tr class='<?php echo $this->rowclass[0]; ?>'>
+        <td class='forms_right'><?php echo $rank; ?></td>
+        <td><?php echo $name; ?></td>
+        <td>&nbsp;</td>
+        <td class='forms_right'><?php echo $points; ?></td>          
+    </tr>
+        <?php
+    }
+
+
+    function printAthleteLine($name, $year, $points, $country, $club, $rank, $type)
+    {
+        ?>
+    
+        
+        <?php
+         if ($type == 'teamP'){
+             ?>
+             <tr class='<?php echo $this->rowclass[0]; ?>'>
+             <td><?php echo $rank; ?></td>
+             <td><?php echo "$name, $year"; ?></td> 
+              <td><?php echo $club; ?></td>
+              <td><?php echo $points; ?></td> 
+              <?php
+         }
+         else {
+             ?>
+             <tr class='<?php echo $this->rowclass[0]; ?>'><td />
+             <td><?php echo "$name, $year, $country"; ?></td>
+             <td><?php echo $points; ?></td>
+             <td />             
+             <?php
+         }
+         ?>
+        
+    </tr>
+        <?php
+    }
+
+
+
+    function printInfo($info)
+    {
+        $this->linecnt = $this->linecnt + 2;    // increment line count
+        ?>
+    <tr class='<?php echo $this->rowclass[0]; ?>'>
+        <td />
+        <td class='disc' colspan='2'><?php echo $info; ?><br/></td>
+        <td />          
+    </tr>
+        <?php
+    }
+
+} // end GUI_LMMRankingList
+
+
 
 /********************************************
  * GUI_TeamSheet: show team sheets

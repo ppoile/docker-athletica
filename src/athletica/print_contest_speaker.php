@@ -115,6 +115,7 @@ else
     
     $combined = AA_checkCombined(0, $round);
     $svm = AA_checkSVM(0, $round); // decide whether to show club or team name   
+    $lmm = AA_checkLMM(0, $round); // decide whether to show club or team name   
     
     if (!empty($mRounds)){   
         $infoMerged = "";     
@@ -354,6 +355,7 @@ else
                     rundentyp_" . $_COOKIE['language'] . " AS rt 
                     USING(xRundentyp) 
                 WHERE r.xWettkampf = ".$xWettkampf." 
+                AND rt.Code != 'D'
                 ORDER BY 
                     r.Datum ASC, 
                     r.Startzeit ASC;";
@@ -467,7 +469,7 @@ else
                             , at.Name
                             , at.Vorname
                             , at.Jahrgang
-                            , if('$svm', t.Name, IF(a.Vereinsinfo = '', v.Name, a.Vereinsinfo))
+                            , if('$svm' OR '$lmm', t.Name, IF(a.Vereinsinfo = '', v.Name, a.Vereinsinfo))
                             , LPAD(s.Bezeichnung,5,'0') as heatid
                             , ss.Bahn
                             , s.Film
@@ -513,7 +515,7 @@ else
                             , an.Bezeichnung
                             , sf.xStaffel
                             , sf.Name
-                            , if('$svm', t.Name, v.Name)
+                            , if('$svm' OR '$lmm', t.Name, v.Name)
                             , LPAD(s.Bezeichnung,5,'0') as heatid
                             , r.xRunde
                             , s.Film

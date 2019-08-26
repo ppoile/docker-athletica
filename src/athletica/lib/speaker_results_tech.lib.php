@@ -191,6 +191,7 @@ function AA_speaker_Tech($event, $round, $layout)
 		}
         
         $svm = AA_checkSVM(0, $round); // decide whether to show club or team name
+        $lmm = AA_checkLMM(0, $round); // decide whether to show club or team name
 
 		$prog_mode = AA_results_getProgramMode();   
                
@@ -281,7 +282,7 @@ function AA_speaker_Tech($event, $round, $layout)
 		$argument="at.Name, at.Vorname";
 		$img_name="img/sort_act.gif";
 	} else if ($arg=="club") {
-        if ($svm){
+        if ($svm || $lmm){
             $argument="te.Name, a.Startnummer";
         }
         else {
@@ -314,7 +315,7 @@ function AA_speaker_Tech($event, $round, $layout)
                 , at.Name
                 , at.Vorname
                 , at.Jahrgang
-                , if('".$svm."', te.Name, IF(a.Vereinsinfo = '', v.Name, a.Vereinsinfo))   
+                , if('".$svm."' OR '".$lmm."', te.Name, IF(a.Vereinsinfo = '', v.Name, a.Vereinsinfo))   
                 , LPAD(s.Bezeichnung,5,'0') as heatid
                 , w.Windmessung
                 , st.Bestleistung

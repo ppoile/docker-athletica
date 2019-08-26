@@ -152,6 +152,7 @@ $relay = AA_checkRelay($event);
 $combined = AA_checkCombined($event, $round);
 
 $svm = AA_checkSVM(0, $round); // decide whether to show club or team name  
+$lmm = AA_checkLMM(0, $round); // decide whether to show club or team name  
 
 
 //
@@ -507,6 +508,15 @@ if ($arg=="nbr") {
 	<td class='forms'>
 		<?php	AA_printEventCombinedSelection('event_enrolement.php', $category, $comb, 'get'); ?>
 	</td>
+    <?php
+        if ($teamsm){
+    ?>
+    <td class='forms'>
+        <?php    AA_printGroupSelection('event_enrolement.php', $category, $event,'',$tm_group, 'get'); ?>
+    </td>
+    <?php
+        }
+    ?>
 </tr></table>
  <br>
 <table>   
@@ -687,8 +697,7 @@ if($event > 0 || $comb > 0 || $catFrom > 0 || $discFrom > 0 || $mDate > 0)
                 ORDER BY
                       r.Datum ASC
                     , r.Startzeit ASC;";    
-                    
-               
+
         }
         else {
             
@@ -712,6 +721,7 @@ if($event > 0 || $comb > 0 || $catFrom > 0 || $discFrom > 0 || $mDate > 0)
                 ORDER BY
                       r.Datum ASC
                     , r.Startzeit ASC;";
+                    
         }
 		
 	    
@@ -799,7 +809,7 @@ if($event > 0 || $comb > 0 || $catFrom > 0 || $discFrom > 0 || $mDate > 0)
 		</th>
 		<th class='dialog'>
             <?php 
-            if($svm){ 
+            if($svm || $lmm){ 
                 ?>
                <a href='event_enrolement.php?arg=team&category=<?php echo $category; ?>&event=<?php echo $event; ?>&comb=<?php echo $comb; ?>&catFrom=<?php echo $catFrom; ?>&catTo=<?php echo $catTo; ?>&discFrom=<?php echo $discFrom; ?>&discTo=<?php echo $discTo; ?>&mDate=<?php echo $mDate; ?>&round=<?php echo $round;?>'><?php  echo $strTeam; ?> 
                 <img src='<?php echo $img_team; ?>' />
@@ -861,7 +871,7 @@ if($event > 0 || $comb > 0 || $catFrom > 0 || $discFrom > 0 || $mDate > 0)
             </a>
         </th>		
 		<th class='dialog'>
-			<a href='event_enrolement.php?arg=relay_club&category=<?php echo $category; ?>&event=<?php echo $event; ?>'><?php if ($svm) { echo $strTeam; } else { echo $strClub; }?>
+			<a href='event_enrolement.php?arg=relay_club&category=<?php echo $category; ?>&event=<?php echo $event; ?>'><?php if ($svm || $lmm) { echo $strTeam; } else { echo $strClub; }?>
 				<img src='<?php echo $img_club; ?>' />
 			</a>
 		</th>
@@ -1009,7 +1019,7 @@ if($event > 0 || $comb > 0 || $catFrom > 0 || $discFrom > 0 || $mDate > 0)
                 else {
                      $sqlCat = " AND w.xKategorie IN $sqlCats ";  
                 } 
-            }
+            }  
              if  (!empty($mk_group) || (!empty($tm_group))) {   
                  if ($teamsm) {
                      $sql = "SELECT
@@ -1035,7 +1045,7 @@ if($event > 0 || $comb > 0 || $catFrom > 0 || $discFrom > 0 || $mDate > 0)
                             teamsmathlet AS tat ON(a.xAnmeldung = tat.xAnmeldung)    
                         LEFT JOIN teamsm as t ON (tat.xTeamsm = t.xTeamsm)                      
                         WHERE s.Gruppe = " .$tm_group ."
-                              AND s.xWettkampf = " . $event  ."
+                              AND s.xWettkampf = " . $event  ."       
                         GROUP BY a.xAnmeldung                          
                         ORDER BY
                             ".$argument.", a.xAnmeldung;";
@@ -1051,7 +1061,7 @@ if($event > 0 || $comb > 0 || $catFrom > 0 || $discFrom > 0 || $mDate > 0)
                             , at.Name
                             , at.Vorname
                             , at.Jahrgang                          
-                            , if('".$svm."', t.Name, IF(a.Vereinsinfo = '', v.Name, a.Vereinsinfo))    
+                            , if('".$svm."' OR '".$lmm."', t.Name, IF(a.Vereinsinfo = '', v.Name, a.Vereinsinfo))    
                             , a.xAnmeldung
                             , s.Bezahlt 
                             , a.Gruppe                          
@@ -1100,14 +1110,11 @@ if($event > 0 || $comb > 0 || $catFrom > 0 || $discFrom > 0 || $mDate > 0)
                             wettkampf AS w ON(s.xWettkampf = w.xWettkampf) 
                         LEFT JOIN
                             disziplin_" . $_COOKIE['language'] . " AS d ON(w.xDisziplin   = d.xDisziplin)                  
-                        WHERE s.Gruppe = '" .$tm_group ."'
-                              AND s.xWettkampf = " . $event  ."
+                        WHERE s.xWettkampf = " . $event  ."
+                                " .$sql_group ."
                         GROUP BY a.xAnmeldung                          
                         ORDER BY
-                            ".$argument.", a.xAnmeldung;";  
-                            
-                  
-                        
+                            ".$argument.", a.xAnmeldung;";                        
                    }  
                    else {
                         $sql = "SELECT
@@ -1117,7 +1124,7 @@ if($event > 0 || $comb > 0 || $catFrom > 0 || $discFrom > 0 || $mDate > 0)
                             , at.Name
                             , at.Vorname
                             , at.Jahrgang                          
-                            , if('".$svm."', t.Name, IF(a.Vereinsinfo = '', v.Name, a.Vereinsinfo))    
+                            , if('".$svm."' OR '".$lmm."', t.Name, IF(a.Vereinsinfo = '', v.Name, a.Vereinsinfo))    
                             , a.xAnmeldung
                             , s.Bezahlt                           
                         FROM
@@ -1158,7 +1165,7 @@ if($event > 0 || $comb > 0 || $catFrom > 0 || $discFrom > 0 || $mDate > 0)
 						, at.Name
 						, at.Vorname
 						, at.Jahrgang
-                         , if('".$svm."', t.Name, IF(a.Vereinsinfo = '', v.Name, a.Vereinsinfo))  
+                         , if('".$svm."' OR '".$lmm."', t.Name, IF(a.Vereinsinfo = '', v.Name, a.Vereinsinfo))  
 						, a.xAnmeldung  
 						, d.Name
 					    ".$sqlDate."
@@ -1194,7 +1201,7 @@ if($event > 0 || $comb > 0 || $catFrom > 0 || $discFrom > 0 || $mDate > 0)
 						, at.Name
 						, at.Vorname
 						, at.Jahrgang
-						  , if('".$svm."', t.Name, IF(a.Vereinsinfo = '', v.Name, a.Vereinsinfo))   
+						  , if('".$svm."' OR '".$lmm."', t.Name, IF(a.Vereinsinfo = '', v.Name, a.Vereinsinfo))   
 						, a.xAnmeldung  
 						, d.Name
 					    ".$sqlDate."  
@@ -1235,11 +1242,11 @@ if($event > 0 || $comb > 0 || $catFrom > 0 || $discFrom > 0 || $mDate > 0)
 		// get each athlete from all registered relays
 		//
 		
-        $sql = "SELECT 
+       $sql = "SELECT 
                         s.xStart 
                         , s.Anwesend 
                         , st.Name 
-                        , if('".$svm."', t.Name, IF(a.Vereinsinfo = '', v.Name, a.Vereinsinfo))   
+                        , if('".$svm."' OR '".$lmm."', t.Name, v.Name)   
                         , a.Startnummer 
                         , at.Name 
                         , at.Vorname 

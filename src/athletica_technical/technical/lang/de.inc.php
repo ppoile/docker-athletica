@@ -98,6 +98,7 @@ $strConvtableIAAF85Men = "IAAF 85, M?nner";
 $strConvtableIAAF85Women = "IAAF 85, Frauen";
 $strConvtableSLV2010Men = "SLV 2010, M?nner";
 $strConvtableSLV2010Women = "SLV 2010, Frauen";
+$strConvtableSLV2010Mixed = "SLV 2010, Mixed";
 $strConvtableSVMMenNL = "SVM NLA-C, M?nner";
 $strConvtableSVMWomenNL = "SVM NLA-B, Frauen";
 $strConvtableRankingPoints = "Rangpunkte";     

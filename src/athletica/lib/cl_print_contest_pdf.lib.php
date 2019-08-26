@@ -104,7 +104,7 @@ class PRINT_Contest_pdf extends PRINT_Page_pdf
 
 class PRINT_ContestTrack_pdf extends PRINT_Contest_pdf
 {
-    function printStartHeat($svm = false, $teamsm = false)
+    function printStartHeat($svm = false, $teamsm = false, $lmm = false)
     {
         $this->printTextCell($GLOBALS['strTrack'],$this->font,"B",10,40,$this->lp,25,20,'center center',0,0);//pos
         $this->printTextCell($GLOBALS['strPositionShort'],$this->font,"B",10,$this->posx,$this->lp,25,20,'center center',0,0);//track
@@ -112,7 +112,7 @@ class PRINT_ContestTrack_pdf extends PRINT_Contest_pdf
         $this->printTextCell($GLOBALS['strName'],$this->font,"B",10,$this->posx,$this->lp,135,20,'left center',0,0);//name
         $this->printTextCell($GLOBALS['strYearShort'],$this->font,"B",10,$this->posx,$this->lp,30,20,'center center',0,0);//year
         $this->printTextCell($GLOBALS['strCountry'],$this->font,"B",10,$this->posx,$this->lp,35,20,'center center',0,0);//country
-        if ($svm){
+        if ($svm || $lmm){
             $this->printTextCell($GLOBALS['strTeam'],$this->font,"B",10,$this->posx,$this->lp,123,20,'left center',0,0);//team
         }elseif ($teamsm){
       $this->printTextCell($GLOBALS['strTeamsm'],$this->font,"B",10,$this->posx,$this->lp,123,20,'left center',0,0);//club
@@ -195,9 +195,9 @@ class PRINT_ContestRelay_pdf extends PRINT_Contest_pdf
     }
 
 
-    function printStartHeat($svm = false)
+    function printStartHeat($svm = false, $teamsm = false, $lmm = false)
     { 
-        if ($svm) { 
+        if ($svm || $lmm) { 
             $txt3=$GLOBALS['strTeam'];
         } else {
             $txt3=$GLOBALS['strClub'];

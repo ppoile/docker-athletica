@@ -130,6 +130,7 @@ function processDiscipline($event, $disctype, $catname, $discname, $windmeas, $l
 	$order_perf = "";
     $order_perf_sort = "";  
 	$valid_result = "";
+    $result_invalid = 0; // Wert für leere und ungültige Resultate für die Sortierung
 	if(($disctype == $cfgDisciplineType[$strDiscTypeJumpNoWind])
 		|| ($disctype == $cfgDisciplineType[$strDiscTypeThrow]))
 	{
@@ -139,27 +140,28 @@ function processDiscipline($event, $disctype, $catname, $discname, $windmeas, $l
 	else if($disctype == $cfgDisciplineType[$strDiscTypeJump])
 	{
 		if ($windmeas == 1) {			// with wind
-			$order_perf = "DESC, r.Info ASC";
+			$order_perf = "DESC, r.Leistung DESC, r.Info ASC";
             $order_perf_sort = "DESC"; 
 		}
 		else {					// without wind
-			$order_perf = "DESC";
+			$order_perf = "DESC, r.Leistung DESC";
             $order_perf_sort = "DESC"; 
 		}
 	}
 	else if($disctype == $cfgDisciplineType[$strDiscTypeHigh])
 	{
-		$order_perf = "DESC";
+		$order_perf = "DESC, r.Leistung DESC";
         $order_perf_sort = "DESC"; 
 		$valid_result =	" AND (r.Info LIKE '%O%' OR r.Leistung < 0)";
 	}
 	else
 	{
-		$order_perf = "ASC";
+		$order_perf = "ASC, r.Leistung ASC";
         $order_perf_sort = "ASC"; 
+        $result_invalid = 999999;
 	}
 	
-	$sql_leistung = ($order_perf=='ASC') ? "r.Leistung" : "IF(r.Leistung<0, (If(r.Leistung = -99, -9, r.Leistung) * -1), r.Leistung)";
+	$sql_leistung = ($order_perf=='DESC') ? "r.Leistung" : "IF(r.Leistung>0,r.Leistung, $result_invalid)";
 	                           
     $sql = "
         SELECT
@@ -192,6 +194,7 @@ function processDiscipline($event, $disctype, $catname, $discname, $windmeas, $l
         ORDER BY
             ts.xTeamsm
             , leistung_neu $order_perf
+            , Leistung $order_perf_sort  
     ";
     
     $res = mysql_query($sql);     
@@ -204,11 +207,12 @@ function processDiscipline($event, $disctype, $catname, $discname, $windmeas, $l
 		$c = 0;			// count results
 		$athletes = array();
         $teams_notValid = array();    // team array  
-        
+        $nOfValidResults = 0; 
+        $nOfResults = 0; 
 		
 		while($row = mysql_fetch_array($res)){
 			
-			$row_res[6] = ($row_res[6]==1 || $row_res[6]==2 || $row_res[6]==3 || $row_res[6]==4) ? ($row_res[6] * -1) : (($row_res[6]==9) ? -99 : $row_res[6]);
+			$row[6] = ($row[6]==1 || $row[6]==2 || $row[6]==3 || $row[6]==4) ? ($row[6] * -1) : (($row[6]==9) ? -99 : $row[6]);
 			
 			if(isset($athletes[$row[7]])){
 				continue;
@@ -217,20 +221,26 @@ function processDiscipline($event, $disctype, $catname, $discname, $windmeas, $l
 			}
 			
 			if($team != $row[0]){
-				
 				if($team > 0){
 					$countAthl = count($teams[$team]['athletes']);
-                    if ($countAthl < $countRes){
-                        $teams[$team]['perf'] = 0; 
-                        $teams[$team]['perfTot'] = 0; 
+                    
+                    if ($nOfValidResults < $countRes){
+                        //$teams[$team]['perf'] = 0; 
+                        //$teams[$team]['perfTot'] = 0; 
+                        $teams[$team]['perf'] /= $nOfValidResults;
                         $teams[$team]['rankTot'] = 0; 
                         $teams[$team]['perfBest'] = 0; 
                         $teams[$team]['rankBest'] = 0; 
                         $teams[$team]['perfNotValid'] = 0;  
+                        $teams[$team]['nOfValidResults'] = $nOfValidResults;
+                        $teams[$team]['nOfResults'] = $nOfResults;
                         $teams_notValid[$team]['club'] = $teams[$team]['club'];
                         $teams_notValid[$team]['name'] = $teams[$team]['name'];  
-                        $teams_notValid[$team]['perf'] = 0;   
+                        $teams_notValid[$team]['perf'] = $teams[$team]['perf'];   
                         $teams_notValid[$team]['athletes'] = $teams[$team]['athletes'];
+                        $teams_notValid[$team]['nOfValidResults'] = $teams[$team]['nOfValidResults'];
+                        $teams_notValid[$team]['nOfResults'] = $teams[$team]['nOfResults'];
+                        
                     }
                     else {   
                         
@@ -242,9 +252,10 @@ function processDiscipline($event, $disctype, $catname, $discname, $windmeas, $l
                                     $countNotValid ++;
                                 }
                         } 
-                        if (!$notValidPerf){ 
+                        //if (!$notValidPerf){ 
                             $teams[$team]['perf'] /= $countRes; 
-                       } 
+                       //} 
+                       /*
                        else {
                              
                              $countValid = $countRes - $countNotValid;                             
@@ -305,9 +316,11 @@ function processDiscipline($event, $disctype, $catname, $discname, $windmeas, $l
                                   elseif ($countNotValid == 3){
                                           $teams[$team]['perf'] += $atPerf; 
                                   }
-                             }   
+                             }  
+                             
                              
                        }
+                       */ 
                         if ($order_perf == 'ASC') {   
                             if ($notValidPerf){
                               $teams[$team]['perfNotValid'] = $teams[$team]['perf'];
@@ -318,10 +331,13 @@ function processDiscipline($event, $disctype, $catname, $discname, $windmeas, $l
                              if ($notValidPerf){
                                   $teams[$team]['perfNotValid'] = $teams[$team]['perf']; 
                              }
-                        }                         
+                        }  
+                        $teams[$team]['nOfValidResults'] = $nOfValidResults;                       
+                        $teams[$team]['nOfResults'] = $nOfResults;                       
                     }   
 				}
-				
+                $nOfValidResults = 0;
+				$nOfResults = 0;
 				$team = $row[0];
 				$teams[$team]['club'] = $row[2];
 				$teams[$team]['name'] = $row[1];                  
@@ -336,30 +352,52 @@ function processDiscipline($event, $disctype, $catname, $discname, $windmeas, $l
 				|| ($disctype == $cfgDisciplineType[$strDiscTypeJumpNoWind])
 				|| ($disctype == $cfgDisciplineType[$strDiscTypeThrow])
 				|| ($disctype == $cfgDisciplineType[$strDiscTypeHigh])) {
-				$perf = $row[6];
+				$perf = $row[8];
                 $asc = false;
                 if ($row[8] >= 0){
-				    $perf_print = AA_formatResultMeter($row[6]);
+				    $perf_print = AA_formatResultMeter($row[8]);
                 }
                 else {
-                      $perf_print = $perf * -1;
+                    if ($row[8] == '-98'){ 
+                        $perf_print = $cfgInvalidResult['NRS']['short'];                          
+                    }
+                    elseif ($row[8] == '-99'){                           
+                        $perf_print = $cfgInvalidResult['WAI']['short']; 
+                    }
+                    else {
+                        foreach($cfgInvalidResult as $value)    // translate value
+                            {   
+                                if($value['code'] == $row[8]) {
+                                    $perf_print = $value['short'];                                       
+                                }
+                            }
+                    }
                 }
 			}
 			else {
-				$perf = (ceil($row[6]/10))*10; // round up 1000
+				$perf = (ceil($row[8]/10))*10; // round up 1000
                 $asc = true;
 				if(($disctype == $cfgDisciplineType[$strDiscTypeTrack])
 				|| ($disctype == $cfgDisciplineType[$strDiscTypeTrackNoWind])){
-					$perf_print = AA_formatResultTime($row[6], true, true);
+					$perf_print = AA_formatResultTime($row[8], true, true);
 				}else{
-					$perf_print = AA_formatResultTime($row[6], true);
+					$perf_print = AA_formatResultTime($row[8], true);
 				}
 			}   
-            $rank = $row[9];			
+            $rank = $row[9];
+            
+            if($perf > 0) {
+                $nOfValidResults++;
+            }
+            
+            if($perf > 0 || $perf < 0) {
+                $nOfResults++;
+            }
+            			
 			if($c < $countRes){
 				
-				$teams[$team]['perf'] += $perf;
-                $teams[$team]['perfTot'] += $perf;
+				$teams[$team]['perf'] += max($perf,0);
+                $teams[$team]['perfTot'] += max($perf,0);
                 $teams[$team]['rankTot'] += $rank;
                 if ($asc){
                     if ($perf < $teams[$team]['perfBest'] || $teams[$team]['perfBest'] == 0){
@@ -388,16 +426,27 @@ function processDiscipline($event, $disctype, $catname, $discname, $windmeas, $l
 		
 		if($team > 0){ // calc last team
 			 $countAthl = count($teams[$team]['athletes']);
-			 if ($countAthl < $countRes){
-                       $teams[$team]['perf'] = 0;   
-                       $teams[$team]['perfNotValid'] = 0;  
-                       $teams_notValid[$team]['club'] = $teams[$team]['club'];
-                       $teams_notValid[$team]['name'] = $teams[$team]['name']; 
-                       $teams_notValid[$team]['perf'] = 0;  
-                       $teams_notValid[$team]['athletes'] = $teams[$team]['athletes'];
+			 
+             
+             if ($nOfValidResults < $countRes){                    
+                       //$teams[$team]['perf'] = 0; 
+                        //$teams[$team]['perfTot'] = 0; 
+                        $teams[$team]['perf'] /= $nOfValidResults;
+                        $teams[$team]['rankTot'] = 0; 
+                        $teams[$team]['perfBest'] = 0; 
+                        $teams[$team]['rankBest'] = 0; 
+                        $teams[$team]['perfNotValid'] = 0;  
+                        $teams[$team]['nOfValidResults'] = $nOfValidResults;
+                        $teams[$team]['nOfResults'] = $nOfResults;
+                        $teams_notValid[$team]['club'] = $teams[$team]['club'];
+                        $teams_notValid[$team]['name'] = $teams[$team]['name'];  
+                        $teams_notValid[$team]['perf'] = $teams[$team]['perf'];   
+                        $teams_notValid[$team]['athletes'] = $teams[$team]['athletes'];
+                        $teams_notValid[$team]['nOfValidResults'] = $teams[$team]['nOfValidResults'];
+                        $teams_notValid[$team]['nOfResults'] = $teams[$team]['nOfResults'];
                     }
                     else {
-                          
+             
                           $notValidPerf = false;       
                           $countNotValid = 0;                                                
                           foreach ($teams[$team]['athletes'] as $key => $val) {   
@@ -406,9 +455,10 @@ function processDiscipline($event, $disctype, $catname, $discname, $windmeas, $l
                                     $countNotValid ++;  
                                 }
                           } 
-                          if (!$notValidPerf){ 
+                          //if (!$notValidPerf){ 
                             $teams[$team]['perf'] /= $countRes; 
-                          } 
+                          //}
+                          /* 
                           else {
                                  $countValid = $countRes - $countNotValid;
                                  if (isset($teams[$team]['athletes'][3])){                                 
@@ -470,6 +520,7 @@ function processDiscipline($event, $disctype, $catname, $discname, $windmeas, $l
                                   }
                              }   
                           }
+                          */
                          
                           if ($order_perf == 'ASC') {   
                               if ($notValidPerf){
@@ -481,7 +532,10 @@ function processDiscipline($event, $disctype, $catname, $discname, $windmeas, $l
                              if ($notValidPerf){
                                   $teams[$team]['perfNotValid'] = $teams[$team]['perf']; 
                              }
-                          }                                                   
+                          }    
+                          
+                          $teams[$team]['nOfValidResults'] = $nOfValidResults;                       
+                          $teams[$team]['nOfResults'] = $nOfResults;                                                       
                     }
 			
 		}
@@ -497,6 +551,8 @@ function processDiscipline($event, $disctype, $catname, $discname, $windmeas, $l
                  $teams_valid[$k]['rankBest'] =  $teams[$k]['rankBest'];     
                  $teams_valid[$k]['perfNotValid'] =  $teams[$k]['perfNotValid'];  
                  $teams_valid[$k]['athletes'] =  $teams[$k]['athletes']; 
+                 $teams_valid[$k]['nOfValidResults'] =  $teams[$k]['nOfValidResults']; 
+                 $teams_valid[$k]['nOfResults'] =  $teams[$k]['nOfResults']; 
             } 
         } 
        
@@ -505,13 +561,14 @@ function processDiscipline($event, $disctype, $catname, $discname, $windmeas, $l
 		//
 		// print team ranking
 		//
-		if(count($teams)>0){
+		//if(count($teams)>0){
 			
 			$list->printSubTitle($catname, $discname, "");
 			$list->startList();
 			$list->printHeaderLine();
 			
-			usort($teams, "cmp_$order_perf_sort");	// sort by performance
+            usort($teams, "cmp_$order_perf_sort");    // sort by performance
+			usort($teams_notValid, "cmp_$order_perf_sort");	// sort by performance
             $teams = array_merge($teams, $teams_notValid); 
             
 			$rank = 1;			// initialize rank
@@ -552,8 +609,10 @@ function processDiscipline($event, $disctype, $catname, $discname, $windmeas, $l
 					}
 				}
                
-                if ($perf == 0 || !empty($team['perfNotValid'])){
-                    $rank = '';   
+                //if ($perf == 0 || !empty($team['perfNotValid'])){
+                if ($team['nOfValidResults'] < $countRes ){
+                    $rank = '';
+                    //$perf = 0;   
                 }
                               
 				$list->printLine($rank, $team['name'], $team['club'], $perf);
@@ -598,7 +657,7 @@ function processDiscipline($event, $disctype, $catname, $discname, $windmeas, $l
 			}
 			$list->endList();
 			
-		}
+		//}
 	}
 	
 }
@@ -616,7 +675,10 @@ function cmp_DESC ($a, $b) {
 	if ($a["perf"]== $b["perf"]) {
         if ($a["perfTot"]== $b["perfTot"]) {
              if ($a["rankTot"]== $b["rankTot"]) {
-                  if ($a["rankBest"]== $b["rankBest"]) return 0;                  
+                  if ($a["rankBest"]== $b["rankBest"]) {   
+                    if ($a["nOfResults"]== $b["nOfResults"]) return 0; 
+                    return ($a["nOfResults"] > $b["nOfResults"]) ? -1 : 1;   
+                  }               
                   return ($a["rankBest"] > $b["rankBest"]) ? 1 : -1;
              } 
               return ($a["rankTot"] > $b["rankTot"]) ? 1 : -1;
@@ -630,14 +692,20 @@ function cmp_ASC ($a, $b) {
    if ($a["perf"]== $b["perf"]) {
         if ($a["perfTot"]== $b["perfTot"]) {
              if ($a["rankTot"]== $b["rankTot"]) { 
-                  if ($a["rankBest"]== $b["rankBest"]) return 0;                  
+                  if ($a["rankBest"]== $b["rankBest"]) {   
+                    if ($a["nOfResults"]== $b["nOfResults"]) return 0; 
+                    return ($a["nOfResults"] > $b["nOfResults"]) ? -1 : 1;   
+                  }               
                   return ($a["rankBest"] > $b["rankBest"]) ? 1 : -1;
              } 
               return ($a["rankTot"] > $b["rankTot"]) ? 1 : -1;
         }
         return ($a["perfTot"] > $b["perfTot"]) ? 1 : -1;
     }
-    return ($a["perf"] > $b["perf"]) ? 1 : -1;
+    if ($a["perf"] > 0) {
+        return ($a["perf"] > $b["perf"] && $b["perf"] > 0) ? 1 : -1;
+    }
+    return 1;
 }
 
 

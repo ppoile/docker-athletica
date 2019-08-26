@@ -404,6 +404,66 @@ require('./config.inc.php');
     }
     
     /**
+     * Check if event or round belongs to a lmm contest
+     *
+     * @param    int        event
+     * @param    int        round
+     * @return    TRUE/FALSE
+    **/
+    function AA_checkLMM($event=0, $round=0){
+        global $cfgEventType, $strEventTypeSingleCombined, $cfgLMM;
+        
+        if($event > 0){
+            
+            $res = mysql_query("SELECT Typ, Mehrkampfcode FROM
+                        wettkampf
+                    WHERE    xWettkampf = $event
+                    AND    xMeeting = ".$_COOKIE['meeting_id']);
+            if(mysql_errno() > 0) {
+                AA_printErrorMsg(mysql_errno() . ": " . mysql_error());
+            }else{
+                
+                $row = mysql_fetch_array($res);
+                if($row[0] == $cfgEventType[$strEventTypeSingleCombined] && in_array($row[1], $cfgLMM)){
+                    return true;
+                }else{
+                    return false;
+                }
+                
+            }
+            
+        }elseif($round > 0){   
+            
+            $sql = "SELECT 
+                        Typ,
+                        Mehrkampfcode
+                    FROM
+                        wettkampf as w
+                        LEFT JOIN runde as r ON (r.xWettkampf = w.xWettkampf)
+                    WHERE    
+                        r.xRunde = $round  
+                        AND w.xMeeting = ".$_COOKIE['meeting_id'];     
+             
+            $res = mysql_query($sql);
+
+            if(mysql_errno() > 0) {
+                AA_printErrorMsg(mysql_errno() . ": " . mysql_error());
+            }else{
+                
+                $row = mysql_fetch_array($res);
+                if($row[0] == $cfgEventType[$strEventTypeSingleCombined] && in_array($row[1], $cfgLMM)){
+                    return true;
+                }else{
+                    return false;
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+    /**
      * Check if event belongs to a svm contest
      *  and check if only Nat. A - C
      *
@@ -919,15 +979,19 @@ require('./config.inc.php');
         if((!empty($event)) && (!empty($round)))    // check parameters
         {
             // check if another round follows
+            
             $result = mysql_query("    SELECT
                                                 xRunde
                                             FROM
                                                 runde
+                                            LEFT JOIN rundentyp_" . $_COOKIE['language'] . " USING (xRundentyp)
                                             WHERE xWettkampf = $event
+                                            AND Code != 'D'
                                             ORDER BY
                                                 Datum
                                                 , Startzeit
                                             ");
+                                            
 
             if(mysql_errno() > 0) {        // DB error
                 AA_printErrorMsg(mysql_errno() . ": " . mysql_error());
@@ -1005,12 +1069,17 @@ require('./config.inc.php');
         if($meter > 0)        // leave negative or zero results unchanged
         {
             $m = (int) ($meter / 100);        // calculate meters
-            $cm = $meter % 100;    // keep remainder
+            $cm = round(fmod($meter,100),0);    // keep remainder
 
+            if($cm==100) {
+                $m = $m + 1;
+                $cm = "0";
+            }
             $meter = $m . $GLOBALS['cfgResultsMeterSeparator'];
             if($cm < 10) {
                 $meter = $meter . "0";
             }
+            
             $meter = $meter . $cm;
         }    // ET negative value
         else  if($meter == $GLOBALS['cfgMissedAttempt']['db']) {
@@ -3251,6 +3320,7 @@ function AA_rankingForNewPosition($round, $pass)
                     , serienstart as ss WRITE
                     , tempresult1 WRITE
                     , tempresult2 WRITE 
+                    , rundentyp_" . $_COOKIE['language'] . " As rt
             ");
 
             // Set up a temporary table to hold all results for ranking.
@@ -3754,15 +3824,15 @@ function AA_checkEventDisc($event){
      *    query arg. 3 = event ID
      *
      */
-    function AA_printGroupSelection($action, $category, $event, $club, $group)
+    function AA_printGroupSelection($action, $category, $event, $club, $group, $method='post')
     {
 ?>
-<form action='<?php echo $action; ?>' method='post' name='group_selection'>
+<form action='<?php echo $action; ?>' method='<?php echo $method; ?>' name='group_selection'>
     <input name='arg' type='hidden' value='select_group' />
     <input name='category' type='hidden' value='<?php echo $category; ?>' />
     <input name='club' type='hidden' value='<?php echo $club; ?>' />
      <input name='event' type='hidden' value='<?php echo $event; ?>' /> 
-    <input name='group' type='hidden' value='<?php echo $group; ?>' />  
+          
     <table>
         <tr>
             <th class='dialog'><?php echo $GLOBALS['strGroup']; ?></th>

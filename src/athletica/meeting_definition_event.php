@@ -134,6 +134,45 @@ else if ($_POST['arg']=='change_round')
 	// the other times are parsed in the timetable constructor
 	$tt = new Timetable();
 	$tt->change();
+	// do the same for all merged rounds, if this is the main round
+    $result = mysql_query("SELECT 
+                                xRundenset 
+                           FROM 
+                                rundenset
+                           WHERE    
+                                xRunde = ".$_POST['round']."
+                                AND Hauptrunde=1
+                                AND xMeeting = ".$_COOKIE['meeting_id']);
+    if(mysql_errno() > 0){
+        AA_printErrorMsg(mysql_errno() . ": " . mysql_error());
+    }else{
+    	// if there is a result, this is the main round and we change the merged rounds too; otherwise we are done
+    	if (mysql_num_rows($result)>0){
+        	$rsrow = mysql_fetch_array($result); // get round set id 
+    		
+			// get the other merged, rounds
+			$sql = "SELECT 
+                    xRunde 
+                FROM 
+                    rundenset
+                WHERE    
+                    xRundenset = $rsrow[0]
+                    AND Hauptrunde=0
+                    AND xMeeting = ".$_COOKIE['meeting_id'];
+                    
+	        $res = mysql_query($sql);
+	        if(mysql_errno() > 0){
+	            AA_printErrorMsg(mysql_errno() . ": " . mysql_error());
+	        }else{
+	        	while ($row = mysql_fetch_array($res)){
+					$_POST['round'] = $row[0];
+		        	$tt = new Timetable();
+					$tt->change();
+				}
+	        	
+	        }   
+		}  
+    }						  
 }
 
 //
@@ -621,6 +660,7 @@ $result = mysql_query("
 		, rt.Name
 		, rs.xRundenset
         , r.Gruppe
+        , r.xRunde
 	FROM
 		runde AS r
 		LEFT JOIN rundenset AS rs ON (rs.xRunde = r.xRunde AND rs.xMeeting = ". $_COOKIE['meeting_id'] .")  
@@ -645,13 +685,20 @@ else			// no DB error
 
   	while($row = mysql_fetch_row($result))
   	{  
-		$roundsArr[] = array($row[0], $row[9], $row[10], $row[6], $row[11], $row[9]);
+		$roundsArr[] = array($row[0], $row[9], $row[10], $row[6], $row[11], $row[9], $row[12], $row[13]);
 		
 		if($i==0)	// first row: show category headerline
 		{
 			//	Headerline category
 			?>
 <tr>
+    <?php
+        if(AA_checkCombined($event)) {
+            ?>
+            <th class='dialog'><?php echo $strGroup; ?></th>    
+            <?php
+        }
+    ?>
 	<th class='dialog'><?php echo $strType; ?></th>
 	<th class='dialog'><?php echo $strDate; ?></th>
 	<th class='dialog'><?php echo $strTimeFormat; ?></th>
@@ -671,6 +718,13 @@ else			// no DB error
 	<input name='cat' type='hidden' value='<?php echo $category; ?>' />
 	<input name='xDis' type='hidden' value='<?php echo $xDiscipline; ?>' />     
     <input name='g' type='hidden' value='<?php echo $row[12]; ?>' />  
+    <?php
+        if(AA_checkCombined($event)) {
+            ?>
+            <td class='forms'><?php echo $row[12]; ?></td>    
+            <?php
+        }
+    ?>
 		<?php
 		$dd = new GUI_RoundtypeDropDown($row[5]);
 		$dd = new GUI_DateDropDown($row[1]);
@@ -683,6 +737,7 @@ else			// no DB error
 		<input class='nbr' type='text' name='min' maxlength='2'
 			value='<?php echo $row[3]; ?>' />
 	</td>-->
+    
 	<td class='forms'>
 		<input size="4" type='text' name='time' maxlength='5'
 			value='<?php echo $row[6]; ?>' />
@@ -724,6 +779,13 @@ else			// no DB error
 	<input name='item' type='hidden' value='<?php echo $event; ?>'>
 	<input name='cat' type='hidden' value='<?php echo $category; ?>' />
 	<input name='xDis' type='hidden' value='<?php echo $xDiscipline; ?>' />
+    <?php
+        if(AA_checkCombined($event)) {
+            ?>
+            <td class='forms'></td>    
+            <?php
+        }
+    ?>
 		<?php
 		$dd = new GUI_RoundtypeDropDown(0);  
        if ($date_keep == '' ) {   
@@ -732,7 +794,7 @@ else			// no DB error
         else {
              $dd = new GUI_DateDropDown($date_keep); 
         }                           
-		?>
+		?> 
 	<!--<td class='forms'>
 		<input class='nbr' type='text' name='hr' maxlength='2'
 			value='' />
@@ -812,6 +874,7 @@ if($i == 0){	// no rounds here
                   , w.xWettkampf
                   , ru.Datum
                   , DATE_FORMAT(ru.Datum, '".$cfgDBdateFormat."') as Datum_format
+                  , ru.Gruppe
 			  FROM 
 			  	   wettkampf AS w 
 		 LEFT JOIN runde AS ru USING(xWettkampf) 
@@ -819,9 +882,13 @@ if($i == 0){	// no rounds here
 		 LEFT JOIN kategorie AS k ON(k.xKategorie = w.xKategorie) 
 		 LEFT JOIN rundenset AS rs ON(rs.xRunde = ru.xRunde AND rs.xMeeting = " .$_COOKIE['meeting_id'].") 
 		 	 WHERE w.xMeeting = ".$_COOKIE['meeting_id']." 
-		 	   AND w.xWettkampf != ".$event."
+				AND w.xWettkampf != ".$event."							
 		 	   AND w.xDisziplin = ".$xDiscipline." 
+               AND w.xWettkampf != ".$event."
 		  ORDER BY k.Anzeige
+                    , ru.Datum
+                    , ru.Startzeit
+                    , ru.Gruppe
 				 ";
 	$res = mysql_query($sql);
 	
@@ -859,7 +926,18 @@ if($i == 0){	// no rounds here
 			<input type="hidden" name="round" value="">
 			</form>
 			<tr>
-				<th class="dialog"><?php echo $round[2]." (".$round[3].")" ?></th>
+            <?php
+                        if($round[6]>0) {
+                        ?>   
+                            <th class="dialog"><?php echo " G".$round[6]." ".$round[2]." (".$round[3].")" ?></th>
+                        <?php
+                        } else {
+                        ?>
+                            <th class="dialog"><?php echo $round[2]." (".$round[3].")" ?></th>             
+                        <?php    
+                        }
+                        ?>
+				
 				<th class="dialog"></th>
 				<th class="dialog"><?php echo $strMergeHere ?></th>
 			</tr>
@@ -871,15 +949,25 @@ if($i == 0){	// no rounds here
 				$round[5] = main round
 				$mr[7] = xWettkampf
 				*/
-				if((intval($mr[2]) == 0 || (intval($mr[2]) == intval($round[4]))) && (intval($round[5]) == 1 || (intval($round[5]) == 0 && intval($round[4]) == 0))){ // the actual round is a main round or is not merged
+				if((intval($mr[2]) == 0 || (intval($mr[2]) == intval($round[4]))) && (intval($round[5]) == 1 || (intval($round[5]) == 0 && intval($round[4]) == 0)) && $round[7] != $mr[4]){ // the actual round is a main round or is not merged
 					if ($date) {
 						$d = $mr[9].", ";
 					} else {
 						$d = "";
 					}
 					?>
-					<tr>
-						<td class="dialog"><?php echo $mr[1]." (".$d.$mr[5].")" ?></td>
+					<tr>     
+                        <?php   
+                        if($mr[10]>0) {
+                        ?>   
+                            <td class="dialog"><?php echo " G".$mr[10]." ".$mr[1]." (".$d.$mr[5].")" ?></td>
+                        <?php
+                        } else {
+                        ?>
+                            <td class="dialog"><?php echo $mr[1]." (".$d.$mr[5].")" ?></td>             
+                        <?php    
+                        }
+                        ?>       
 						<td class="dialog"><?php echo $mr[0] ." (" . $mr[6] . ") "?></td>
 						<td class="forms">
 							<?php
@@ -907,7 +995,7 @@ if($i == 0){	// no rounds here
 						</td>
 					</tr>
 					<?php
-				} else { // rounds are merged and the selected round isn't the main round
+				} elseif ($round[7] != $mr[4]) { // rounds are merged and the selected round isn't the main round
 					if(intval($round[5]) == 0 && intval($mr[2]) == intval($round[4])){
 						?>
 						<tr>

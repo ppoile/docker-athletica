@@ -856,7 +856,7 @@ class PRINT_RankingList_pdf extends PRINT_Page_pdf
 
 
 	function printHeaderLine($title, $relay=FALSE, $points=FALSE
-		, $wind=FALSE, $heatwind='', $time="", $svm = false, $base_perf = false, $qual_mode = false , $eval, $withStartnr, $teamsm = false)
+		, $wind=FALSE, $heatwind='', $time="", $svm = false, $base_perf = false, $qual_mode = false , $eval, $withStartnr, $teamsm = false, $lmm = false)
 	{ 
 		$this->relay = $relay;
 		$this->points = $points;
@@ -921,7 +921,7 @@ class PRINT_RankingList_pdf extends PRINT_Page_pdf
 			$stnr = $GLOBALS['strStNr'];
 			$wstnr = 14;
 		}
-		if ($svm) { 
+		if ($svm || $lmm) { 
 			$ssvm=$GLOBALS['strTeam'];
     }elseif($teamsm){
       $ssvm=$GLOBALS['strTeamsm'];
@@ -1184,6 +1184,90 @@ class PRINT_TeamRankingList_pdf extends PRINT_RankingList_pdf    //TODO
 
 } // end PRINT_TeamRankingList
 
+
+
+/********************************************
+ * PRINT_LMMRankingList: printing ranking list for LMM events
+ *******************************************/
+
+class PRINT_LMMRankingList_pdf extends PRINT_RankingList_pdf    
+{
+    var $width;
+    function printHeaderLine($time = "")
+    {
+        $add=0;
+        if(!empty($time)){ 
+           $add = 13;  
+        }
+        // page break check
+        if($this->lp < $add + $this->footerheight + 111)  //Footer + 4 lines + 4 InfoLines + (time) + header  =36+4*12+4*12+(13)+15=(13)+147
+        {
+            $this->insertPageBreak();
+        }
+        if(!empty($time)){
+            $this->printTextLineBox($time,$this->font,"",11,$this->marginLeft,$this->lp,515,30,'right bottom',11,2);
+        }
+        $this->pdf->SetFont($this->font,"B",10); 
+        $this->width = $this->getColWidth($this->pagewidth - $this->marginLeft - $this->marginRight - 30,array($GLOBALS['strRank'],28,0,0),array($GLOBALS['strTeam'],416,2,0),
+            array($GLOBALS['strPoints'],65,0,0));
+        
+        $this->printTextLineBox($GLOBALS['strRank'],$this->font,"B",10,$this->marginLeft,$this->lp,$this->width[0],30,'left bottom',11,0);
+        $this->printTextLineBox($GLOBALS['strTeam'],$this->font,"B",10,$this->posx+2,$this->lp,$this->width[1],30,'left bottom',0,0);
+        $this->printTextLineBox($GLOBALS['strPoints'],$this->font,"B",10,$this->posx+2,$this->lp,$this->width[2],30,'right bottom',0,2);
+        $this->pdf->SetLineWidth(0.2);
+        $this->pdf->Line($this->marginLeft,$this->lp,$this->pagewidth - $this->marginRight,$this->lp);
+        $this->lp-=2;
+    }
+
+
+    function printLine($rank, $name, $club, $points)
+    {
+        if($this->lp < $this->footerheight + 24)    //Footer + line + infoline = 36 + 12 + 12 = 60
+        {
+            $this->insertPageBreak();
+            $this->printSubTitle();
+            $this->printHeaderLine($this->relay, $this->windinfo);
+        }
+        
+        $pt = '';
+        if(!empty($rank)) {
+            $pt = ".";
+        }
+        $this->printTextLineBox($rank.$pt,$this->font,"",10,$this->marginLeft,$this->lp,$this->width[0],30,'right bottom',10,0);
+        $lnqnty=$this->printTextFlowSimp($name,$this->font,"",10,$this->posx+2,$this->lp,$this->width[1],'left',-10,0,1);
+        $this->printTextLineBox($points,$this->font,"",10,$this->posx+2,$this->lp,$this->width[2],30,'right bottom',10,-8);
+        
+        $this->lp-=$lnqnty*12;
+    }
+
+
+    function printAthleteLine($name, $year, $points, $country, $club, $rank, $type)
+    {
+        if($this->lp < $this->footerheight + 24)    //Footer + line + infoline = 36 + 12 + 12 = 60
+        {
+            $this->insertPageBreak();
+            $this->printSubTitle();
+                $this->printHeaderLine($this->relay, $this->windinfo);
+        }
+        
+        $pt = '';
+        if(!empty($rank)) {
+            $pt = ".";
+        }
+        $lnqnty=$this->printTextFlowSimp($name.", ".$year,$this->font,"",9,22+$this->width[0]+15,$this->lp,$this->width[1],'left',0,0,1);
+        $this->printTextLineBox($points,$this->font,"",9,$this->posx+2-15,$this->lp,$this->width[2],30,'right bottom',10,-10);
+        
+        $this->lp-=$lnqnty*12;
+
+    }
+
+
+    function printInfo($info)
+    {
+        $this->printTextLineBox($info,$this->font,"",8,22+$this->width[0]+15,$this->lp,475,30,'left bottom',8,4);  
+    }
+
+} // end PRINT_LMMRankingList
 
 
 /********************************************

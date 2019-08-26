@@ -21,6 +21,7 @@ $cvtTable = array("-"=>0
 					//, $strConvtableSVMWomenNL=>6              // old formula
 					, $strConvtableRankingPoints=>7      
                     , $strConvtableRankingPointsU20=>8 
+                    , $strConvtableSLV2010Mixed=>9      // z.B. LMM Mixed 
 );
 
 /**

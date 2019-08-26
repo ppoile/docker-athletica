@@ -590,9 +590,34 @@ function removePassword(){
                         </td>
                     </tr>
                 </table>
-                  <br/>  
-              <?php
                    
+              
+              
+                   <br/>
+                               <?php       
+           if ($ukc_meeting == 'y'){    
+               
+               ?> 
+           <table class='dialog' width="475">
+                    <tr>
+                        <th class='dialog_ukc'><?php echo $ukc_finisherclips; ?></th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <table class='admin'>
+                                 <tr class='odd'>
+                                    <td> <input type="button" value="<?php echo $strExport; ?>" class="dialog_ukc" onclick="javascript:document.location.href='tools/ukc_export/index.php'"></td>                                       
+                                </tr>
+                                </form>                          
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+                  <br/> 
+                <?php
+           }
+            ?>
+            <?php       
            if ($ukc_meeting == 'y'){    
                
                ?>  

@@ -28,6 +28,7 @@ $presets = AA_results_getPresets($round);	// read GET/POST variables
 $relay = AA_checkRelay($presets['event']);	// check, if this is a relay event
 
 $svm = AA_checkSVM(0, $round); // decide whether to show club or team name  
+$lmm = AA_checkLMM(0, $round); // decide whether to show club or team name  
 
 $teamsm = AA_checkTeamSM(0, $round); 
 
@@ -721,7 +722,7 @@ if($round > 0)
                                 , at.Name
                                 , at.Vorname
                                 , at.Jahrgang  
-                                , if('".$svm."', t.Name, IF(a.Vereinsinfo = '', v.Name, a.Vereinsinfo))  
+                                , if('".$svm."' OR '".$lmm."', t.Name, IF(a.Vereinsinfo = '', v.Name, a.Vereinsinfo))  
                                 , LPAD(s.Bezeichnung,5,'0') as heatid
                                 , s.Handgestoppt
                                 , at.Land   
@@ -761,7 +762,7 @@ if($round > 0)
                             , ss.Rang
                             , ss.Qualifikation
                             , sf.Name
-                            , if('".$svm."', t.Name, v.Name)  
+                            , if('".$svm."' OR '".$lmm."', t.Name, v.Name)  
                             , LPAD(s.Bezeichnung,5,'0') as heatid
                             , s.Handgestoppt
                             , ss.Bemerkung   
@@ -960,7 +961,7 @@ if($round > 0)
 		<th class='dialog' colspan='2'><?php echo $strAthlete; ?></th>
 		<th class='dialog'><?php echo $strYearShort; ?></th>
 		<th class='dialog'><?php echo $strCountry; ?></th>
-		<th class='dialog'><?php if($svm){ echo $strTeam; } elseif ($teamsm){ echo $strTeamsm;} else {echo $strClub;} ?></th>
+		<th class='dialog'><?php if($svm || $lmm){ echo $strTeam; } elseif ($teamsm){ echo $strTeamsm;} else {echo $strClub;} ?></th>
 		<th class='dialog'><?php echo $strPerformance; ?></th>
         
 <?php
@@ -970,7 +971,7 @@ if($round > 0)
 	<tr>
 		<th class='dialog'><?php echo $strPositionShort; ?></th>
 		<th class='dialog'><?php echo $strRelay; ?></th>
-		<th class='dialog'><?php if($svm){ echo $strTeam; }else{ echo $strClub;} ?></th>
+		<th class='dialog'><?php if($svm || $lmm){ echo $strTeam; }else{ echo $strClub;} ?></th>
 		<th class='dialog'><?php echo $strPerformance; ?></th>
        
 <?php

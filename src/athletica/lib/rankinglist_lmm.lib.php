@@ -42,7 +42,7 @@ if($_GET['limitRank'] == "yes" && substr($formaction,0,6) == "export"){ // check
 
 // start a new HTML display page
 if($formaction == 'view') {
-	$GLOBALS[$list] = new GUI_TeamRankingList($_COOKIE['meeting']);
+	$GLOBALS[$list] = new GUI_LMMRankingList($_COOKIE['meeting']);
 	$GLOBALS[$list]->printPageTitle("$strRankingLists " . $_COOKIE['meeting']);
 }
 // catch output and do nothing exept for theam rankings
@@ -53,7 +53,7 @@ elseif($formaction == "xml"){
 }
 // start a new HTML print page
 elseif($formaction == "print") {                  
-	$GLOBALS[$list] = new PRINT_TeamRankingList_pdf($_COOKIE['meeting']);
+	$GLOBALS[$list] = new PRINT_LMMRankingList_pdf($_COOKIE['meeting']);
 	if($cover == true) {		// print cover page 
 		$GLOBALS[$list]->printCover($GLOBALS['strResults']);
 	}
@@ -346,7 +346,7 @@ function processLMM($xCategory, $category, $type, $mixed, $lmm_name)
                                                  && r.Info !=  '" . $cfgResultsHighOut5 . "' && r.Info !=  '" . $cfgResultsHighOut6 . "' )
                       OR (d.Typ != 6 ) ))
                     
-                    
+                    AND ru.Status = " . $cfgRoundStatus['results_done'] . "    
                 GROUP BY
                     st.xStart
                 ORDER BY
@@ -394,47 +394,57 @@ function processLMM($xCategory, $category, $type, $mixed, $lmm_name)
 					else {
 						$wind = '';
 					}
-
-					// format output
-					if(($pt_row[1] == $cfgDisciplineType[$strDiscTypeJump])
-						|| ($pt_row[1] == $cfgDisciplineType[$strDiscTypeJumpNoWind])
-						|| ($pt_row[1] == $cfgDisciplineType[$strDiscTypeThrow])
-						|| ($pt_row[1] == $cfgDisciplineType[$strDiscTypeHigh])) {
-						$perf = AA_formatResultMeter($pt_row[2]);
-					}
-					else {  
-						$perf = $pt_row[2];   
-                       
-                        $perf = $perf/1000;
-                        list($sec, $mili) = explode(".", $perf);
-                        list($hour, $rest) = explode(".", ($sec/3600));
-                        list($min, $rest) = explode(".", (($sec-($hour*3600))/60));
-                        list($sec, $rest) = explode(".", ($sec-($hour*3600)-($min*60)));
-                       
-                        // round up to hundredth  (examples: 651 --> 660 and 650 --> 650)
-                        $mili=ceil(sprintf ("%-03s",$mili)/10);              
-                        list($a,$mili)=explode(".",($mili/100));         
-                        $sec+=$a;   
-                        
-                        // display milli (two decimal after point without 0 in front)
-                        $time = '';
-                        if ($hour > 0) {
-                            $time = sprintf("%02d", $hour).":".sprintf("%02d", $min).":".sprintf("%02d", $sec).".".sprintf("%-02s", $mili);  
-                        }
-                        elseif ($min > 0) { 
-                                $time = sprintf("%02d", $min).":".sprintf("%02d", $sec).".".sprintf("%-02s", $mili);  
-                        }
-                        else {
-                             $time =  $sec .".".sprintf("%-02s", $mili); 
-                        }    
-                        $perf = $time;  
-					}
+                    
+                    $perf = $pt_row[2];
+                    if($perf>=0) {
+					    // format output
+					    if(($pt_row[1] == $cfgDisciplineType[$strDiscTypeJump])
+						    || ($pt_row[1] == $cfgDisciplineType[$strDiscTypeJumpNoWind])
+						    || ($pt_row[1] == $cfgDisciplineType[$strDiscTypeThrow])
+						    || ($pt_row[1] == $cfgDisciplineType[$strDiscTypeHigh])) {
+                            
+                            
+						    $perf = AA_formatResultMeter($perf);
+					    }
+					    else {  
+                            $perf = $perf/1000;
+                            list($sec, $mili) = explode(".", $perf);
+                            list($hour, $rest) = explode(".", ($sec/3600));
+                            list($min, $rest) = explode(".", (($sec-($hour*3600))/60));
+                            list($sec, $rest) = explode(".", ($sec-($hour*3600)-($min*60)));
+                           
+                            // round up to hundredth  (examples: 651 --> 660 and 650 --> 650)
+                            $mili=ceil(sprintf ("%-03s",$mili)/10);              
+                            list($a,$mili)=explode(".",($mili/100));         
+                            $sec+=$a;   
+                            
+                            // display milli (two decimal after point without 0 in front)
+                            $time = '';
+                            if ($hour > 0) {
+                                $time = sprintf("%02d", $hour).":".sprintf("%02d", $min).":".sprintf("%02d", $sec).".".sprintf("%-02s", $mili);  
+                            }
+                            elseif ($min > 0) { 
+                                    $time = sprintf("%02d", $min).":".sprintf("%02d", $sec).".".sprintf("%-02s", $mili);  
+                            }
+                            else {
+                                 $time =  $sec .".".sprintf("%-02s", $mili); 
+                            }    
+                            $perf = $time; 
+					    }
+                    }
+                    
                    
 					// calculate points
 					$points = $points + $pt_row[4];	// accumulate points
                     
-                    if ($perf != $cfgInvalidResult['DNS']['code'] && $perf != "" && $perf != 0){ 
+                    if ($perf != "" && $perf != 0){ 
 					    if ($perf < 0){ 
+                            if ($perf == $GLOBALS['cfgMissedAttempt']['db']){
+                                        $perf = $GLOBALS['cfgMissedAttempt']['code'];
+                                    }
+                                    elseif  ($perf == $GLOBALS['cfgMissedAttempt']['dbx']){ 
+                                             $perf = $GLOBALS['cfgMissedAttempt']['codeX'];  
+                                    }
                             foreach($cfgInvalidResult as $value)    // translate value
                                 {if($value['code'] == $perf) {
                                         $perf = $value['short'];
@@ -450,7 +460,7 @@ function processLMM($xCategory, $category, $type, $mixed, $lmm_name)
 
 			$a = $row[0];
 			$name = $row[1] . " " . $row[2];
-			$year = AA_formatYearOfBirth($row[3]);
+			$year = $row[3];
 			$team = $row[5];
             $xTeam = $row[4];   
 			$club = $row[6];

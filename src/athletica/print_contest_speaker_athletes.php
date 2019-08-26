@@ -102,6 +102,7 @@ else
     
     $combined = AA_checkCombined(0, $round);
     $svm = AA_checkSVM(0, $round); // decide whether to show club or team name   
+    $lmm = AA_checkLMM(0, $round); // decide whether to show club or team name   
     
     if (!empty($mRounds)){   
         $infoMerged = "";     
@@ -131,11 +132,13 @@ else
       
     $round_temp = $round;
     $r = 0;
-    while(AA_getNextRound($row[4], $round_temp) > 0){
-        $round_temp = AA_getNextRound($row[4], $round_temp);
-        $round_following[$r] = $round_temp;
-        $r++;
-        
+    if($row[10] == '0')  {
+        while(AA_getNextRound($row[4], $round_temp) > 0){
+            $round_temp = AA_getNextRound($row[4], $round_temp);
+            $round_following[$r] = $round_temp;
+            $r++;
+            
+        }
     }
     
     $next_round = $round_following[0];
@@ -420,7 +423,7 @@ else
                             , at.Name
                             , at.Vorname
                             , at.Jahrgang
-                            , if('$svm', t.Name, IF(a.Vereinsinfo = '', v.Name, a.Vereinsinfo))
+                            , if('$svm' OR '$lmm', t.Name, IF(a.Vereinsinfo = '', v.Name, a.Vereinsinfo))
                             , IF(at.xRegion = 0, at.Land, re.Anzeige) AS Land
                             , at.xAthlet  
                      FROM 
@@ -453,7 +456,7 @@ else
                             , an.Bezeichnung
                             , sf.xStaffel
                             , sf.Name
-                            , if('$svm', t.Name, v.Name)
+                            , if('$svm' OR '$lmm', t.Name, v.Name)
                             , LPAD(s.Bezeichnung,5,'0') as heatid
                             , r.xRunde
                             , s.Film
