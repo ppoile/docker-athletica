@@ -32,7 +32,7 @@ CREATE TABLE `config` (
 
 /*Data for the table `config` */
 
-insert  into `config`(`xConfig`,`ftpHost`,`ftpUser`,`ftpPwd`,`url`) values 
+insert  into `config`(`xConfig`,`ftpHost`,`ftpUser`,`ftpPwd`,`url`,`dir`) values 
 (0,'','','','','');
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
