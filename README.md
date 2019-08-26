@@ -32,3 +32,8 @@ Bash into docker container:
 ```bash
 docker exec -it athletica-php /bin/bash
 ```
+
+Copy liveresultate sources to web server:
+```bash
+rsync -avz -e ssh --delete src/athletica_liveresultate/server/ tvuster.ch0@ssh.netzone.ch:/htdocs/live
+```
