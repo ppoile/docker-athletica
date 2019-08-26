@@ -24,7 +24,7 @@ if (!defined('AA_RESULTS_TRACK_LIB_INCLUDED'))
         $p = "./tmp";
         $fp = @fopen($p."/live".$round.".php",'w');
         if(!$fp){
-            AA_printErrorMsg($GLOBALS['strErrFileOpenFailed']);  
+            AA_printErrorMsg($GLOBALS['strErrFileOpenFailed'] . "-X1");  
             return;
         }   
 

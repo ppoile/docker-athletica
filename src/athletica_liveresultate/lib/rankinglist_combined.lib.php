@@ -30,7 +30,7 @@ if (!defined('AA_RANKINGLIST_COMBINED_LIB_INCLUDED'))
         $p = "./tmp";
         $fp = @fopen($p."/liveComb".$comb_id."_".$cat_id.".php",'w');
         if(!$fp){
-            AA_printErrorMsg($GLOBALS['strErrFileOpenFailed']);  
+            AA_printErrorMsg($GLOBALS['strErrFileOpenFailed'] . "-X2");  
             return;
         }
         

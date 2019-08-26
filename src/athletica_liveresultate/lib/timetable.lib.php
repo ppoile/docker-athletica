@@ -94,7 +94,7 @@ if (!defined('AA_TIMETABLE_LIB_INCLUDED'))
             $fp = @fopen($ftp_tmp_path.$ftp_tmp_name,'w');
 
             if(!$fp){     
-                AA_printErrorMsg($GLOBALS['strErrFileOpenFailed']);  
+                AA_printErrorMsg($GLOBALS['strErrFileOpenFailed'] . ": " . @getcwd() . " " . $ftp_tmp_path.$ftp_tmp_name);
                 return;
             }
             

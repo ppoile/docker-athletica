@@ -457,11 +457,9 @@ if(empty($xMeeting))
                     WHERE xMeeting = " . $_GET['xMeeting'],$db_con_live
                 );
                 if(mysql_errno() > 0) {
-                    AA_printErrorMsg(mysql_errno() . ": " . mysql_error());
+                    AA_printErrorMsg(mysql_errno() . ": " . mysql_error() . " qwertz");
                    
-                } 
-                
-                    
+                }
           }
         if (!empty($host) && !empty($user) && !empty($pwd) && !empty($url)){ 
 			//require('config.inc.end.php');
