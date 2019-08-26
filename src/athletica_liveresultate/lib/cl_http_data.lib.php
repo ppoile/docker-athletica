@@ -142,7 +142,7 @@ document.getElementById("progress").width="150";
 			$headers .= "$str\n";
 			if(strpos($str, "400") !== false || strpos($str, "404") !== false || strpos($str, "403") !== false || strpos($str, "503") !== false){
 				fclose($sock); // server return error (not found / bad request)
-				AA_printErrorMsg($GLOBALS['strErrHttpBad']);
+				AA_printErrorMsg($GLOBALS['strErrHttpBad'] . ":XXX-2:");
 				return false;
 			}
 		}     
@@ -171,7 +171,7 @@ document.getElementById("progress").width="150";
 			$fp = fopen($filePath, 'w');
 			if (@fwrite($fp, $body) === FALSE) {
 				fclose($fp);
-				AA_printErrorMsg($strErrHttpWrite);
+				AA_printErrorMsg($strErrHttpWrite . ":XXX-3:");
 				return false;
 			}else{
 				fclose($fp);
@@ -189,7 +189,7 @@ document.getElementById("progress").width="150";
             
 			if (@fwrite($fp, $body) === FALSE) {
 				fclose($fp);
-				AA_printErrorMsg($strErrHttpWrite);
+				AA_printErrorMsg($strErrHttpWrite . ":XXX-4:");
 				return false;
 			}else{
 				fclose($fp);
