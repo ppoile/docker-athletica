@@ -5,7 +5,8 @@ services:
         container_name: athletica-mysql
         volumes:
             - "./src/athletica/sql/athletica.sql:/docker-entrypoint-initdb.d/athletica.sql"
-            - "./config/athletica-grant-super.sql:/docker-entrypoint-initdb.d/athletica-grant-super.sql"
+            - "./src/athletica_liveresultate/sql/athletica_liveresultate.sql:/docker-entrypoint-initdb.d/athletica_liveresultate.sql"
+            - "./config/athletica-grant.sql:/docker-entrypoint-initdb.d/athletica-grant.sql"
             - "db_data:/var/lib/mysql"
         ports:
             - "3306:3306"
