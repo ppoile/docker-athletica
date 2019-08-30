@@ -18,7 +18,7 @@ services:
             - MYSQL_PASSWORD=athletica
     php:
         build: .
-        image: ppoile/athletica-php
+        image: ppoile/athletica-php:8.4.0
         container_name: athletica-php
         ports:
             - "80:80"
@@ -26,7 +26,7 @@ services:
         depends_on:
             - db
     phpmyadmin:
-        image: phpmyadmin/phpmyadmin
+        image: phpmyadmin/phpmyadmin:4.8
         container_name: athletica-phpmyadmin
         ports:
             - "8080:80"
@@ -37,7 +37,7 @@ services:
         depends_on:
             - db
     django:
-        image: ppoile/athletica-adapter
+        image: ppoile/athletica-adapter:0.5
         container_name: athletica-adapter
         stdin_open: true
         tty: true
