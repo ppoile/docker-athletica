@@ -1,4 +1,4 @@
-version: "2"
+version: "3.5"
 services:
     db:
         image: mysql:5.6
@@ -36,17 +36,8 @@ services:
         restart: always
         depends_on:
             - db
-    django:
-        image: ppoile/athletica-adapter:0.5
-        container_name: athletica-adapter
-        stdin_open: true
-        tty: true
-        ports:
-            - "8000:8000"
-        environment:
-            - DB_HOST=db
-        restart: always
-        depends_on:
-            - db
 volumes:
     db_data:
+networks:
+    default:
+        name: "docker-athletica_default"
