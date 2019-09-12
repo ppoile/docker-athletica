@@ -20,6 +20,8 @@ services:
         build: .
         image: ppoile/athletica-php:dev
         container_name: athletica-php
+        volumes:
+            - "./src:/var/www/html"
         ports:
             - "80:80"
         restart: always
