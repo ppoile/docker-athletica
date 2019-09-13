@@ -114,13 +114,17 @@ if($_GET['arg'] == 'backup')
 		}
 	while ($row = mysql_fetch_row($result))
 		{
+			if ($row[0] == "django_migrations")
+			{
+				continue;
+			}
 			//ignore base-tables, sys-tables and other tables with non user customizing possibilities
 			if (!isset($_GET['base'])){ 
 				if (substr($row[0],0,5)== "base_" ||
 					substr($row[0],0,4)== "sys_" ||
 					$row[0] == "kategorie_svm" ||
 					$row[0] == "faq" ||
-					$row[0] == "land") 
+					$row[0] == "land")
 				{
 					continue;
 				}
