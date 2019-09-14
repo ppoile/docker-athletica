@@ -479,14 +479,24 @@ document.getElementById("progress").width="150";
 			// first we have to save it temporary
 			$filePath .= $temppath."athletica.ini";
 			$fp = fopen($filePath, 'w');
+			if ($fp === FALSE) {
+				AA_printErrorMsg("fopen failed");
+				return false;
+			}
 			if (@fwrite($fp, $body) === FALSE) {
 				fclose($fp);
 				AA_printErrorMsg($strErrHttpWrite);
 				return false;
-			}else{
-				fclose($fp);
-				return parse_ini_file($filePath);
 			}
+			fclose($fp);
+			$retval = parse_ini_file($filePath);
+			if ($retval) {
+				return $retval;
+			}
+			// attempt to fix $body and enclose city entry in double quotes
+			$body = str_replace('city=', 'city="', $body);
+			$body = rtrim($body) . '"\n';
+			return parse_ini_string($body, true);
 		}elseif($parseType == "file" && !empty($fileName)){
 			// save data into file 	
             
