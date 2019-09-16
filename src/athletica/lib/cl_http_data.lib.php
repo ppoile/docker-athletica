@@ -111,8 +111,8 @@ document.getElementById("progress").width="150";
 		}
 		
 		// get temp directory
-		$temppath = dirname($_SERVER['SCRIPT_FILENAME'])."/tmp/";
-		
+		$temppath = "/tmp/";
+
 		if ($chunked){
 			// the body is in chunked format --> redo stuff together, remove all header and footer of each chunk
 			// data is transferred as chunk (http 1.1), where the chunk itself is preceded by its size on a separate line --> split it
@@ -269,10 +269,7 @@ document.getElementById("progress").width="150";
 		
        
 		// get temp directory
-		$temppath = dirname($_SERVER['SCRIPT_FILENAME'])."/tmp/";
-		if(!is_dir($temppath)){
-			@mkdir($temppath, 0777);
-		}
+		$temppath = "/tmp/";
 		
 		if(preg_match('#.*unauthorized.*#i', $body)){
 			return 'unauthorized';
@@ -402,8 +399,8 @@ document.getElementById("progress").width="150";
 		}
 		
 		// get temp directory
-		$temppath = dirname($_SERVER['SCRIPT_FILENAME'])."/tmp/";
-		
+		$temppath = "/tmp/";
+
 		if($parseType == "ini"){
 			// parse content as ini and return parameters
 			// first we have to save it temporary
@@ -469,10 +466,7 @@ document.getElementById("progress").width="150";
 		
        
 		// get temp directory
-		$temppath = dirname($_SERVER['SCRIPT_FILENAME'])."/tmp/";
-		if(!is_dir($temppath)){
-			@mkdir($temppath, 0777);
-		}
+		$temppath = "/tmp/";
 		
 		if($parseType == "ini"){
 			// parse content as ini and return parameters

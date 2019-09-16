@@ -58,7 +58,7 @@ if($_POST['arg'] == "login"){
 	$res = mysql_query("select xControl from meeting where xMeeting = ".$_COOKIE['meeting_id']);
 	$row = mysql_fetch_Array($res);
 	$eventnr = $row[0];
-	$local = dirname($_SERVER['SCRIPT_FILENAME'])."/tmp/results.xml.gz";
+	$local = "/tmp/results.xml.gz";
 	$remote = date("Ymd")."_".$eventnr.".gz";
 	
 	$nbr_effort = $xml->gen_result_xml($local);          
