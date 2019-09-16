@@ -18,7 +18,7 @@ services:
             - MYSQL_PASSWORD=athletica
     php:
         build: .
-        image: ppoile/athletica-php:8.4.0
+        image: ppoile/athletica-php:dev
         container_name: athletica-php
         ports:
             - "80:80"
